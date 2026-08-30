@@ -1,0 +1,67 @@
+---
+description: Стили только в CSS. Inline в JS — исключение для runtime. Для разработчика, архитектора, ревьювера.
+globs: "**/*.{tsx,ts,css}"
+alwaysApply: false
+---
+
+# CSS-first стилизация
+
+## Правило
+
+**Все статические стили — в CSS** (`src/ui/index.css` или colocated `.css`).  
+**`style={{ … }}` в TSX запрещён**, кроме значений, меняющихся в runtime.
+
+## Разрешено в JS (runtime)
+
+| Случай | Как |
+|--------|-----|
+| Динамическая позиция FX | CSS-переменные: `style={{ '--coin-left': '34vw' }}` + `left: var(--coin-left)` в CSS |
+| Состояние сцены (комната, ночь) | `className` / `data-*` на корне → селекторы в CSS |
+| Анимация pan | `data-room` + `transform` в CSS, не `width: 200%` из JS |
+
+## Запрещено в JS
+
+- `width`, `height`, `left`, `top`, `z-index`, `color`, `transform` как литералы в `style={{ }}`
+- «Гвозди» из `sceneLayout.ts` ради CSS (`widthPercent: 200`, `edgeNav.widthPercent` → в `.css`)
+- Хелперы вроде `innerPanStyle()` / `scenePlacementStyle()` для статики
+- Позиции мебели/кота через inline — только классы из `scenePlacements.ts`
+- `object-fit: cover` на `.layer-izba__img` без согласования (ломает пропорции сруба)
+
+## Комната 1 (изба)
+
+- **Канон отображения** — `index.css` (vw/vh, визуальная подгонка под 100vw).
+- **Эталон ТЗ** — `instruction/room_01_layout.md` §4–5 (% от inner, автор: гейм-дизайнер UI/UX).
+- `scenePlacements.ts` — только `className` + runtime-якоря (FX), не дублировать координаты из ТЗ.
+
+## Комната 2 (трофеи)
+
+- **Тот же фон** — `.layer-izba` + активный скин избы; **без** gradient / `trophy_room_bg` (`scene-visual-etalon.mdc`).
+- **Те же единицы** — `vw`/`vh` как комната 1; лавка ≈ `.scene-bench` (`14vw`).
+- **Правки владельца** в `index.css` — эталон, не откатывать по % из `room_02_trophies_layout.md`.
+
+## Панорама двух комнат
+
+```css
+/* ✅ каждая комната = 100vw, pan через transform */
+.izba-scene__inner { display: flex; }
+.izba-room { flex: 0 0 100vw; width: 100vw; }
+.izba-scene[data-room="2"] .izba-scene__inner { transform: translateX(-100vw); }
+
+/* ❌ width: 200% / 200vw на inner или .layer-izba__img */
+/* ❌ margin-left: -100vw для «правой половины» панорамы */
+/* ❌ width: 200% из JS, комнаты по 50% inner */
+```
+
+## Размеры спрайтов (жёстко)
+
+- **Не увеличивать** визуальный размер объектов через `width` / `height` / `min-width` / `min-height` на `.scene-*` и `.scene-sprite` без явного запроса владельца вёрстки.
+- Размер спрайта = **натуральный** из PNG (`width: 100%` от контейнера **без** заданного `width` на контейнере, либо только `left`/`bottom` для позиции).
+- Hit-area ≥ 56px из ТЗ — **не** через растягивание картинки; если понадобится — отдельный невидимый слой / `::before`, не трогая img.
+- Кот (`.scene-cat`): только позиция (`left`, `bottom`) в `index.css`; **не** добавлять `width` «для клика».
+
+## Чеклист перед сдачей
+
+- [ ] `grep style=` в `src/` — только runtime-исключения с комментарием «почему»
+- [ ] Позиции комнаты 1 — классы в `index.css`; `scenePlacements.ts` — className + runtime
+- [ ] Состояние UI переключается классом/`data-*`, не inline
+- [ ] Нет `width`/`height` на `.scene-*`, увеличивающих спрайт; нет `200%`/`200vw` на фоне избы

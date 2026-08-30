@@ -1,0 +1,52 @@
+---
+description: Архитектура «Книга славянских духов» — слои, MobX, SaveService, SDK. Для архитектора, разработчика, тестировщика.
+globs: "**/*.{ts,tsx,js,jsx,css}"
+alwaysApply: false
+---
+
+# Архитектура проекта
+
+Канон: `instruction/scenario.md`, техника: `instruction/scenario_draft.md`, техтребования: `instruction/dev/technical_requirements.md`, структура: `instruction/dev/tech.md`.
+
+## Стек
+
+React + Vite + CSS · MobX (`GameStore`) · localStorage · SDK Яндекс.Игр · `isTestMode` моки.
+
+## Поток данных (обязательный)
+
+```
+Действие → MobX action → state → SaveService.schedulePersist()
+                                      ├─ localStorage (всегда)
+                                      └─ cloud (если authorized)
+```
+
+## Слои (не смешивать)
+
+| Слой | Содержит | Не содержит |
+|------|----------|-------------|
+| `ui/` | компоненты, CSS | прямые вызовы SDK |
+| `store/` | MobX, `toSave`/`hydrate` | DOM, реклама |
+| `services/` | Save, Ads, Payments, Auth | JSX |
+| `platform/` | обёртки YaGames + моки | игровые правила |
+| `domain/` | типы `GameSave`, константы | UI |
+| `config/` | `assetRegistry`, `sceneLayout`, `lootTables`, `gameConstants` | JSX, хардкод путей |
+| `data/` | `quiz`, `spirits`, `titles` (импорт из `instruction/`) | тексты в компонентах |
+
+## Конфиги и данные (обязательно)
+
+Баланс, пути ассетов, позиции сцены, викторина — **не в компонентах и store**. См. `instruction/dev/technical_requirements.md` §1.
+
+## Правила
+
+- Один root `GameStore` (или связанные stores с **одной** точкой сериализации).
+- `toSave()` / `hydrate()` — единственный маппинг в `GameSave`.
+- Реклама и платежи — отдельные сервисы, не в `SaveService`.
+- Debounce persist 2–3 с; `flush` на `beforeunload` / `visibilitychange`.
+- `openAuthDialog` только по явному действию игрока.
+- Слои избы (канон `instruction/izba_scene_layers.md`): лес → Жирдяй → изба (α-стёкла) → духи → мебель → кот → night overlay (`pointer-events: none`) → стрелки → HUD → UI.
+- Стили UI: **CSS-first** — см. `css-styling.mdc`. Позиции сцены: `scenePlacements.ts` + классы в `index.css`.
+
+## Именование и канон
+
+- ID духов, флаги онбординга, ключи сохранения — как в `scenario.md` / `scenario_draft.md`.
+- Ключ localStorage: `slavic_myths_save_v1`. Облако: поле `gameSave`.
