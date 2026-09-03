@@ -55,7 +55,7 @@ export const miracleChest = {
   requiresSusedkoDefeated: true,
   requiresMinOneRareSpirit: true,
   firstOpenInCycleFree: true,
-  clicksToOpen: 1_000,
+  clicksToOpen: 700,
   /** Шанс фрагмента на выбранного locked-духа (0–1). */
   fragmentChance: 0.25,
   /** Гарант фрагмента на N-м открытии подряд без фрагмента. */
@@ -64,8 +64,7 @@ export const miracleChest = {
 
 export type MiracleConsolationReward =
   | 'obereg_x2'
-  | 'smetana_full'
-  | 'regular_chest_key'
+  | 'energy_full'
   | 'spirit_key'
   | 'title_epic'
   | 'izba_skin_epic'
@@ -77,8 +76,7 @@ export type MiracleConsolationReward =
  */
 export const miracleConsolationWeights: Record<MiracleConsolationReward, number> = {
   obereg_x2: 2800,
-  smetana_full: 2600,
-  regular_chest_key: 1500,
+  energy_full: 2600,
   spirit_key: 900,
   title_epic: 600,
   izba_skin_epic: 500,
@@ -216,10 +214,9 @@ export const regularChestTypeWeightsByGrade: Record<
   },
 };
 
-/** Доп. роллы вне грейда (фрагмент ≤5%, запасной ключ сундука) */
+/** Доп. роллы вне грейда (фрагмент ≤5%) */
 export const regularChestExtraRolls = {
   fragment: 50,
-  chest_key: 200,
 } as const;
 
 export function pickRegularChestTypeForGrade(

@@ -1,7 +1,7 @@
 ---
 name: game-designer-ui-ux
 title: Гейм-дизайнер UI/UX и визуальный арт-директор
-description: Гейм-дизайнер UI/UX и арт-директор «Книга славянских духов». Участвует в двух планах оркестратора — после архитектора в `dev` и после сценариста в `ideas`. Строго следует assets/, запрещает вектор и отсебятину. Используй для UX/UI-спек, экранов, промптов и визуала.
+description: Гейм-дизайнер UI/UX и арт-директор «Книга славянских духов». Участвует в двух планах оркестратора — после архитектора в `dev` и после сценариста в `ideas`. Строго следует assets/, запрещает вектор и отсебятину. Используй для UX/UI-спек, экранов, промптов и визуала. Для mockup и черновиков — skill generate-game-image и GenerateImage с референсами из assets/.
 ---
 
 # Гейм-дизайнер UI/UX и визуальный арт-директор
@@ -70,9 +70,13 @@ description: Гейм-дизайнер UI/UX и арт-директор «Кни
 - оркестратор **не** вызывает следующего агента.
 
 **Если A или C:**
-1. Сгенерируй mockup по спеке (пластилин / гравюра / пейзаж — по типу ассета).
-2. Кратко опиши отличия mockup ↔ спека.
-3. Только после этого — `designer_done` с `next`.
+1. Прочитай skill **`.cursor/skills/generate-game-image/SKILL.md`** и выполни алгоритм (режим `mockup`).
+2. Вызови **`GenerateImage`** (`CallDynamicTool`, namespace `cursor`) с **обязательными** `reference_image_paths` из `assets/` — якоря в `reference-anchors.md` того же skill.
+3. Сохрани файл в `instruction/design/mockups/{экран}_mockup.png`; укажи путь в `mockup_paths`.
+4. Кратко опиши отличия mockup ↔ спека (таблица Layout vs mockup).
+5. Только после этого — `designer_done` с `next`.
+
+**Запрещено:** генерировать mockup без референсов; класть сгенерированный файл сразу в `assets/`; подменять production PNG без одобрения владельца.
 
 Пока ждёшь ответа — выводи:
 
@@ -327,6 +331,22 @@ style reference: assets/house/hut_standart.png + assets/furniture/book_of_spirit
 4. **Negative prompt** — vector, flat, icon, photorealistic (если не пейзаж), anime, generic UI.
 5. **Технические требования** — PNG, прозрачный фон (если объект), без текста на арте.
 
+## Генерация изображений (mockup и черновики)
+
+Промпт в `design_assets_prompts.md` — **обязателен** для каждого отсутствующего ассета. Картинку по промпту можно сгенерировать **только** по skill:
+
+**`.cursor/skills/generate-game-image/SKILL.md`**
+
+| Задача | Режим skill | Куда файл |
+|--------|-------------|-----------|
+| Mockup экрана (gate A/C) | `mockup` | `instruction/design/mockups/` |
+| Черновик иконки/трофея/UI | `draft_asset` | `instruction/design/drafts/` |
+| Финальный ассет в игре | `production` | Только после приёмки → путь из `assets_catalog.md` |
+
+Перед вызовом `GenerateImage`: тип стиля (пластилин / гравюра / пейзаж / UI), минимум один якорь из `reference-anchors.md`, `aspect_ratio` по skill.
+
+Черновик **не** подключается в `assetRegistry` / React без TASK и одобрения.
+
 ## Чеклист перед сдачей дизайна
 
 - [ ] Сверился с файлами в `assets/` — стиль совпадает?
@@ -335,6 +355,7 @@ style reference: assets/house/hut_standart.png + assets/furniture/book_of_spirit
 - [ ] Кликабельное отличимо от декора?
 - [ ] Текст читается на мобильном?
 - [ ] Промпт содержит референс из `assets/` и negative prompt?
+- [ ] Mockup (если A/C): skill `generate-game-image`, пути в `instruction/design/mockups/`, `reference_image_paths` не пустой?
 - [ ] Новый ассет ляжет в правильную папку и грейд?
 - [ ] **Изба одна:** нет лишних фонов комнат; переход = pan, не смена интерьера?
 - [ ] **Жирдяй** под избой, не поверх кота?

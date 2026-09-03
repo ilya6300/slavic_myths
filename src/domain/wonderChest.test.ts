@@ -33,13 +33,13 @@ describe('wonderChest', () => {
 
   it('should allow free open when week slot unused', () => {
     expect(canOpenWonderChest(false, 0)).toBe(true);
-    expect(canOpenWonderChest(true, 999)).toBe(false);
-    expect(canOpenWonderChest(true, 1000)).toBe(true);
+    expect(canOpenWonderChest(true, 699)).toBe(false);
+    expect(canOpenWonderChest(true, 700)).toBe(true);
   });
 
   it('should increment click progress only after free slot spent', () => {
     expect(shouldIncrementWonderClickProgress(true, false, 0)).toBe(false);
-    expect(shouldIncrementWonderClickProgress(true, true, 500)).toBe(true);
-    expect(shouldIncrementWonderClickProgress(true, true, 1000)).toBe(false);
+    expect(shouldIncrementWonderClickProgress(true, true, 699)).toBe(true);
+    expect(shouldIncrementWonderClickProgress(true, true, 700)).toBe(false);
   });
 });

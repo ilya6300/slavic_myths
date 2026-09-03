@@ -3,9 +3,10 @@ import type { SpiritId } from '../config/assetRegistry';
 import {
   ENERGY_PER_CLICK,
   ENERGY_PER_QUEST,
+  DAILY_FIND_ENERGY,
   LUCK_COINS_CAP,
   LUCK_COINS_PER_CLICK,
-  SPARE_CHEST_KEYS_CAP,
+  REWARDED_ENERGY_BONUS,
   CLOUD_SAVE_KEY,
 } from '../config/gameConstants';
 import {
@@ -20,6 +21,7 @@ import {
   type CatClickDialogResult,
 } from '../domain/catClick';
 import { applyEnergyRegen } from '../domain/energyRegen';
+import { addRewardEnergy } from '../domain/rewardEnergy';
 import {
   applySpiritReward,
   createRewardStateFromStore,
@@ -43,16 +45,27 @@ import {
   wonderChestClicksRequired,
 } from '../domain/wonderChest';
 import { shouldShowCloudBanner } from '../domain/retention';
+import { isDailyFindAvailable as isDailyFindAvailableDomain } from '../domain/dailyFind';
+import { getCalendarDayId } from '../domain/calendarDay';
+import {
+  pickIzbaItemLine,
+  type IzbaItemId,
+} from '../domain/izbaItemDialog';
 import { rollZhirdyayClicksRequired } from '../domain/zhirdyay';
 import { getNightId } from '../domain/GameSave';
 import { isDefaultOwnedSkin } from '../data/profileCatalog';
 import { detectBrowserLocale } from '../i18n/resolve';
 import type { Locale } from '../i18n/types';
 import { LOCALES } from '../i18n/types';
+import { pickCatLine } from '../data/catDialogs';
 import { getSpiritById } from '../data/spirits';
 import { getQuizBySpiritId, shuffleQuizQuestions } from '../data/quiz';
 import { miracleChest, fragmentVictoryBonusSpiritIds } from '../config/lootTables';
-import { pickCatLine } from '../data/catDialogs';
+import {
+  DEFAULT_VIEW_SKIN,
+  viewSkins,
+  type ViewSkinId,
+} from '../config/assetRegistry';
 import { adsService } from '../services/adsService';
 import { clearLocalSave } from '../services/localSave';
 import { saveService } from '../services/saveService';
@@ -60,6 +73,7 @@ import { getPlatformSdk, isAuthorized } from '../platform/platformService';
 import { catDialogStore } from './catDialogStore';
 import { bookUiStore } from './bookUiStore';
 import { chestUiStore } from './chestUiStore';
+import { energyUiStore } from './energyUiStore';
 import { eventUiStore } from './eventUiStore';
 import { profileUiStore } from './profileUiStore';
 import { quizUiStore } from './quizUiStore';
@@ -80,6 +94,10 @@ function applyDocumentLang(locale: Locale): void {
   if (typeof document !== 'undefined') {
     document.documentElement.lang = locale;
   }
+}
+
+function sanitizeWindowSkinId(id: string): ViewSkinId {
+  return id in viewSkins ? (id as ViewSkinId) : DEFAULT_VIEW_SKIN;
 }
 
 export class GameStore {
@@ -107,13 +125,20 @@ export class GameStore {
   trophiesUnlocked: string[] = [];
 
   chestReadyAt: number | null = null;
-  spareChestKeys = 0;
   wonderChestWeekSlotUsed = false;
   wonderChestClickProgress = 0;
   wonderChestPityCounter = 0;
   wonderChestWeekId: string | null = null;
   fragmentVictoryBonusGranted: string[] = [];
   cloudBannerDismissed = false;
+  illustrationRevealed: string[] = [];
+  dailyFindClaimedDayId: string | null = null;
+  folktaleIntroShown = false;
+
+  izbaItemDialogState: { lastTag: IzbaItemId | null; lastLineIndex: number } = {
+    lastTag: null,
+    lastLineIndex: 0,
+  };
 
   susedkoStealActive = false;
   lastSusedkoStealAt: number | null = null;
@@ -177,7 +202,6 @@ export class GameStore {
     return isChestReady(
       this.firstChestOpened,
       this.chestReadyAt,
-      this.spareChestKeys,
       now,
     );
   }
@@ -186,7 +210,6 @@ export class GameStore {
     return getChestCooldownRemainingMs(
       this.firstChestOpened,
       this.chestReadyAt,
-      this.spareChestKeys,
       now,
     );
   }
@@ -284,19 +307,25 @@ export class GameStore {
     this.spiritStatuses = { ...save.spiritStatuses };
     this.fragmentCounts = { ...save.fragmentCounts };
     this.selectedFragmentSpiritId = save.selectedFragmentSpiritId;
-    this.skins = { ...save.skins };
+    this.skins = {
+      ...save.skins,
+      window: sanitizeWindowSkinId(save.skins.window),
+    };
     this.ownedSkinIds = [...save.ownedSkinIds];
     this.ownedTitleIds = [...save.ownedTitleIds];
     this.trophiesUnlocked = [...save.trophiesUnlocked];
 
     this.chestReadyAt = save.chestReadyAt;
-    this.spareChestKeys = save.spareChestKeys;
     this.wonderChestWeekSlotUsed = save.wonderChestWeekSlotUsed;
     this.wonderChestClickProgress = save.wonderChestClickProgress;
     this.wonderChestPityCounter = save.wonderChestPityCounter;
     this.wonderChestWeekId = save.wonderChestWeekId;
     this.fragmentVictoryBonusGranted = [...(save.fragmentVictoryBonusGranted ?? [])];
     this.cloudBannerDismissed = save.cloudBannerDismissed ?? false;
+    this.illustrationRevealed = [...(save.illustrationRevealed ?? [])];
+    this.dailyFindClaimedDayId = save.dailyFindClaimedDayId ?? null;
+    this.folktaleIntroShown = save.folktaleIntroShown ?? false;
+    this.izbaItemDialogState = { lastTag: null, lastLineIndex: 0 };
 
     this.susedkoStealActive = save.susedkoStealActive;
     this.lastSusedkoStealAt = save.lastSusedkoStealAt ?? null;
@@ -346,13 +375,15 @@ export class GameStore {
       trophiesUnlocked: [...this.trophiesUnlocked],
 
       chestReadyAt: this.chestReadyAt,
-      spareChestKeys: this.spareChestKeys,
       wonderChestWeekSlotUsed: this.wonderChestWeekSlotUsed,
       wonderChestClickProgress: this.wonderChestClickProgress,
       wonderChestPityCounter: this.wonderChestPityCounter,
       wonderChestWeekId: this.wonderChestWeekId,
       fragmentVictoryBonusGranted: [...this.fragmentVictoryBonusGranted],
       cloudBannerDismissed: this.cloudBannerDismissed,
+      illustrationRevealed: [...this.illustrationRevealed],
+      dailyFindClaimedDayId: this.dailyFindClaimedDayId,
+      folktaleIntroShown: this.folktaleIntroShown,
 
       susedkoStealActive: this.susedkoStealActive,
       lastSusedkoStealAt: this.lastSusedkoStealAt,
@@ -408,6 +439,9 @@ export class GameStore {
     const freeClick = this.isOnboarding;
 
     if (!freeClick && this.energy < ENERGY_PER_CLICK) {
+      if (this.onboardingCompleted) {
+        energyUiStore.open();
+      }
       return { kind: 'none' };
     }
 
@@ -443,6 +477,46 @@ export class GameStore {
 
   clearLastCatBubble(): void {
     this.lastCatBubble = null;
+  }
+
+  isDailyFindAvailable(): boolean {
+    return isDailyFindAvailableDomain(
+      this.onboardingCompleted,
+      this.dailyFindClaimedDayId,
+    );
+  }
+
+  claimDailyFind(): boolean {
+    if (!this.isDailyFindAvailable()) return false;
+    this.applyEnergyRegen();
+    this.energy = addRewardEnergy(this.energy, DAILY_FIND_ENERGY);
+    this.dailyFindClaimedDayId = getCalendarDayId();
+    const line = pickCatLine('daily_find', this.language);
+    if (line) {
+      this.lastCatBubble = { kind: 'footnote', text: line };
+    }
+    saveService.schedulePersist();
+    return true;
+  }
+
+  clickIzbaItem(itemId: IzbaItemId): void {
+    if (!this.onboardingCompleted) return;
+    if (this.handleZhirdyayBlockedInteraction()) return;
+    const { text, nextState } = pickIzbaItemLine(
+      itemId,
+      this.language,
+      this.izbaItemDialogState,
+    );
+    this.izbaItemDialogState = nextState;
+    if (!text) return;
+    this.lastCatBubble = { kind: 'footnote', text };
+    sceneUiStore.registerActivity();
+  }
+
+  markFolktaleIntroShown(): void {
+    if (this.folktaleIntroShown) return;
+    this.folktaleIntroShown = true;
+    saveService.schedulePersist();
   }
 
   setSpiritStatus(spiritId: SpiritId | string, status: SpiritStatus): void {
@@ -535,6 +609,7 @@ export class GameStore {
 
     if (this.talismans > 0) {
       this.talismans -= 1;
+      quizUiStore.setOberegShieldFlash(true);
       quizUiStore.setPhase('wrong');
       saveService.schedulePersist();
       return;
@@ -561,6 +636,7 @@ export class GameStore {
 
   advanceQuizAfterWrong(): void {
     if (!quizUiStore.isActive || quizUiStore.phase !== 'wrong') return;
+    quizUiStore.setOberegShieldFlash(false);
     quizUiStore.setPhase('question');
     quizUiStore.pendingAnswerIndex = null;
   }
@@ -586,6 +662,7 @@ export class GameStore {
 
     if (spirit.hasTrophy && !this.trophiesUnlocked.includes(spiritId)) {
       this.trophiesUnlocked = [...this.trophiesUnlocked, spiritId];
+      sceneUiStore.triggerTrophyReveal(spiritId);
     }
 
     this.handleOnboardingAfterVictory(spiritId);
@@ -608,9 +685,6 @@ export class GameStore {
     }
     if (patch.ownedSkinIds != null) {
       this.ownedSkinIds = patch.ownedSkinIds;
-    }
-    if (patch.skins != null) {
-      this.skins = patch.skins;
     }
     if (patch.energyRegenBonusPercent != null) {
       this.energyRegenBonusPercent = patch.energyRegenBonusPercent;
@@ -660,11 +734,6 @@ export class GameStore {
   openChest(rng: () => number = Math.random, now: number = Date.now()): boolean {
     if (!this.isChestVisible() || !this.isChestReady(now)) return false;
 
-    const onCooldown = this.firstChestOpened && now < (this.chestReadyAt ?? 0);
-    if (onCooldown && this.spareChestKeys > 0) {
-      this.spareChestKeys -= 1;
-    }
-
     const rollState = this.buildChestRollState();
     const loot = rollRegularChestLoot(rollState, rng);
     const patch = applyChestLoot(loot, {
@@ -672,7 +741,6 @@ export class GameStore {
       energy: this.energy,
       maxEnergy: this.maxEnergy,
       talismans: this.talismans,
-      spareChestKeys: this.spareChestKeys,
       skins: this.skins,
     });
 
@@ -682,13 +750,6 @@ export class GameStore {
     if (patch.fragmentCounts) this.fragmentCounts = patch.fragmentCounts;
     if (patch.energy != null) this.energy = patch.energy;
     if (patch.talismans != null) this.talismans = patch.talismans;
-    if (patch.skins) this.skins = patch.skins;
-    if (patch.spareChestKeys != null) {
-      this.spareChestKeys = Math.min(
-        SPARE_CHEST_KEYS_CAP,
-        patch.spareChestKeys,
-      );
-    }
     if (patch.fragmentCounts) {
       this.spiritStatuses = applyFragmentUnlocks(
         this.spiritStatuses,
@@ -732,6 +793,12 @@ export class GameStore {
     return true;
   }
 
+  markIllustrationRevealed(spiritId: SpiritId): void {
+    if (this.illustrationRevealed.includes(spiritId)) return;
+    this.illustrationRevealed = [...this.illustrationRevealed, spiritId];
+    saveService.schedulePersist();
+  }
+
   openWonderChest(
     rng: () => number = Math.random,
     now: number = Date.now(),
@@ -757,20 +824,13 @@ export class GameStore {
     );
     this.wonderChestPityCounter = nextPityCounter;
 
-    const patch = applyMiracleChestLoot(
-      loot,
-      {
-        ...rollState,
-        energy: this.energy,
-        maxEnergy: this.maxEnergy,
-        talismans: this.talismans,
-        spareChestKeys: this.spareChestKeys,
-        skins: this.skins,
-        firstChestOpened: this.firstChestOpened,
-        chestReadyAt: this.chestReadyAt,
-      },
-      now,
-    );
+    const patch = applyMiracleChestLoot(loot, {
+      ...rollState,
+      energy: this.energy,
+      maxEnergy: this.maxEnergy,
+      talismans: this.talismans,
+      skins: this.skins,
+    });
 
     if (patch.ownedSkinIds) this.ownedSkinIds = patch.ownedSkinIds;
     if (patch.ownedTitleIds) this.ownedTitleIds = patch.ownedTitleIds;
@@ -778,19 +838,6 @@ export class GameStore {
     if (patch.fragmentCounts) this.fragmentCounts = patch.fragmentCounts;
     if (patch.energy != null) this.energy = patch.energy;
     if (patch.talismans != null) this.talismans = patch.talismans;
-    if (patch.skins) this.skins = patch.skins;
-    if (patch.spareChestKeys != null) {
-      this.spareChestKeys = Math.min(
-        SPARE_CHEST_KEYS_CAP,
-        patch.spareChestKeys,
-      );
-    }
-    if (patch.firstChestOpened != null) {
-      this.firstChestOpened = patch.firstChestOpened;
-    }
-    if (patch.chestReadyAt !== undefined) {
-      this.chestReadyAt = patch.chestReadyAt;
-    }
     if (patch.fragmentCounts) {
       this.spiritStatuses = applyFragmentUnlocks(
         this.spiritStatuses,
@@ -859,6 +906,14 @@ export class GameStore {
 
     adsService.showRewarded(() => {
       this.chestReadyAt = applyRewardedSkip(this.chestReadyAt, now);
+      saveService.schedulePersist();
+    });
+  }
+
+  restoreEnergyWithRewarded(): void {
+    adsService.showRewarded(() => {
+      this.energy = addRewardEnergy(this.energy, REWARDED_ENERGY_BONUS);
+      energyUiStore.close();
       saveService.schedulePersist();
     });
   }

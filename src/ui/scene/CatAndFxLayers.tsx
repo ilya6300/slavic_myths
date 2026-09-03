@@ -7,6 +7,7 @@ import { catPlacement } from '../../config/scenePlacements';
 import { gameStore } from '../../store/GameStore';
 import { catDialogStore } from '../../store/catDialogStore';
 import { sceneUiStore } from '../../store/sceneUiStore';
+import { DailyFindCoin } from './DailyFindCoin';
 import { SceneSprite } from './SceneSprite';
 
 function coinFxStyle(leftVw: number, bottomVw: number): CSSProperties {
@@ -70,7 +71,16 @@ export const CatLayer = observer(function CatLayer() {
         alt="Кот"
         interactive={catInteractive}
         onSpriteClick={handleClick}
+        className={pose === 'sleep' ? 'scene-cat--sleep' : 'scene-cat--sit'}
       />
+      {pose === 'sleep' && (
+        <div className="cat-zzz" aria-hidden>
+          <span>z</span>
+          <span>z</span>
+          <span>z</span>
+        </div>
+      )}
+      <DailyFindCoin />
     </div>
   );
 });

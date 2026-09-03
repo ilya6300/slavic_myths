@@ -34,6 +34,9 @@ const skinLocalizedNames: Record<ProfileSkinCategory, Record<string, LocalizedTe
   },
   window: {
     landscape_standart: L('Стандартный лес', 'Standard Forest', 'Standart Orman'),
+    landscape_temnyy_les: L('Тёмный лес', 'Dark Forest', 'Karanlık Orman'),
+    landscape_omut: L('Омут', 'Dark Pool', 'Gölet'),
+    landscape_cyber_city: L('Неоновый город', 'Neon City', 'Neon Şehir'),
   },
   brownie: {
     brownie_standart: L('Стандартный', 'Standard Domovoy', 'Standart Domovoy'),

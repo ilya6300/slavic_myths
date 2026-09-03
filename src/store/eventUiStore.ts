@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { susedkoStealPositions } from '../config/sceneLayout';
+import { catPlacement } from '../config/scenePlacements';
 
 import {
 
@@ -107,6 +108,26 @@ export class EventUiStore {
     this.susedkoBubble = null;
 
     gameStore.susedkoStealActive = false;
+
+  }
+
+
+
+  private beginStealing(now: number): void {
+
+    this.susedkoPhase = 'stealing';
+
+    gameStore.susedkoStealActive = true;
+
+    gameStore.markSusedkoStealStarted(now);
+
+    this.susedkoStealNextAt = now + SUSEDKO_STEAL_COIN_INTERVAL_MS;
+
+    this.susedkoPositionIndex = Math.floor(
+
+      Math.random() * susedkoStealPositions.length,
+
+    );
 
   }
 
@@ -358,19 +379,14 @@ export class EventUiStore {
 
     if (this.susedkoPhase === 'idle' && nextPhase === 'stealing') {
 
-      this.susedkoPhase = 'stealing';
+      this.beginStealing(now);
 
-      gameStore.susedkoStealActive = true;
+    } else if (
+      this.susedkoPhase === 'warning' &&
+      nextPhase === 'stealing'
+    ) {
 
-      gameStore.markSusedkoStealStarted(now);
-
-      this.susedkoStealNextAt = now + SUSEDKO_STEAL_COIN_INTERVAL_MS;
-
-      this.susedkoPositionIndex = Math.floor(
-
-        Math.random() * susedkoStealPositions.length,
-
-      );
+      this.beginStealing(now);
 
     } else if (nextPhase === 'warning') {
 
@@ -399,6 +415,10 @@ export class EventUiStore {
       this.susedkoStealNextAt = now + SUSEDKO_STEAL_COIN_INTERVAL_MS;
 
       gameStore.luckCoins = Math.max(0, gameStore.luckCoins - 1);
+
+      const { leftVw, bottomVw } = catPlacement.coinFx;
+
+      sceneUiStore.spawnCoinFx(leftVw, bottomVw);
 
       saveService.schedulePersist();
 

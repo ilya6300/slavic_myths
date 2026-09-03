@@ -28,6 +28,8 @@ import { sceneUiStore } from '../../store/sceneUiStore';
 
 import { ProfilePreview } from './ProfilePreview';
 
+import { SettingsPanel } from '../SettingsPanel';
+
 
 
 const TABS: { id: ProfileTab; labelKey: keyof typeof settingsUiContent }[] = [
@@ -41,6 +43,8 @@ const TABS: { id: ProfileTab; labelKey: keyof typeof settingsUiContent }[] = [
   { id: 'brownie', labelKey: 'profileTabBrownie' },
 
   { id: 'titles', labelKey: 'profileTabTitles' },
+
+  { id: 'settings', labelKey: 'profileTabSettings' },
 
 ];
 
@@ -88,6 +92,15 @@ function getPreviewItemName(
 }
 
 
+
+function getEquippedId(tab: ProfileTab): string | null {
+  if (tab === 'titles') return gameStore.titleId;
+  if (tab === 'cat') return gameStore.skins.cat;
+  if (tab === 'izba') return gameStore.skins.izba;
+  if (tab === 'window') return gameStore.skins.window;
+  if (tab === 'brownie') return gameStore.skins.domovoy;
+  return null;
+}
 
 export const ProfileModal = observer(function ProfileModal() {
 
@@ -143,7 +156,8 @@ export const ProfileModal = observer(function ProfileModal() {
 
       : gameStore.isSkinOwned(selectedId));
 
-
+  const isEquipped =
+    selectedId != null && selectedId === getEquippedId(tab);
 
   const previewName = getPreviewItemName(tab, selectedId, locale);
 
@@ -181,8 +195,9 @@ export const ProfileModal = observer(function ProfileModal() {
 
 
 
-        <div className="profile-modal__layout">
+        <div className={`profile-modal__layout${tab === 'settings' ? ' profile-modal__layout--settings' : ''}`}>
 
+          {tab !== 'settings' && (
           <div className="profile-modal__preview">
 
             <ProfilePreview />
@@ -194,7 +209,11 @@ export const ProfileModal = observer(function ProfileModal() {
             )}
 
             {selectedOwned ? (
-
+              isEquipped ? (
+                <p className="profile-modal__equipped">
+                  {resolveText(settingsUiContent.profileEquipped, locale)}
+                </p>
+              ) : (
               <button
 
                 type="button"
@@ -208,7 +227,7 @@ export const ProfileModal = observer(function ProfileModal() {
                 {resolveText(settingsUiContent.profileEquip, locale)}
 
               </button>
-
+              )
             ) : (
 
               <p className="profile-modal__locked">
@@ -220,6 +239,7 @@ export const ProfileModal = observer(function ProfileModal() {
             )}
 
           </div>
+          )}
 
 
 
@@ -255,7 +275,9 @@ export const ProfileModal = observer(function ProfileModal() {
 
             <div className="profile-grid">
 
-              {tab === 'titles'
+              {tab === 'settings' ? (
+                <SettingsPanel embedded />
+              ) : tab === 'titles'
 
                 ? getAllProfileTitles().map((title) => {
 

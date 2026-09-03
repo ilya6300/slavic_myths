@@ -670,9 +670,85 @@
 
 ---
 
+### TASK-020 — 3D-иллюстрации бестиария + ink-reveal
 
+- **Статус:** done
+- **Приоритет:** P0
+- **Зависит от:** TASK-019
+- **Канон:** `instruction/plans/book_3d_illustrations_c07dc2f8.plan.md`; `scenario.md` §5.2; `book_layout.md` §4; `book_bestiary_validation_mockup_v2.png`
+- **Суть:** 16 3D-диорам в `illustration_book/`; до победы — силуэт гравюры; после — цветная диорама + ink-reveal при первом открытии.
 
-## Шаблон задачи
+- **Критерии приёмки:**
+
+  - [x] До победы (`locked` / `available`): та же 3D из `illustration_book` + CSS-силуэт (не гравюра `creatures_in_the_book`)
+  - [x] После победы (`defeated`): цветная диорама из `illustration_book/`
+  - [x] Первое открытие после победы: ink-reveal ~0.5 s; повторное — без анимации (`illustrationRevealed`)
+  - [x] Все 16 духов: `spiritIllustrationPaths` ≠ `creatures_in_the_book/`
+  - [x] Домовой: `illustration_book/brownie.png`, не `brownie_standart`
+  - [x] 16 PNG в `assets/illustration_book/` с прозрачным α из черновиков
+  - [ ] Visual: иллюстрация по центру правой страницы, `contain`, как mockup v2 (dev check владельца)
+
+- **Вне scope:** перегенерация черновиков; смена layout зон open-PNG
+
+---
+
+## Epic 11 — Удержание, энергия, оживление (plan.md 2026-09-01)
+
+> Источник: `instruction/plans/plan.md`
+
+### TASK-021 — Баланс: 700 кликов, энергия 120/120, миграция
+
+- **Статус:** done
+- **Приоритет:** P1
+- **Канон:** plan.md §1–2; `gameConstants.ts`; `lootTables.ts`; `saveMigration.ts`
+- **Суть:** Сундук чудес 700 кликов; старт/max 120; реген 1.2/мин; миграция v3.
+- **Критерии приёмки:**
+  - [x] `miracleChest.clicksToOpen === 700`
+  - [x] `START_ENERGY/MAX === 120`, `ENERGY_REGEN_PER_MINUTE === 1.2`
+  - [x] Миграция: max≤100 → max 120, energy min(e+20,120)
+  - [x] HUD: прогресс чуда при eligible онбординга
+
+### TASK-022 — Daily find + реплики на предметы избы
+
+- **Статус:** done
+- **Приоритет:** P1
+- **Канон:** plan.md §3.1–3.2; `cat_dialogs.md` §Предметы избы
+- **Суть:** Монетка +10 энергии раз в день; клики печка/скамейка/окно → footnote.
+- **Критерии приёмки:**
+  - [x] `dailyFindClaimedDayId` в save; over-cap +10
+  - [x] FX монеты при сборе
+  - [x] Пул реплик stove/bench/window без повтора подряд
+
+### TASK-023 — CSS оживление сцены (Zzz, idle, 8.x)
+
+- **Статус:** done
+- **Приоритет:** P1
+- **Канон:** plan.md §4, §6, §8.1/8.3/8.4/8.5/8.7
+- **Суть:** Zzz кот sleep; breath/bob; glow сундука; parallax леса; trophy reveal; печка ночью; quiz flash/shield.
+- **Критерии приёмки:**
+  - [x] `.cat-zzz`, idle кот/домовой
+  - [x] `.scene-chest--ready` glow
+  - [x] Parallax `.window-aperture__forest` room 2
+  - [x] `.room-trophy-slot--reveal`
+  - [x] Quiz correct flash + obereg shield
+  - [x] `prefers-reduced-motion` отключает анимации
+
+### TASK-024 — Сказки в книге + sparkle/burst
+
+- **Статус:** done
+- **Приоритет:** P1
+- **Зависит от:** TASK-019
+- **Канон:** plan.md §5, §7; `instruction/folktales/*.md`
+- **Суть:** Кнопка «Сказка»; режим листания; bannik/leshiy; sparkle при открытии.
+- **Критерии приёмки:**
+  - [x] «Сказка» под «В путь» для defeated с folktale
+  - [x] «К духу» возврат; стрелки листают страницы сказки
+  - [x] MVP: bannik, leshiy в `src/data/folktales.ts`
+  - [x] `.book-sparkle`, shimmer режима сказки
+  - [ ] Звук §8.10 — ждёт выбор A/B/C владельца
+
+---
+
 
 
 

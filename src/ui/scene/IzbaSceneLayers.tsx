@@ -95,16 +95,21 @@ const WindowAperture = observer(function WindowAperture() {
     <div className="window-aperture" aria-hidden>
 
       <img
-
+        key={viewUrl}
         className="window-aperture__forest"
-
         src={viewUrl}
-
         alt=""
-
         draggable={false}
-
       />
+
+      {gameStore.onboardingCompleted && (
+        <button
+          type="button"
+          className="window-aperture__ambient-hit scene-sprite--interactive"
+          onClick={() => gameStore.clickIzbaItem('window')}
+          aria-label="Window"
+        />
+      )}
 
       {showFatso && (
 
@@ -245,6 +250,9 @@ const Room1Furniture = observer(function Room1Furniture() {
 
         alt=""
 
+        interactive={gameStore.onboardingCompleted}
+        onSpriteClick={() => gameStore.clickIzbaItem('stove')}
+
       />
 
       <SceneSprite
@@ -254,6 +262,9 @@ const Room1Furniture = observer(function Room1Furniture() {
         src={furniture.bench}
 
         alt=""
+
+        interactive={gameStore.onboardingCompleted}
+        onSpriteClick={() => gameStore.clickIzbaItem('bench')}
 
       />
 
@@ -266,6 +277,8 @@ const Room1Furniture = observer(function Room1Furniture() {
             interactive={chestAllowed}
 
             onCooldown={chestAllowed && !gameStore.isChestReady()}
+
+            ready={chestAllowed && gameStore.isChestReady()}
 
             onClick={handleChestClick}
 

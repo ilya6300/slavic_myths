@@ -10,6 +10,7 @@ import { sceneUiStore } from '../../store/sceneUiStore';
 import { BookOverlay } from '../book/BookOverlay';
 import { ChestLootModal } from '../chest/ChestLootModal';
 import { ChestCooldownModal } from '../chest/ChestCooldownModal';
+import { EnergyRewardModal } from '../energy/EnergyRewardModal';
 import { ProfileModal } from '../profile/ProfileModal';
 import { QuizModal } from '../quiz/QuizModal';
 import { TrophyModal } from '../trophies/TrophyModal';
@@ -18,11 +19,8 @@ import { CatDialog } from '../catDialog/CatDialog';
 
 import { useOnboardingBootstrap } from '../onboarding/useOnboardingBootstrap';
 import { useRetentionBootstrap } from '../retention/useRetentionBootstrap';
-import { CloudBanner } from '../retention/CloudBanner';
 
 import { useLocale } from '../../i18n/LocaleContext';
-
-import { SettingsPanel } from '../SettingsPanel';
 
 import { BrownieLayer } from './BrownieLayer';
 import { CatLayer, CoinFxLayer } from './CatAndFxLayers';
@@ -122,18 +120,9 @@ export const IzbaScene = observer(function IzbaScene() {
       <QuizModal />
       <ChestLootModal />
       <ChestCooldownModal />
+      <EnergyRewardModal />
       <ProfileModal />
       <TrophyModal />
-
-      <CloudBanner />
-
-
-
-      <aside className="izba-scene__settings">
-
-        <SettingsPanel />
-
-      </aside>
 
     </div>
 

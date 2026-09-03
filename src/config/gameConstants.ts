@@ -3,18 +3,25 @@
  * Канон: instruction/dev/technical_requirements.md §6
  */
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 3;
 export const LOCAL_SAVE_KEY = 'slavic_myths_save_v1';
 export const CLOUD_SAVE_KEY = 'gameSave';
 
 export const PERSIST_DEBOUNCE_MS = 2500;
 
 /** Энергия */
-export const START_ENERGY = 100;
-export const START_MAX_ENERGY = 100;
+export const START_ENERGY = 120;
+export const START_MAX_ENERGY = 120;
 export const ENERGY_PER_CLICK = 1;
 export const ENERGY_PER_QUEST = 10;
-export const ENERGY_REGEN_PER_MINUTE = 1;
+/** Энергия за «сметану» в сундуке / у Овинника (plan: прямая награда). */
+export const CHEST_ENERGY_BONUS = 50;
+export const CHEST_ENERGY_X2_BONUS = 100;
+/** Реклама за энергию при 0 (plan Epic 6). */
+export const REWARDED_ENERGY_BONUS = 50;
+export const ENERGY_REGEN_PER_MINUTE = 1.2;
+/** Награда daily-find монетки на сцене (plan §3.1). */
+export const DAILY_FIND_ENERGY = 10;
 export const ONBOARDING_ENERGY_FLOOR = 20;
 
 /** Монеты удачи */
@@ -37,8 +44,6 @@ export const LOCALE_STORAGE_KEY = 'slavic_myths_locale';
 /** Сундук */
 export const CHEST_COOLDOWN_HOURS = 3;
 export const CHEST_REWARDED_SKIP_MINUTES = 30;
-export const SPARE_CHEST_KEYS_CAP = 3;
-
 /** Ночь (локальное время) */
 export const NIGHT_START_HOUR = 20;
 export const NIGHT_END_HOUR = 6;

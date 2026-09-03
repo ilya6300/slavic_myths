@@ -132,7 +132,7 @@ height: min(82vh, calc(min(94vw, 920px) / 1.248));
 
 **Контент левой страницы** выравнивается **по центру пергамента** (`align-items: center`, `text-align: center`). Это не то же самое, что полёт книги в центр viewport.
 
-«В путь»: компактная плашка, `max-width: 78%` страницы, `object-fit: contain` (запрещён `width: 100%` + `fill`).
+«В путь» / «Сказка» / «К духу»: одна деревянная плашка, `max-width: 78%` страницы, `object-fit: contain` (запрещён `width: 100%` + `fill`); текст по центру плашки; лапка — только в арте PNG кнопки.
 
 **Миграция из текущей модалки (`BookModal.tsx`):**
 
@@ -215,15 +215,15 @@ height: min(82vh, calc(min(94vw, 920px) / 1.248));
 
 ## 4. Иллюстрации на странице
 
-Правая страница — **цветная иллюстрация** из `assets/illustration_book/`. Маппинг spirit id → файл — `assets_catalog.md` § `illustration_book`.
+Правая страница — **3D-диорама** из `assets/illustration_book/` для **всех** статусов. До победы — тот же ассет с CSS-силуэтом; после — цветная картинка + ink-reveal при первом открытии. Маппинг spirit id → файл — `assets_catalog.md` § `illustration_book`.
 
 | Состояние духа | Иллюстрация |
 |----------------|-------------|
-| `defeated` | полная `illustration_book` |
-| `available` | полная + лапка «В путь» (`scenario.md` §5.2 п.4) |
-| `locked` | силуэт + CSS `brightness(0)` / opacity 0.35; fallback — гравюра `creatures_in_the_book` |
+| `defeated` | полная цветная `illustration_book` (3D-диорама) |
+| `available` | та же 3D + `grayscale(1)`; лапка на плашке «В путь» (`scenario.md` §5.2 п.4) |
+| `locked` | та же 3D + CSS `filter: grayscale(1)` (не гравюра `creatures_in_the_book`) |
 
-Чернильная анимация появления (`scenario.md` §5.2 п.3) — поверх иллюстрации при **первом** открытии страницы после победы.
+Чернильная анимация появления (`scenario.md` §5.2 п.3) — ink-reveal ~0.5 s при **первом** открытии страницы после перехода в `defeated`; повторное открытие — без анимации (`illustrationRevealed` в `GameSave`).
 
 ---
 

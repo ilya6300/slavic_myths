@@ -825,7 +825,7 @@ CSS (`.book-modal`): `--book-open-aspect: 1.248`; `--book-stage-max-w` / `--book
 
 **Иллюстрации:** `spiritIllustrationUrl(locked)` → гравюра `spiritPortraitPaths`; иначе `spiritIllustrationPaths` (не `creatures_in_the_book/`). Домовой: clay `brownie_standart.png` пока нет `illustration_book/brownie.png`.
 
-**CTA:** лапка `.book-page__paw` позиционируется в слоте PNG (`left: 8%`); фон кнопки `contain`.
+**CTA:** текст по центру плашки (`justify-content: center`); лапка встроена в PNG `book_quest_btn_wood`; фон кнопки `contain`.
 
 
 

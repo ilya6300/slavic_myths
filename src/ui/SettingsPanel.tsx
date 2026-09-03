@@ -8,7 +8,11 @@ import { saveService } from '../services/saveService';
 import { gameStore } from '../store/GameStore';
 import { settingsUiStore } from '../store/settingsUiStore';
 
-export const SettingsPanel = observer(function SettingsPanel() {
+export const SettingsPanel = observer(function SettingsPanel({
+  embedded = false,
+}: {
+  embedded?: boolean;
+}) {
   const { locale, setLocale } = useLocale();
 
   const handleLogin = async () => {
@@ -27,10 +31,16 @@ export const SettingsPanel = observer(function SettingsPanel() {
   };
 
   return (
-    <section className="settings-panel" aria-label="Settings">
-      <h2 className="settings-panel__heading">
-        {resolveText(settingsUiContent.settingsHeading, locale)}
-      </h2>
+    <section className={`settings-panel${embedded ? ' settings-panel--embedded' : ''}`} aria-label="Settings">
+      {!embedded && (
+        <h2 className="settings-panel__heading">
+          {resolveText(settingsUiContent.settingsHeading, locale)}
+        </h2>
+      )}
+
+      <p className="settings-panel__cloud-hint">
+        {resolveText(settingsUiContent.settingsCloudHint, locale)}
+      </p>
 
       <label className="settings-panel__field">
         <span>{resolveText(settingsUiContent.language, locale)}</span>

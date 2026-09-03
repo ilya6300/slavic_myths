@@ -9,6 +9,7 @@ import { SceneSprite } from './SceneSprite';
 interface RegularChestSpriteProps {
   interactive: boolean;
   onCooldown: boolean;
+  ready?: boolean;
   onClick: () => void;
   className?: string;
 }
@@ -16,6 +17,7 @@ interface RegularChestSpriteProps {
 export const RegularChestSprite = observer(function RegularChestSprite({
   interactive,
   onCooldown,
+  ready = false,
   onClick,
   className,
 }: RegularChestSpriteProps) {
@@ -47,7 +49,13 @@ export const RegularChestSprite = observer(function RegularChestSprite({
         alt=""
         interactive={interactive}
         onSpriteClick={onClick}
-        className={onCooldown ? 'scene-chest--cooldown' : undefined}
+        className={
+          onCooldown
+            ? 'scene-chest--cooldown'
+            : ready
+              ? 'scene-chest--ready'
+              : undefined
+        }
       />
     </div>
   );

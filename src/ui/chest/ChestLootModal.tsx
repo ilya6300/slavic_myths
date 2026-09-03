@@ -2,20 +2,39 @@ import { observer } from 'mobx-react-lite';
 import { useEffect, useState } from 'react';
 import {
   furniture,
-  getCatSkinById,
   gradeFrames,
   type SpiritId,
 } from '../../config/assetRegistry';
+import { CHEST_ENERGY_BONUS } from '../../config/gameConstants';
 import { settingsUiContent } from '../../data/dialogContent';
+import { resolveSkinName } from '../../data/skinContent';
 import { resolveTitleName } from '../../data/titleContent';
 import { getTitleById } from '../../data/titles';
 import { getSpiritById } from '../../data/spirits';
+import type { ProfileSkinCategory } from '../../data/profileCatalog';
 import type { ChestLootItem } from '../../domain/chestLoot';
-import { resolveText } from '../../i18n/resolve';
+import { formatLocalizedTemplate, resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
 import { chestUiStore } from '../../store/chestUiStore';
 import { formatCooldownMs } from './formatCooldown';
+
+function skinCategoryForKind(
+  kind: ChestLootItem['kind'],
+): ProfileSkinCategory | null {
+  switch (kind) {
+    case 'cat_skin':
+      return 'cat';
+    case 'brownie_skin':
+      return 'brownie';
+    case 'izba_skin':
+      return 'izba';
+    case 'window_skin':
+      return 'window';
+    default:
+      return null;
+  }
+}
 
 function resolveLootLabel(
   loot: ChestLootItem,
@@ -27,15 +46,27 @@ function resolveLootLabel(
 
   switch (loot.kind) {
     case 'cat_skin': {
-      const skin = loot.itemId ? getCatSkinById(loot.itemId) : null;
-      return `${resolveText(settingsUiContent.chestRewardCatSkin, locale)}: ${skin?.id ?? loot.itemId ?? ''}${dup}`;
+      const skinCategory = skinCategoryForKind(loot.kind)!;
+      const skinName = loot.itemId
+        ? resolveSkinName(skinCategory, loot.itemId, locale)
+        : '';
+      return `${resolveText(settingsUiContent.chestRewardCatSkin, locale)}: ${skinName || (loot.itemId ?? '')}${dup}`;
     }
     case 'brownie_skin':
-      return `${resolveText(settingsUiContent.chestRewardBrownieSkin, locale)}: ${loot.itemId ?? ''}${dup}`;
     case 'izba_skin':
-      return `${resolveText(settingsUiContent.chestRewardIzbaSkin, locale)}: ${loot.itemId ?? ''}${dup}`;
-    case 'window_skin':
-      return `${resolveText(settingsUiContent.chestRewardWindowSkin, locale)}: ${loot.itemId ?? ''}${dup}`;
+    case 'window_skin': {
+      const skinCategory = skinCategoryForKind(loot.kind)!;
+      const skinName = loot.itemId
+        ? resolveSkinName(skinCategory, loot.itemId, locale)
+        : '';
+      const labelKey =
+        loot.kind === 'brownie_skin'
+          ? 'chestRewardBrownieSkin'
+          : loot.kind === 'izba_skin'
+            ? 'chestRewardIzbaSkin'
+            : 'chestRewardWindowSkin';
+      return `${resolveText(settingsUiContent[labelKey], locale)}: ${skinName || (loot.itemId ?? '')}${dup}`;
+    }
     case 'title': {
       const title = loot.itemId ? getTitleById(loot.itemId) : null;
       return `${resolveText(settingsUiContent.chestRewardTitle, locale)}: ${title ? resolveTitleName(title, locale) : loot.itemId ?? ''}${dup}`;
@@ -46,8 +77,10 @@ function resolveLootLabel(
         : null;
       return `${resolveText(settingsUiContent.chestRewardSpiritKey, locale)}: ${spirit?.name ?? loot.itemId ?? ''}`;
     }
-    case 'smetana':
-      return resolveText(settingsUiContent.chestRewardSmetana, locale);
+    case 'energy':
+      return formatLocalizedTemplate(settingsUiContent.chestRewardEnergy, locale, {
+        amount: loot.energyAmount ?? CHEST_ENERGY_BONUS,
+      });
     case 'obereg':
       return resolveText(settingsUiContent.chestRewardObereg, locale);
     case 'obereg_x2':
@@ -58,12 +91,6 @@ function resolveLootLabel(
         : null;
       return `${resolveText(settingsUiContent.chestRewardFragment, locale)}: ${spirit?.name ?? loot.itemId ?? ''}${dup}`;
     }
-    case 'spare_chest_key':
-      return resolveText(settingsUiContent.chestRewardSpareKey, locale);
-    case 'consolation_energy':
-      return resolveText(settingsUiContent.chestRewardEnergy, locale);
-    case 'consolation_obereg':
-      return resolveText(settingsUiContent.chestRewardOberegFallback, locale);
     default:
       return '';
   }

@@ -11,6 +11,7 @@ import { getSpiritById } from '../../data/spirits';
 import { resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
+import { sceneUiStore } from '../../store/sceneUiStore';
 import { trophyUiStore } from '../../store/trophyUiStore';
 
 function slotPositionClass(spiritCount: number, index: number): string {
@@ -39,7 +40,7 @@ export const TrophyRoom = observer(function TrophyRoom() {
       {trophyWallShelves.map((shelf) => (
         <div
           key={shelf.id}
-          className="room-shelf"
+          className="room-shelf-group"
           style={
             {
               '--shelf-left': `${shelf.leftVw}vw`,
@@ -47,12 +48,14 @@ export const TrophyRoom = observer(function TrophyRoom() {
             } as CSSProperties
           }
         >
-          <img
-            className="room-shelf__img"
-            src={furniture.shelf}
-            alt=""
-            draggable={false}
-          />
+          <div className="room-shelf">
+            <img
+              className="room-shelf__img"
+              src={furniture.shelf}
+              alt=""
+              draggable={false}
+            />
+          </div>
           <div className="room-shelf__slots">
             {shelf.spiritIds.map((spiritId, index) => {
               const unlocked = gameStore.isTrophyUnlocked(spiritId);
@@ -61,7 +64,7 @@ export const TrophyRoom = observer(function TrophyRoom() {
                 <button
                   key={spiritId}
                   type="button"
-                  className={`room-trophy-slot ${slotPositionClass(shelf.spiritIds.length, index)}${unlocked ? ' room-trophy-slot--filled' : ' room-trophy-slot--empty'}`}
+                  className={`room-trophy-slot ${slotPositionClass(shelf.spiritIds.length, index)}${unlocked ? ' room-trophy-slot--filled' : ' room-trophy-slot--empty'}${sceneUiStore.trophyRevealSpiritId === spiritId ? ' room-trophy-slot--reveal' : ''}`}
                   onClick={() => handleSlotClick(spiritId)}
                   aria-label={
                     unlocked

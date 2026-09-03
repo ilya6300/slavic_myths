@@ -22,6 +22,7 @@ export class SceneUiStore {
   sleepAt: number | null = null;
   coinFxEvents: CoinFxEvent[] = [];
   panBlocked = false;
+  trophyRevealSpiritId: string | null = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -70,6 +71,15 @@ export class SceneUiStore {
 
   removeCoinFx(id: number): void {
     this.coinFxEvents = this.coinFxEvents.filter((e) => e.id !== id);
+  }
+
+  triggerTrophyReveal(spiritId: string): void {
+    this.trophyRevealSpiritId = spiritId;
+    globalThis.setTimeout(() => {
+      if (this.trophyRevealSpiritId === spiritId) {
+        this.trophyRevealSpiritId = null;
+      }
+    }, 1200);
   }
 }
 

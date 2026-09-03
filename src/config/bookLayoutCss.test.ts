@@ -52,13 +52,17 @@ describe('TASK-019 book layout CSS contract', () => {
   it('should keep the quest CTA compact with contain, not stretch fill', () => {
     const btn = ruleBody('.book-page__quest-btn', bookCss);
     expect(btn).toMatch(/max-width:\s*78%/);
-    expect(btn).toMatch(/grid-template-columns:\s*20%\s+1fr/);
+    expect(btn).toMatch(/aspect-ratio:\s*418\s*\/\s*133/);
     expect(btn).not.toMatch(/width:\s*100%/);
+    expect(btn).not.toMatch(/grid-template-columns/);
+    expect(btn).not.toMatch(/padding-bottom/);
     const bg = ruleBody('.book-page__quest-btn-bg', bookCss);
     expect(bg).toMatch(/object-fit:\s*contain/);
     expect(bg).not.toMatch(/object-fit:\s*fill/);
-    const slot = ruleBody('.book-page__quest-btn-slot', bookCss);
-    expect(slot).toMatch(/justify-content:\s*center/);
+    const copy = ruleBody('.book-page__quest-btn-copy', bookCss);
+    expect(copy).toMatch(/position:\s*absolute/);
+    expect(copy).toMatch(/justify-content:\s*center/);
+    expect(bookCss).not.toMatch(/\.book-page__quest-btn-slot/);
   });
 
   it('should center the chapter progress track and beads', () => {
@@ -73,5 +77,10 @@ describe('TASK-019 book layout CSS contract', () => {
     for (const path of Object.values(spiritIllustrationPaths)) {
       expect(path).not.toMatch(/creatures_in_the_book/);
     }
+  });
+
+  it('should define ink-reveal animation for first defeated illustration', () => {
+    expect(bookCss).toMatch(/book-illustration-reveal/);
+    expect(bookCss).toMatch(/book-illustration--revealing/);
   });
 });

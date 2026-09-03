@@ -54,7 +54,6 @@ export interface GameSave {
   trophiesUnlocked: string[];
 
   chestReadyAt: number | null;
-  spareChestKeys: number;
   wonderChestWeekSlotUsed: boolean;
   wonderChestClickProgress: number;
   wonderChestPityCounter: number;
@@ -79,6 +78,15 @@ export interface GameSave {
   catClickCount: number;
 
   totalPlaySeconds?: number;
+
+  /** Духи, для которых ink-reveal иллюстрации уже проигран (scenario §5.2) */
+  illustrationRevealed: string[];
+
+  /** Календарный день, когда собран daily-find (plan §3.1). */
+  dailyFindClaimedDayId: string | null;
+
+  /** Сноска при первом открытии сказки в книге. */
+  folktaleIntroShown: boolean;
 
   /** Бонусы наград духов §5.5 */
   energyRegenBonusPercent?: number;
@@ -143,12 +151,16 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
       izba: DEFAULT_HOUSE_SKIN,
       window: DEFAULT_VIEW_SKIN,
     },
-    ownedSkinIds: [DEFAULT_CAT_SKIN_ID],
+    ownedSkinIds: [
+      DEFAULT_CAT_SKIN_ID,
+      DEFAULT_BROWNIE_SKIN,
+      DEFAULT_HOUSE_SKIN,
+      DEFAULT_VIEW_SKIN,
+    ],
     ownedTitleIds: ['novenkiy'],
     trophiesUnlocked: [],
 
     chestReadyAt: null,
-    spareChestKeys: 0,
     wonderChestWeekSlotUsed: false,
     wonderChestClickProgress: 0,
     wonderChestPityCounter: 0,
@@ -170,6 +182,11 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     catClickCount: 0,
 
     totalPlaySeconds: 0,
+
+    illustrationRevealed: [],
+
+    dailyFindClaimedDayId: null,
+    folktaleIntroShown: false,
 
     energyRegenBonusPercent: 0,
     poludnicaCoinBonusPercent: 0,

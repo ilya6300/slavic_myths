@@ -1,12 +1,9 @@
 import { observer } from 'mobx-react-lite';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   bookUi,
   furniture,
   hudIcons,
-  spiritIllustrationPaths,
-  spiritPortraitPaths,
-  type SpiritId,
 } from '../../config/assetRegistry';
 import {
   SPIRIT_ORDER,
@@ -24,13 +21,17 @@ import { formatLocalizedTemplate, resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
 import { bookUiStore } from '../../store/bookUiStore';
+import { catDialogStore } from '../../store/catDialogStore';
+import { pickCatLine } from '../../data/catDialogs';
+import {
+  getFolktalePageCount,
+  getFolktalePages,
+  hasFolktale,
+} from '../../data/folktales';
+import { spiritIllustrationUrl } from './spiritIllustrationUrl';
+import { useBookPageFlip } from './useBookPageFlip';
 
 const CHAPTERS: SpiritChapter[] = ['dom', 'dvor', 'les', 'epoch'];
-
-function spiritIllustrationUrl(spiritId: SpiritId, locked: boolean): string {
-  if (locked) return spiritPortraitPaths[spiritId];
-  return spiritIllustrationPaths[spiritId] ?? spiritPortraitPaths[spiritId];
-}
 
 function computeFlightTransform(from: DOMRect, stageRect: DOMRect): string {
   const fromCx = from.left + from.width / 2;
@@ -43,13 +44,20 @@ function computeFlightTransform(from: DOMRect, stageRect: DOMRect): string {
   return `translate(${dx}px, ${dy}px) scale(${scale})`;
 }
 
+function prefersReducedMotion(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 export const BookOverlay = observer(function BookOverlay() {
   const { locale } = useLocale();
   const stageRef = useRef<HTMLDivElement>(null);
   const [flightTransform, setFlightTransform] = useState('none');
   const [flightVisible, setFlightVisible] = useState(false);
+  const [revealActive, setRevealActive] = useState(false);
 
   const phase = bookUiStore.phase;
+  const spreadMode = bookUiStore.spreadMode;
   const showContent = bookUiStore.showPageContent;
 
   useLayoutEffect(() => {
@@ -89,29 +97,92 @@ export const BookOverlay = observer(function BookOverlay() {
     return undefined;
   }, [phase, bookUiStore.flightFrom]);
 
-  if (!bookUiStore.isOverlayActive) return null;
-
-  const spiritId = SPIRIT_ORDER[bookUiStore.pageIndex];
+  const isOverlayActive = bookUiStore.isOverlayActive;
+  const pageIndex = isOverlayActive ? bookUiStore.pageIndex : 0;
+  const spiritId = SPIRIT_ORDER[pageIndex] ?? SPIRIT_ORDER[0];
   const spirit = getSpiritById(spiritId)!;
-  const status = gameStore.spiritStatuses[spiritId] ?? 'locked';
+  const status = isOverlayActive
+    ? (gameStore.spiritStatuses[spiritId] ?? 'locked')
+    : 'locked';
+  const isDefeated = status === 'defeated';
+  const alreadyRevealed = gameStore.illustrationRevealed.includes(spiritId);
+
+  useEffect(() => {
+    if (!isOverlayActive || !isDefeated || alreadyRevealed) {
+      setRevealActive(false);
+      return;
+    }
+    if (prefersReducedMotion()) {
+      gameStore.markIllustrationRevealed(spiritId);
+      setRevealActive(false);
+      return;
+    }
+    setRevealActive(true);
+  }, [isOverlayActive, spiritId, isDefeated, alreadyRevealed]);
+
+  const folktalePageCount = getFolktalePageCount(spiritId);
+  const folktalePages = getFolktalePages(spiritId, locale);
+  const canPrev = isOverlayActive
+    ? spreadMode === 'folktale'
+      ? bookUiStore.folktalePageIndex > 0
+      : pageIndex > 0
+    : false;
+  const canNext = isOverlayActive
+    ? spreadMode === 'folktale'
+      ? bookUiStore.folktalePageIndex < folktalePageCount - 1
+      : pageIndex < SPIRIT_ORDER.length - 1
+    : false;
+
+  const {
+    navigateNext,
+    navigatePrev,
+    getPageFlipClass,
+    spreadPointerHandlers,
+  } = useBookPageFlip(canPrev, canNext, spreadMode);
+
+  if (!isOverlayActive) return null;
+
   const defeatedCount = countDefeatedSpirits(gameStore.spiritStatuses);
   const nextAvailable = findNextAvailableSpirit(gameStore.spiritStatuses);
-  const pageIndex = bookUiStore.pageIndex;
-  const canPrev = pageIndex > 0;
-  const canNext = pageIndex < SPIRIT_ORDER.length - 1;
   const blocked = bookUiStore.isInteractionBlocked;
+  const showFolktaleBtn =
+    status === 'defeated' && hasFolktale(spiritId) && spreadMode === 'spirit';
+  const folktalePageText =
+    folktalePages[bookUiStore.folktalePageIndex] ?? '';
+
+  const leftFlipClass = getPageFlipClass('left');
+  const rightFlipClass = getPageFlipClass('right');
+
+  const handleRevealEnd = () => {
+    if (!revealActive) return;
+    gameStore.markIllustrationRevealed(spiritId);
+    setRevealActive(false);
+  };
 
   const handleClose = () => bookUiStore.close();
-
-  const handleBackdropClick = () => {
-    if (!blocked) handleClose();
-  };
 
   const handleGoQuest = () => {
     if (blocked || status !== 'available') return;
     if (!gameStore.canStartQuiz(spiritId)) return;
     const started = gameStore.startQuiz(spiritId);
     if (started) bookUiStore.close();
+  };
+
+  const handleOpenFolktale = () => {
+    if (blocked || status !== 'defeated' || !hasFolktale(spiritId)) return;
+    if (!gameStore.folktaleIntroShown) {
+      const line = pickCatLine('folktale_intro', locale);
+      if (line) {
+        catDialogStore.show([{ text: line, mode: 'footnote', blocking: false }]);
+      }
+      gameStore.markFolktaleIntroShown();
+    }
+    bookUiStore.enterFolktaleMode();
+  };
+
+  const handleBackToSpirit = () => {
+    if (blocked) return;
+    bookUiStore.exitFolktaleMode();
   };
 
   const handleJumpNext = () => {
@@ -122,6 +193,15 @@ export const BookOverlay = observer(function BookOverlay() {
   const showFlightLayer =
     flightVisible && (phase === 'flying' || phase === 'closing');
 
+  const illustrationClassName = [
+    'book-illustration',
+    isDefeated ? 'book-illustration--diorama' : '',
+    isDefeated ? 'book-illustration--unlocked' : '',
+    revealActive ? 'book-illustration--revealing' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <div
       className="layer-modal book-modal"
@@ -129,7 +209,6 @@ export const BookOverlay = observer(function BookOverlay() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="book-page-name"
-      onClick={handleBackdropClick}
     >
       {showFlightLayer && (
         <div
@@ -145,6 +224,14 @@ export const BookOverlay = observer(function BookOverlay() {
         className="book-modal__stage"
         onClick={(e) => e.stopPropagation()}
       >
+        {showContent && (
+          <div className="book-sparkle" aria-hidden>
+            {Array.from({ length: 8 }, (_, i) => (
+              <span key={i} className="book-sparkle__particle" />
+            ))}
+          </div>
+        )}
+
         <img
           className="book-modal__cover-open"
           src={furniture.bookOpen}
@@ -207,9 +294,41 @@ export const BookOverlay = observer(function BookOverlay() {
         </button>
 
         <div
-          className={`book-modal__spread${showContent ? ' book-modal__spread--visible' : ''}`}
+          className={`book-modal__spread${showContent ? ' book-modal__spread--visible' : ''}${spreadMode === 'folktale' ? ' book-modal__spread--folktale' : ''}`}
+          {...spreadPointerHandlers}
         >
-          <div className="book-page book-page--left">
+          <div
+            className={`book-page book-page--left${leftFlipClass ? ` ${leftFlipClass}` : ''}`}
+          >
+            {spreadMode === 'folktale' ? (
+              <>
+                <h3 id="book-page-name" className="book-page__name">
+                  {resolveText(settingsUiContent.bookGoFolktale, locale)}
+                </h3>
+                <p className="book-page__description book-page__folktale">
+                  {folktalePageText}
+                </p>
+                <button
+                  type="button"
+                  className="book-page__quest-btn book-page__folktale-btn"
+                  onClick={handleBackToSpirit}
+                  disabled={blocked}
+                >
+                  <img
+                    className="book-page__quest-btn-bg"
+                    src={bookUi.questBtn}
+                    alt=""
+                    draggable={false}
+                  />
+                  <span className="book-page__quest-btn-copy">
+                    <span className="book-page__quest-btn-label">
+                      {resolveText(settingsUiContent.bookBackToSpirit, locale)}
+                    </span>
+                  </span>
+                </button>
+              </>
+            ) : (
+              <>
             <h3 id="book-page-name" className="book-page__name">
               {spirit.name}
             </h3>
@@ -250,14 +369,6 @@ export const BookOverlay = observer(function BookOverlay() {
                   alt=""
                   draggable={false}
                 />
-                <span className="book-page__quest-btn-slot" aria-hidden>
-                  <img
-                    className="book-page__paw"
-                    src={bookUi.pawIcon}
-                    alt=""
-                    draggable={false}
-                  />
-                </span>
                 <span className="book-page__quest-btn-copy">
                   <span className="book-page__quest-btn-label">
                     {resolveText(settingsUiContent.bookGoQuest, locale)}
@@ -273,6 +384,27 @@ export const BookOverlay = observer(function BookOverlay() {
                 </span>
                 <p className="book-page__mini-tale">{spirit.miniTale}</p>
               </div>
+            )}
+
+            {showFolktaleBtn && (
+              <button
+                type="button"
+                className="book-page__quest-btn book-page__folktale-btn"
+                onClick={handleOpenFolktale}
+                disabled={blocked}
+              >
+                <img
+                  className="book-page__quest-btn-bg"
+                  src={bookUi.questBtn}
+                  alt=""
+                  draggable={false}
+                />
+                <span className="book-page__quest-btn-copy">
+                  <span className="book-page__quest-btn-label">
+                    {resolveText(settingsUiContent.bookGoFolktale, locale)}
+                  </span>
+                </span>
+              </button>
             )}
 
             {status === 'locked' && isFragmentSpirit(spiritId) && (
@@ -324,16 +456,19 @@ export const BookOverlay = observer(function BookOverlay() {
                   {spirit.lockedHint}
                 </p>
               )}
+              </>
+            )}
           </div>
 
           <div
-            className={`book-page book-page--right${status === 'locked' ? ' book-page--silhouette' : ''}`}
+            className={`book-page book-page--right${status !== 'defeated' ? ' book-page--silhouette' : ''}${rightFlipClass ? ` ${rightFlipClass}` : ''}`}
           >
             <img
-              className="book-illustration"
-              src={spiritIllustrationUrl(spiritId, status === 'locked')}
+              className={illustrationClassName}
+              src={spiritIllustrationUrl(spiritId)}
               alt=""
               draggable={false}
+              onAnimationEnd={handleRevealEnd}
             />
             <span
               className={`book-page__grade book-page__grade--${spirit.grade}`}
@@ -347,7 +482,7 @@ export const BookOverlay = observer(function BookOverlay() {
           <button
             type="button"
             className="book-nav book-nav--prev"
-            onClick={() => bookUiStore.goPrev()}
+            onClick={navigatePrev}
             disabled={blocked || bookUiStore.isFlipping}
             aria-label={resolveText(settingsUiContent.bookPrevPage, locale)}
           >
@@ -358,7 +493,7 @@ export const BookOverlay = observer(function BookOverlay() {
           <button
             type="button"
             className="book-nav book-nav--next"
-            onClick={() => bookUiStore.goNext()}
+            onClick={navigateNext}
             disabled={blocked || bookUiStore.isFlipping}
             aria-label={resolveText(settingsUiContent.bookNextPage, locale)}
           >

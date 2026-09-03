@@ -1,25 +1,19 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-
   SUSEDKO_STEAL_COIN_INTERVAL_MS,
-
   SUSEDKO_STEAL_COOLDOWN_MS,
-
+  SUSEDKO_STEAL_START_DELAY_MS,
+  SUSEDKO_STEAL_WARNING_MS,
 } from '../config/gameConstants';
 
 import {
-
+  advanceStealPhase,
   canStartSusedkoSteal,
-
   canStealCoins,
-
   countCoinsStolenOverTicks,
-
   isSusedkoStealCooldownElapsed,
-
   shouldStopStealing,
-
 } from './susedkoSteal';
 
 
@@ -149,6 +143,24 @@ describe('susedkoSteal', () => {
     const stolen = countCoinsStolenOverTicks(200, stealStartedAt, [at, at, at]);
 
     expect(stolen).toBe(1);
+
+  });
+
+
+
+  it('should advance warning to stealing after start delay', () => {
+
+    const sleepAt = 0;
+
+    const warningAt = sleepAt + SUSEDKO_STEAL_WARNING_MS;
+
+    expect(advanceStealPhase('idle', sleepAt, warningAt)).toBe('warning');
+
+    expect(advanceStealPhase('warning', sleepAt, warningAt)).toBe('warning');
+
+    const stealAt = sleepAt + SUSEDKO_STEAL_WARNING_MS + SUSEDKO_STEAL_START_DELAY_MS;
+
+    expect(advanceStealPhase('warning', sleepAt, stealAt)).toBe('stealing');
 
   });
 

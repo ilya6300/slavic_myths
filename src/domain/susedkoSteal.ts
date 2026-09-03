@@ -36,8 +36,9 @@ export function advanceStealPhase(
   catSleepedAt: number,
   now: number,
 ): SusedkoStealPhase {
+  const elapsed = now - catSleepedAt;
+
   if (phase === 'idle') {
-    const elapsed = now - catSleepedAt;
     if (elapsed >= SUSEDKO_STEAL_WARNING_MS + SUSEDKO_STEAL_START_DELAY_MS) {
       return 'stealing';
     }
@@ -46,6 +47,14 @@ export function advanceStealPhase(
     }
     return 'idle';
   }
+
+  if (phase === 'warning') {
+    if (elapsed >= SUSEDKO_STEAL_WARNING_MS + SUSEDKO_STEAL_START_DELAY_MS) {
+      return 'stealing';
+    }
+    return 'warning';
+  }
+
   return phase;
 }
 

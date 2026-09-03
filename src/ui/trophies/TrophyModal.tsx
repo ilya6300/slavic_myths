@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { gradeFrames } from '../../config/assetRegistry';
+import { getTrophyUrl, gradeFrames } from '../../config/assetRegistry';
 import { settingsUiContent } from '../../data/dialogContent';
 import { getSpiritById } from '../../data/spirits';
 import { gradeLabels } from '../../data/dialogContent';
@@ -38,12 +38,20 @@ export const TrophyModal = observer(function TrophyModal() {
           </>
         ) : (
           <>
-            <img
-              className="trophy-modal__frame"
-              src={frameSrc}
-              alt=""
-              draggable={false}
-            />
+            <div className="trophy-modal__frame-wrap">
+              <img
+                className="trophy-modal__trophy"
+                src={getTrophyUrl(spiritId)}
+                alt=""
+                draggable={false}
+              />
+              <img
+                className="trophy-modal__frame"
+                src={frameSrc}
+                alt=""
+                draggable={false}
+              />
+            </div>
             <h2 className="trophy-modal__title">{spirit.name}</h2>
             <p className="trophy-modal__grade">
               {resolveText(gradeLabels[spirit.grade], locale)}

@@ -372,6 +372,41 @@ export const catDialogBanksContent = {
       'Bir parça daha — Koşçey açılır. Ölümünü yine saklamazsa.',
     ),
   ],
+
+  daily_find: [
+    L(
+      'Я тут кое-что припрятал. Не спрашивай что.',
+      'I hid something here. Don\'t ask what.',
+      'Buraya bir şey sakladım. Ne olduğunu sorma.',
+    ),
+  ],
+
+  folktale_intro: [
+    L(
+      'Предки у печки так рассказывали. Я только про веник добавил.',
+      'Ancestors told it by the stove. I only added the broom.',
+      'Atalar sobada böyle anlatırdı. Ben sadece fırçayı ekledim.',
+    ),
+  ],
+} as const;
+
+/** Реплики на клик по предметам избы (plan §3.2). */
+export const izbaItemDialogBanks = {
+  stove: [
+    L('Туда лезь сам. Я уже обжёг ус.', 'You climb in yourself. I burned my whiskers already.', 'Sen gir. Ben bıyıklarımı çoktan yaktım.'),
+    L('Печка горячая. Усы — нет.', 'Stove\'s hot. Whiskers — nope.', 'Soba sıcak. Bıyıklar — hayır.'),
+    L('Домовой там сидит. Не мешай.', 'Domovoy sits there. Don\'t bother him.', 'Domovoy orada oturuyor. Rahatsız etme.'),
+  ],
+  bench: [
+    L('Садись. Суседко всё равно под половицу залезет.', 'Sit down. Susedko will crawl under the floor anyway.', 'Otur. Susedko yine döşemenin altına girer.'),
+    L('Лавка крепкая. Не как мои обещания.', 'Bench is solid. Unlike my promises.', 'Sedir sağlam. Sözlerim gibi değil.'),
+    L('Тут я дремал. Почти.', 'I napped here. Almost.', 'Burada uyukladım. Neredeyse.'),
+  ],
+  window: [
+    L('В лесу сегодня тихо. Подозрительно тихо.', 'The forest is quiet today. Suspiciously quiet.', 'Ormanda bugün sessiz. Şüpheli sessiz.'),
+    L('Не смотри долго — лес смотрит в ответ.', 'Don\'t stare — the forest stares back.', 'Uzun bakma — orman da bakıyor.'),
+    L('За окном ветер. Или кто-то большой дышит.', 'Wind outside. Or someone big breathing.', 'Dışarıda rüzgar. Ya da büyük biri nefes alıyor.'),
+  ],
 } as const;
 
 export const zhirdyayWinLine = L(
@@ -449,10 +484,12 @@ export const settingsUiContent = {
   ),
   bookRewardLabel: L('Награда:', 'Reward:', 'Ödül:'),
   bookGoQuest: L('В путь', 'On the way', 'Yola çık'),
+  bookGoFolktale: L('Сказка', 'Folktale', 'Masal'),
+  bookBackToSpirit: L('К духу', 'Back to spirit', 'Ruha dön'),
   bookDefeated: L('Побеждён', 'Defeated', 'Yenildi'),
   bookLocked: L('Неактивен', 'Locked', 'Kilitli'),
   bookMiniTale: L('Сказ о победе', 'Victory tale', 'Zafer hikayesi'),
-  bookNextQuest: L('Следующий квест', 'Next quest', 'Sonraki görev'),
+  bookNextQuest: L('Текущий квест', 'Next quest', 'Sonraki görev'),
   bookPrevPage: L('Предыдущая страница', 'Previous page', 'Önceki sayfa'),
   bookNextPage: L('Следующая страница', 'Next page', 'Sonraki sayfa'),
   bookSpiritsCount: L('духов', 'spirits', 'ruh'),
@@ -485,12 +522,10 @@ export const settingsUiContent = {
   chestRewardWindowSkin: L('Вид из окна', 'Window view', 'Pencere manzarası'),
   chestRewardTitle: L('Титул', 'Title', 'Unvan'),
   chestRewardSpiritKey: L('Ключ к духу', 'Spirit key', 'Ruha anahtar'),
-  chestRewardSmetana: L('Сметана', 'Sour cream', 'Kaymak'),
+  chestRewardEnergy: L('+{amount} энергии', '+{amount} energy', '+{amount} enerji'),
   chestRewardObereg: L('Тайный оберег', 'Secret charm', 'Gizli tılsım'),
   chestRewardFragment: L('Фрагмент', 'Fragment', 'Parça'),
-  chestRewardSpareKey: L('Запасной ключ', 'Spare key', 'Yedek anahtar'),
-  chestRewardEnergy: L('+30 энергии', '+30 energy', '+30 enerji'),
-  chestRewardOberegFallback: L('+1 оберег', '+1 charm', '+1 tılsım'),
+  chestRewardOberegX2: L('Тайные обереги ×2', 'Secret charms ×2', 'Gizli tılsım ×2'),
   chestDuplicate: L('Дубликат', 'Duplicate', 'Kopya'),
   miracleLootTitle: L('Сундук чудес!', 'Miracle chest!', 'Mucize sandığı!'),
   miracleLootTake: L('Забрать', 'Take', 'Al'),
@@ -510,16 +545,34 @@ export const settingsUiContent = {
     'Until miracle: {progress} / {total}',
     'Mucizeye: {progress} / {total}',
   ),
-  chestRewardOberegX2: L('Тайные обереги ×2', 'Secret charms ×2', 'Gizli tılsım ×2'),
   profileHeading: L('Профиль', 'Profile', 'Profil'),
   profileClose: L('Закрыть профиль', 'Close profile', 'Profili kapat'),
   profileEquip: L('Выбрать', 'Equip', 'Seç'),
+  profileEquipped: L('Выбрано', 'Equipped', 'Seçili'),
   profileLocked: L('Ещё не получено', 'Not owned yet', 'Henüz yok'),
   profileTabCat: L('Кот', 'Cat', 'Kedi'),
   profileTabIzba: L('Изба', 'Hut', 'Kulübe'),
   profileTabWindow: L('Лес', 'Forest', 'Orman'),
   profileTabBrownie: L('Домовой', 'Domovoy', 'Domovoy'),
   profileTabTitles: L('Титулы', 'Titles', 'Unvanlar'),
+  profileTabSettings: L('Настройки', 'Settings', 'Ayarlar'),
+  energyRewardTitle: L('Нет энергии', 'Out of energy', 'Enerji bitti'),
+  energyRewardText: L(
+    'Посмотри короткую рекламу и получи +50 энергии.',
+    'Watch a short ad to get +50 energy.',
+    'Kısa bir reklam izle ve +50 enerji kazan.',
+  ),
+  energyRewardWatch: L(
+    'Смотреть рекламу (+50)',
+    'Watch ad (+50)',
+    'Reklam izle (+50)',
+  ),
+  energyRewardClose: L('Не сейчас', 'Not now', 'Şimdi değil'),
+  settingsCloudHint: L(
+    'Прогресс сохраняется на серверах Яндекс.Игр при входе в аккаунт.',
+    'Progress is saved to Yandex Games cloud when you sign in.',
+    'Giriş yaptığında ilerleme Yandex Oyunlar bulutuna kaydedilir.',
+  ),
   trophyNotMet: L('Ещё не встречен', 'Not met yet', 'Henüz tanışılmadı'),
   settingsHeading: L('Настройки', 'Settings', 'Ayarlar'),
   settingsYandexLogin: L(

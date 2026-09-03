@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { useEffect } from 'react';
 import { getSpiritById } from '../../data/spirits';
+import { spiritIllustrationUrl } from '../book/spiritIllustrationUrl';
 import { settingsUiContent } from '../../data/dialogContent';
 import { getQuizDotClassName } from '../../domain/quizProgressDots';
 import { resolveText } from '../../i18n/resolve';
@@ -138,7 +139,7 @@ export const QuizModal = observer(function QuizModal() {
           <h2>{resolveText(settingsUiContent.quizVictory, locale)}</h2>
           <img
             className="quiz-result__portrait"
-            src={spiritPortraitPaths[spiritId as SpiritId]}
+            src={spiritIllustrationUrl(spiritId as SpiritId)}
             alt=""
             draggable={false}
           />
@@ -168,7 +169,7 @@ export const QuizModal = observer(function QuizModal() {
         phase === 'correct' ||
         phase === 'wrong') && (
         <div
-          className={`quiz-panel${phase === 'correct' ? ' quiz-panel--correct' : ''}${phase === 'wrong' ? ' quiz-panel--wrong' : ''}`}
+          className={`quiz-panel${phase === 'correct' ? ' quiz-panel--correct' : ''}${phase === 'wrong' ? ' quiz-panel--wrong' : ''}${phase === 'wrong' && quizUiStore.oberegShieldFlash ? ' quiz-panel--shield' : ''}`}
         >
           <header className="quiz-header">
             <h2 id="quiz-title">{spirit.name}</h2>

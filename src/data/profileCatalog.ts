@@ -8,6 +8,7 @@ import {
   type ViewSkinId,
 } from '../config/assetRegistry';
 import type { Grade } from '../domain/grade';
+import { getWindowSkinDisplayGrade } from './skinPools';
 import { titles, type TitleDefinition } from './titles';
 
 export type ProfileSkinCategory = 'cat' | 'izba' | 'window' | 'brownie';
@@ -61,7 +62,7 @@ export function getProfileWindowSkins(): ProfileSkinEntry[] {
   return (Object.keys(viewSkins) as ViewSkinId[]).map((id) => ({
     id,
     category: 'window',
-    grade: 'common' as Grade,
+    grade: getWindowSkinDisplayGrade(id) ?? 'common',
     previewSrc: viewSkins[id],
     label: id,
   }));

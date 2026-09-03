@@ -117,6 +117,8 @@ description: Критик-редактор «Книга славянских д�
 - [ ] Negative prompt против vector, flat, generic?
 - [ ] Ассет ляжет в правильную папку и грейд?
 - [ ] Силуэт читается, не перегружен деталями?
+- [ ] Mockup/черновик: skill `generate-game-image`, файл в `instruction/design/`, не в `assets/` без приёмки?
+- [ ] Mockup: зоны сверяются с таблицей Layout vs mockup?
 
 ### Механики и удержание
 

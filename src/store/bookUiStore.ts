@@ -21,9 +21,13 @@ function prefersReducedMotion(): boolean {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+export type BookSpreadMode = 'spirit' | 'folktale';
+
 export class BookUiStore {
   isOpen = false;
   pageIndex = 0;
+  spreadMode: BookSpreadMode = 'spirit';
+  folktalePageIndex = 0;
   isFlipping = false;
   phase: BookPhase = 'idle';
   flightFrom: DOMRect | null = null;
@@ -46,6 +50,8 @@ export class BookUiStore {
 
   startOpen(spiritId?: SpiritId, fromRect?: DOMRect | null): void {
     this.clearTimers();
+    this.spreadMode = 'spirit';
+    this.folktalePageIndex = 0;
     if (spiritId) {
       const idx = findSpiritIndex(spiritId);
       if (idx >= 0) this.pageIndex = idx;
@@ -118,13 +124,30 @@ export class BookUiStore {
   }
 
   goPrev(): void {
-    if (this.isFlipping) return;
+    if (this.spreadMode === 'folktale') {
+      this.folktalePageIndex = Math.max(0, this.folktalePageIndex - 1);
+      return;
+    }
     this.setPageIndex(this.pageIndex - 1);
   }
 
   goNext(): void {
-    if (this.isFlipping) return;
+    if (this.spreadMode === 'folktale') {
+      this.folktalePageIndex += 1;
+      return;
+    }
     this.setPageIndex(this.pageIndex + 1);
+  }
+
+  enterFolktaleMode(): void {
+    if (this.phase !== 'content') return;
+    this.spreadMode = 'folktale';
+    this.folktalePageIndex = 0;
+  }
+
+  exitFolktaleMode(): void {
+    this.spreadMode = 'spirit';
+    this.folktalePageIndex = 0;
   }
 
   jumpToSpirit(spiritId: SpiritId): void {
@@ -147,6 +170,8 @@ export class BookUiStore {
     this.showPageContent = false;
     this.coverVariant = 'closed';
     this.isFlipping = false;
+    this.spreadMode = 'spirit';
+    this.folktalePageIndex = 0;
   }
 
   private clearTimers(): void {

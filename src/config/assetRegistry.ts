@@ -29,11 +29,19 @@ export const DEFAULT_HOUSE_SKIN: HouseSkinId = 'hut_standart';
 
 export const viewSkins = {
   landscape_standart: fromAssets('view/landscape_standart.jpeg'),
+  landscape_temnyy_les: fromAssets('view/landscape_temnyy_les.jpeg'),
+  landscape_omut: fromAssets('view/landscape_omut.jpeg'),
+  landscape_cyber_city: fromAssets('view/landscape_cyber_city.jpeg'),
 } as const;
 
 export type ViewSkinId = keyof typeof viewSkins;
 
 export const DEFAULT_VIEW_SKIN: ViewSkinId = 'landscape_standart';
+
+/** Фоны викторины (только квест; баня не в профиле) */
+export const quizSceneBackgrounds = {
+  banya: fromAssets('quiz/bg_banya.jpeg'),
+} as const;
 
 // --- Мебель ---
 
@@ -59,17 +67,13 @@ export const quizBackgrounds: Record<QuizLocationId, QuizBackgroundConfig> = {
     filterClass: 'quiz-bg--izba',
     hutOverlay: true,
   },
-  les: { src: viewSkins.landscape_standart, filterClass: 'quiz-bg--les' },
-  banya: {
-    src: houseSkins.hut_standart,
-    filterClass: 'quiz-bg--banya',
-    hutOverlay: true,
-  },
+  les: { src: viewSkins.landscape_standart, filterClass: 'quiz-bg--photo' },
+  banya: { src: quizSceneBackgrounds.banya, filterClass: 'quiz-bg--photo' },
   pole: { src: viewSkins.landscape_standart, filterClass: 'quiz-bg--pole' },
-  voda: { src: viewSkins.landscape_standart, filterClass: 'quiz-bg--voda' },
+  voda: { src: viewSkins.landscape_omut, filterClass: 'quiz-bg--photo' },
   temnyy_les: {
-    src: viewSkins.landscape_standart,
-    filterClass: 'quiz-bg--temnyy-les',
+    src: viewSkins.landscape_temnyy_les,
+    filterClass: 'quiz-bg--photo',
   },
 };
 
@@ -155,8 +159,7 @@ export type SpiritId = keyof typeof spiritPortraitPaths;
 // --- Бестиарий: цветные иллюстрации ---
 
 export const spiritIllustrationPaths: Partial<Record<SpiritId, string>> = {
-  /** ⏳ illustration_book/brownie.png — пока скин сцены */
-  brownie: fromAssets('brownie/common/brownie_standart.png'),
+  brownie: fromAssets('illustration_book/brownie.png'),
   baba_yaga: fromAssets('illustration_book/Baba_Yaga.png'),
   bannik: fromAssets('illustration_book/bannik.png'),
   chudo_yudo: fromAssets('illustration_book/chudo_yodo.png'),
@@ -241,10 +244,24 @@ export function getCatPoseUrl(skinId: string, pose: CatPose): string {
   return pose === 'sleep' ? skin.sleep : skin.sit;
 }
 
-// --- Трофеи 3D (⏳ большинство ещё нет — fallback на гравюру в UI) ---
+// --- Трофеи 3D (fallback на гравюру, если файл отсутствует) ---
 
 export const trophyAssetPaths: Partial<Record<SpiritId, string>> = {
-  // Пример: bannik: fromAssets('trophies/bannik_broom.png'),
+  susedko: fromAssets('trophies/susedko_chest.png'),
+  bannik: fromAssets('trophies/bannik_broom.png'),
+  kikimora: fromAssets('trophies/kikimora_yarn.png'),
+  poludnik: fromAssets('trophies/polevoy_wreath.png'),
+  ovinnik: fromAssets('trophies/ovinnik_sheaf.png'),
+  leshiy: fromAssets('trophies/leshiy_staff.png'),
+  vodyanoy: fromAssets('trophies/vodyanoy_shell.png'),
+  dedushka_toptygin: fromAssets('trophies/toptygin_paw.png'),
+  poludnica: fromAssets('trophies/poludnica_sickle.png'),
+  rusalka: fromAssets('trophies/rusalka_comb.png'),
+  lada: fromAssets('trophies/lada_harmony_vase.png'),
+  veles: fromAssets('trophies/veles_bust.png'),
+  baba_yaga: fromAssets('trophies/yaga_hut.png'),
+  koschei_immortal: fromAssets('trophies/koschei_needle.png'),
+  chudo_yudo: fromAssets('trophies/chudo_figurine.png'),
 };
 
 export function getTrophyUrl(spiritId: SpiritId): string {

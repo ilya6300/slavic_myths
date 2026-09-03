@@ -9,10 +9,8 @@ const SKIP_MS = CHEST_REWARDED_SKIP_MINUTES * 60 * 1000;
 export function isChestReady(
   firstChestOpened: boolean,
   chestReadyAt: number | null,
-  spareChestKeys: number,
   now: number,
 ): boolean {
-  if (spareChestKeys > 0) return true;
   if (!firstChestOpened) return true;
   if (chestReadyAt == null) return true;
   return now >= chestReadyAt;
@@ -21,10 +19,9 @@ export function isChestReady(
 export function getChestCooldownRemainingMs(
   firstChestOpened: boolean,
   chestReadyAt: number | null,
-  spareChestKeys: number,
   now: number,
 ): number {
-  if (!firstChestOpened || spareChestKeys > 0) return 0;
+  if (!firstChestOpened) return 0;
   if (chestReadyAt == null) return 0;
   return Math.max(0, chestReadyAt - now);
 }

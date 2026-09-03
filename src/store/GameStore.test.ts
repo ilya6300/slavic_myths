@@ -338,6 +338,15 @@ describe('GameStore', () => {
     expect(store.selectedFragmentSpiritId).toBe('lada');
   });
 
+  it('should persist illustrationRevealed when markIllustrationRevealed called', () => {
+    const store = makeStore({ illustrationRevealed: [] });
+    store.markIllustrationRevealed('brownie');
+    expect(store.illustrationRevealed).toEqual(['brownie']);
+    expect(store.toSave().illustrationRevealed).toEqual(['brownie']);
+    store.markIllustrationRevealed('brownie');
+    expect(store.illustrationRevealed).toEqual(['brownie']);
+  });
+
   it('shows cloud banner after first chest when not dismissed', () => {
     const store = makeStore({ firstChestOpened: true, cloudBannerDismissed: false });
     expect(store.isCloudBannerVisible(false)).toBe(true);
@@ -354,7 +363,7 @@ describe('GameStore', () => {
     await store.resetProgress();
     expect(store.onboardingCompleted).toBe(false);
     expect(store.onboardingStep).toBe(0);
-    expect(store.energy).toBe(100);
+    expect(store.energy).toBe(120);
     expect(store.luckCoins).toBe(0);
   });
 });

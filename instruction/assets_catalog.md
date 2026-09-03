@@ -11,7 +11,7 @@
 ## Правила для агентов
 
 1. **Не придумывать пути** — брать из этой таблицы или добавить строку сюда перед использованием.
-2. **Не рисовать заглушки** вместо отсутствующих PNG/JPEG: не генерировать арт в коде, не SVG/CSS-картинки. Только обновить промпт в `design_assets_prompts.md`.
+2. **Не рисовать заглушки** вместо отсутствующих PNG/JPEG: не генерировать арт в коде, не SVG/CSS-картинки. Промпт → `design_assets_prompts.md`; черновик/mockup → skill `.cursor/skills/generate-game-image/` → `instruction/design/`.
 3. **MVP-fallback** (до появления файла): `alt` + CSS-фильтр на существующий ассет — см. `design_assets_prompts.md` § «MVP-fallback».
 4. **Одна изба** — комната 1 и 2 используют один `assets/house/` (+ активный скин), без отдельного фона трофеев.
 
@@ -123,7 +123,7 @@
 | `susedko.png` | Суседко |
 | `bannik.png` | Банник |
 | `kikimora.png` | Кикимора |
-| `poludnik.png` | Полевой |
+| `poludnik.png` | Полевой (`spiritId`: `poludnik`; не путать с Полудницей `poludnica`) |
 | `ovinnik.png` | Овинник |
 | `leshiy.png` | Леший |
 | `vodyanoy.png` | Водяной |
@@ -156,12 +156,12 @@
 | `leshiy` | `leschii.png` | Леший | ✅ есть |
 | `ovinnik` | `ovinnik.png` | Овинник | ✅ есть |
 | `poludnica` | `poludnica.png` | Полудница | ✅ есть |
-| `poludnik` | `poludnik.png` | Полевой | ✅ есть |
+| `poludnik` | `poludnik.png` | Полевой | ✅ есть | `spiritId` poludnik, не poludnica |
 | `rusalka` | `rusalka.png` | Русалка | ✅ есть |
 | `susedko` | `susedko.png` | Суседко | ✅ есть |
 | `veles` | `veles.png` | Велес | ✅ есть |
 | `vodyanoy` | `waterman.png` | Водяной | ✅ есть |
-| `brownie` | — | Домовой | ⏳ нет; fallback `creatures_in_the_book/brownie.png` |
+| `brownie` | `brownie.png` | Домовой | ✅ есть |
 
 ---
 
@@ -169,20 +169,20 @@
 
 По одному файлу на дух. **Домовой — без трофея.**
 
-| Файл | Дух | Статус |
-|------|-----|--------|
-| `susedko_chest.png` | Суседко | ⏳ P1 |
-| `bannik_broom.png` | Банник | ⏳ P1 |
-| `kikimora_yarn.png` | Кикимора | ⏳ P1 |
-| `polevoy_wreath.png` | Полевой | ⏳ P1 |
-| `ovinnik_sheaf.png` | Овинник | ⏳ P1 |
+| Файл | Дух | Статус | Примечание (канон трофея) |
+|------|-----|--------|---------------------------|
+| `susedko_chest.png` | Суседко | ⏳ P1 | Крошечный сундук для полки, не игровой сундук на полу |
+| `bannik_broom.png` | Банник | ⏳ P1 | |
+| `kikimora_yarn.png` | Кикимора | ⏳ P1 | |
+| `polevoy_wreath.png` | Полевой | ⏳ P1 | Круглый венок; контраст с вертикальным снопом Овинника |
+| `ovinnik_sheaf.png` | Овинник | ⏳ P1 | Вертикальный сноп; контраст с круглым венком Полевого |
 | `leshiy_staff.png` | Леший | ⏳ P1 |
 | `vodyanoy_shell.png` | Водяной | ⏳ P1 |
 | `toptygin_paw.png` | Топтыгин | ⏳ P1 |
-| `poludnica_wreath.png` | Полудница | ⏳ P1 |
-| `rusalka_comb.png` | Русалка | ⏳ P1 |
-| `lada_wreath.png` | Лада | ⏳ P1 |
-| `veles_amulet.png` | Велес | ⏳ P1 |
+| `poludnica_sickle.png` | Полудница | ⏳ P1 | Серп с лентой; не венок (венок — у Полевого) |
+| `rusalka_comb.png` | Русалка | ⏳ P1 | |
+| `lada_harmony_vase.png` | Лада | ⏳ P1 | Глиняная гармония-ваза, не generic-ваза |
+| `veles_bust.png` | Велес | ⏳ P1 | Бюст на полке; титул «Лапа Велеса» — в профиле |
 | `yaga_hut.png` | Баба-Яга | ⏳ P1 |
 | `koschei_needle.png` | Кощей | ⏳ P1 |
 | `chudo_figurine.png` | Чудо-Юдо | ⏳ P1 |

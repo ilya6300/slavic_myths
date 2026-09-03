@@ -16,6 +16,7 @@ export class QuizUiStore {
   phase: QuizPhase = 'question';
   pendingAnswerIndex: number | null = null;
   loseMessage = '';
+  oberegShieldFlash = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -43,6 +44,11 @@ export class QuizUiStore {
     this.phase = 'question';
     this.pendingAnswerIndex = null;
     this.loseMessage = '';
+    this.oberegShieldFlash = false;
+  }
+
+  setOberegShieldFlash(active: boolean): void {
+    this.oberegShieldFlash = active;
   }
 
   setPhase(phase: QuizPhase): void {
@@ -77,6 +83,7 @@ export class QuizUiStore {
     this.phase = 'question';
     this.pendingAnswerIndex = null;
     this.loseMessage = '';
+    this.oberegShieldFlash = false;
   }
 }
 
