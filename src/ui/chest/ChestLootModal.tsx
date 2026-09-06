@@ -77,6 +77,8 @@ function resolveLootLabel(
         : null;
       return `${resolveText(settingsUiContent.chestRewardSpiritKey, locale)}: ${spirit?.name ?? loot.itemId ?? ''}`;
     }
+    case 'chest_key':
+      return resolveText(settingsUiContent.chestRewardChestKey, locale);
     case 'energy':
       return formatLocalizedTemplate(settingsUiContent.chestRewardEnergy, locale, {
         amount: loot.energyAmount ?? CHEST_ENERGY_BONUS,

@@ -131,17 +131,24 @@ description: Оркестратор «Книга славянских духов
 | Файлы tasks / tech | `.cursor/rules/dev-workflow-files.mdc` |
 | Полнота задания / mockup | `.cursor/rules/assignment-completeness.mdc` |
 | UI/UX стиль | `.cursor/roles/game-designer-ui-ux.md` |
-| Генерация mockup/черновиков | `.cursor/skills/generate-game-image/SKILL.md` |
+| Генерация mockup/черновиков | `.cursor/skills/generate-game-image/SKILL.md` (**⏸ временно отключена**) |
 
 Дизайнер в `dev` опирается на `tasks.md` + `tech.md` и выдаёт спецификацию **до** тестов, чтобы тестировщик и разработчик знали состояния UI и hit-area.
 
 ### Gate mockup (дизайнер)
+
+> **⏸ Генерация изображений временно отключена** — дизайнер не спрашивает A/B/C и не вызывает `GenerateImage`. Сразу `designer_done` с `user_choice: spec_only`. Оркестратор **не ждёт** `designer_pending` по mockup.
+
+<details>
+<summary>Канон gate (когда включат генерацию снова)</summary>
 
 Если дизайнер вернул `designer_pending` или `status: awaiting_user` с `question: visual_mockup_gate` — **СТОП**. Не вызывай тестировщика (`dev`) и критика (`ideas`) до ответа пользователя A/B/C.
 
 После ответа:
 - **A** или **C** — дизайнер генерирует mockup по skill `generate-game-image` (`GenerateImage` + референсы из `assets/`) → `instruction/design/mockups/` → `designer_done` → следующий агент.
 - **B** — дизайнер сразу `designer_done` с `visual_mockup_gate.user_choice: spec_only` → следующий агент.
+
+</details>
 
 Исключение: «дизайн без изменений» в `dev` — gate пропускается, сразу следующий шаг.
 

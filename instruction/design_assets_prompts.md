@@ -1,7 +1,7 @@
 # Промпты на отсутствующие изображения
 
-> **Версия:** 1.4  
-> **Дата:** 2026-08-31  
+> **Версия:** 1.5  
+> **Дата:** 2026-09-05  
 > **Автор:** гейм-дизайнер UI/UX (исправлено по ревью критика)  
 > **Правило:** изображения **не генерируем в коде**. До появления файла — только fallback из § «MVP-fallback» или `alt`; **не** рисовать SVG/CSS/сгенерированный арт вместо PNG.  
 > **Генерация черновиков/mockup:** skill `.cursor/skills/generate-game-image/SKILL.md` → `instruction/design/`; в `assets/` — только после приёмки.  
@@ -562,6 +562,43 @@ style reference: assets/view/landscape_standart.jpeg brightness 40 percent mood
 
 ---
 
+## P1 — Скин избы «Гармония» (квест Лады)
+
+> ⏸ **Отложено (2026-09-05):** награда квеста Лады — титул «Гость Лада» + трофей; скин `hut_harmony` не нужен для MVP.
+
+### `assets/house/hut_harmony.png` — изба Лады
+
+**Приоритет:** P1 · **Экран:** `.layer-izba__img`, комнаты 1 и 2 (pan), вкладка «Изба» в профиле.  
+**Дроп:** квест Лады (`izba_skin_harmony`, 3 фрагмента). **ID:** `hut_harmony`, грейд `epic`.  
+**После PNG (код):** `assetRegistry`, `skinContent.ts`, `profileCatalog.ts`, `skinPools.ts`; в `spirits.ts` — `skinId: 'hut_harmony'` вместо заглушки `hut_rate`.
+
+**Формат:** **21:9** ultrawide panoramic izba interior (как широкий кадр для safe-frame §1.6.1).  
+**Окно:** проём с **α = 0** на стёклах; сохранить наличник и перекладину-крест. **Чёрная заливка проёма запрещена** (`izba_scene_layers.md` §1.3, §1.6).
+
+**Композиция:** та же расстановка якорей, что у `hut_standart.png` — окно ~38% / кот ~32% / книга ~70% (`room_01_layout.md` §5). Отличие — **настроение и декор**, не сдвиг мебели.
+
+**Смысл:** тёплая изба гармонии — мягкий свет, лад, красно-чёрный славянский орнамент на брусах, **небольшой букет полевых цветов у порога**, ощущение согласия и уюта. **Не** копировать `hut_rate.png` (холоднее/другой декор) и **не** каменно-неоновый `hut_epic.png`.
+
+**GenerateImage:** `aspect_ratio: "21:9"` · `reference_image_paths`: `assets/house/hut_standart.png`, `assets/trophies/lada_harmony_vase.png` (если черновик есть — иначе `assets/creatures_in_the_book/lada.png`)
+
+```
+Slavic izba hut interior panoramic skin ultrawide 21:9, same camera framing and anchor layout as hut_standart,
+warm golden harmonious sunlight, soft cozy atmosphere of Lada spirit harmony and beauty,
+hand-carved log walls with red-black geometric folk ornament bands, small wildflower bouquet at threshold step,
+window opening with TRANSPARENT glass alpha zero showing forest layer behind, preserve wooden cross mullions,
+stylized 3D clay/plasticine render hand-sculpted tactile matte finish warm terracotta honey palette,
+no characters no cat no furniture overlays baked in, izba shell only,
+Match attached reference hut_standart silhouette and window position exactly; ornament mood from Lada harmony vase warm folk red-black patterns.
+style reference: assets/house/hut_standart.png + assets/creatures_in_the_book/lada.png
+--no vector, flat, line art, black window fill, neon epic stone hut, copy of hut_rate, photorealistic, text, watermark
+```
+
+**Постобработка (обязательно):** вырезать α стёкол; проверить композитинг леса через окно в билде. Калибровка книги на подставке — строка `hut_harmony` в `book_stand_skin_adaptive.md` (старт Δ = 0, уточнить по скрину).
+
+**Антипример:** переиспользовать `hut_rate.png` с фильтром; залить окно чёрным; сдвинуть проём относительно standart.
+
+---
+
 ## P1 — Пейзажи 21:9 (окно + викторина)
 
 **Формат:** строго **21:9** (ultrawide). Генерация: `GenerateImage`, `aspect_ratio: "21:9"`, референс `assets/view/landscape_standart.jpeg` (+ второй якорь по таблице).
@@ -576,7 +613,8 @@ style reference: assets/view/landscape_standart.jpeg brightness 40 percent mood
 | `landscape_temnyy_les.jpeg` | `landscape_temnyy_les` | Вкладка «Лес» в профиле | **Обычный сундук** (`window_skin`, грейд `rare`). **Не** с квеста: квест Яги даёт `landscape_yaga` (избушка), викторина Яги/Кощея — `bg_temnyy_les` |
 | `landscape_omut.jpeg` | `landscape_omut` | Вкладка «Лес» | **Обычный сундук** (`window_skin`, `common` + `epoch`) |
 | `landscape_cyber_city.jpeg` | `landscape_cyber_city` | Вкладка «Лес» | **Обычный сундук**, редкий: `window_skin` только в пуле `epoch`, низкий вес (≈ вдвое реже остальных epoch-скинов окна) |
-| `landscape_yaga.jpeg` | `landscape_yaga` | Вкладка «Лес» | **Квест Бабы-Яги** (3 фрагмента); не путать с тёмным лесом |
+| `landscape_yaga.jpeg` | `landscape_yaga` | Вкладка «Лес» | **Квест Бабы-Яги** (3 фрагмента); избушка **в проёме окна**, не гигант вдали; не путать с `landscape_temnyy_les` |
+| `hut_harmony.png` | `hut_harmony` | Вкладка «Изба» | **Квест Лады** (3 фрагмента); грейд `epic`; **не** `hut_rate` / **не** `hut_epic` |
 | `quiz/bg_banya.jpeg` | — | Только фон викторины Банника | Квест; **не** в профиле и **не** в сундуке |
 
 > **Код сейчас:** `getWindowSkinIdsByGrade()` возвращает `[]` — сундук не выдаёт скины окна, награда Яги (`window_skin_yaga_hut`) — заглушка. После появления PNG — зарегистрировать id в `viewSkins` / `skinPools` / `skinContent.ts`.
@@ -662,6 +700,43 @@ style reference: assets/view/landscape_standart.jpeg + assets/pets/rate/cyberpan
 
 ---
 
+### `assets/view/landscape_yaga.jpeg` — избушка в окне (скин леса, квест Яги)
+
+> ⏸ **Отложено (2026-09-05):** награда квеста Яги — титул «Коготь Яги» + трофей; скин `landscape_yaga` не нужен для MVP.
+
+**Приоритет:** P1 · **Экран:** `.window-aperture__forest`, вкладка «Лес» в профиле.  
+**Дроп:** квест Бабы-Яги (`window_skin_yaga_hut`, 3 фрагмента). **ID:** `landscape_yaga`. **Не** сундук; **не** путать с `landscape_temnyy_les` (тёмный лес без избушки).
+
+**GenerateImage:** `aspect_ratio: "21:9"` · `reference_image_paths`: `assets/view/landscape_standart.jpeg`, `assets/creatures_in_the_book/baba_yaga.png`
+
+**Композиция (канон TASK-asset-yaga-window-hut):**
+
+| Параметр | Значение |
+|----------|----------|
+| Ракурс | Вид **за окном** (слой `WindowAperture`), не фон всей сцены |
+| Избушка | **Маленькая**, на курьих ножках, **целиком в зоне оконного проёма** — как диорама за стеклом |
+| Масштаб | Высота избушки ≈ **60–75%** высоты оконного проёма на макете (`room_01_layout.md`: проём ~24% ширины inner, `top 22%`) |
+| Центр кадра 21:9 | Зона проёма (~38% ширины сцены) — избушка по центру этой зоны |
+| Фон | Сумеречный славянский лес вокруг; без персонажей, без рамки окна на PNG |
+
+```
+Slavic forest at dusk panorama ultrawide 21:9, view as seen through izba window aperture,
+SMALL Baba Yaga hut on chicken legs centered in window zone, entire hut fits inside window opening like miniature diorama behind glass,
+hut height roughly 65 percent of window aperture height, two chicken legs visible, crooked log roof tiny windows folkloric cute-scary,
+dense pine and birch forest background around hut, cinematic painterly realism warm-to-cool dusk light,
+center-weighted composition for window frame at 38 percent scene width, no characters no Baba Yaga figure no window frame on PNG no UI no text,
+NOT giant hut dominating whole forest NOT hut far on horizon tiny speck
+Match painterly forest language of assets/view/landscape_standart.jpeg; hut folklore scale like palm figurine in window not architecture hero shot.
+style reference: assets/view/landscape_standart.jpeg + assets/creatures_in_the_book/baba_yaga.png
+--no vector, cartoon, photoreal modern suburban house, giant hut filling frame, hut as tiny dot in distance, urban, horror gore, chicken legs cut off, watermark
+```
+
+**После PNG (код):** `viewSkins` / `skinPools` / `skinContent.ts`; заменить заглушку `window_skin_yaga_hut` без ассета.
+
+**Антипример:** избушка на весь кадр 21:9; избушка «где-то вдали» точкой; тот же кадр, что `landscape_temnyy_les` без избушки.
+
+---
+
 ### `assets/quiz/bg_banya.jpeg` — баня (только викторина)
 
 **Приоритет:** P1 · **Дроп:** нет · **Квест:** Банник (`locationId: banya`).
@@ -683,21 +758,7 @@ style reference: assets/furniture/bake.png + assets/house/hut_standart.png
 
 ## P2 — Полировка
 
-### `assets/view/landscape_yaga.jpeg`
-
-**Экран:** скин леса (вкладка «Лес»), **награда квеста Яги** (не сундук). Приоритет P1. Формат **21:9** (как § P1 выше).
-
-**GenerateImage:** `aspect_ratio: "21:9"` · `reference_image_paths`: `assets/view/landscape_standart.jpeg`
-
-```
-Slavic forest at dusk panorama ultrawide 21:9 from izba window viewpoint,
-Baba Yaga hut on chicken legs visible small in the distance among pines,
-same painterly realism and golden-to-cool light as assets/view/landscape_standart.jpeg,
-center-weighted, no characters in foreground, no window frame, no UI, no text,
-chicken-leg izba in midground, folkloric not horror gore
-style reference: assets/view/landscape_standart.jpeg
---no vector, cartoon, photoreal modern house, urban, watermark
-```
+> `landscape_yaga.jpeg` — перенесён в § **P1 — Пейзажи 21:9** (композиция «избушка в проёме»).
 
 ### `assets/view/landscape_night.jpeg`
 
@@ -1111,7 +1172,8 @@ style reference: assets/brownie/common/brownie_standart.png + assets/furniture/b
 | `landscape_omut.jpeg` | P1 | Скин окна; сундук | ✅ §P1 |
 | `landscape_cyber_city.jpeg` | P1 | Скин окна; сундук epoch редкий | ✅ §P1 |
 | `quiz/bg_banya.jpeg` (21:9) | P1 | Викторина Банник | ✅ §P1 |
-| `landscape_yaga.jpeg` | P1 | Скин леса (квест Яга) | ✅ |
+| `landscape_yaga.jpeg` | P1 | Скин леса (квест Яга); избушка в проёме | ✅ §P1 |
+| `hut_harmony.png` | P1 | Скин избы (квест Лада) | ✅ §P1 |
 | α-стёкла `hut_*.png` | P0 | Композитинг избы | ✅ задача |
 | α-центр `frame/*.png` | P0 | Профиль | ✅ задача |
 | ~~`trophy_room_bg.png`~~ | — | — | ❌ удалён (та же изба) |

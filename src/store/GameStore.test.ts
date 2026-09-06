@@ -8,6 +8,7 @@ import {
 import { createDefaultSave } from '../domain/GameSave';
 import { findNextAvailableSpirit } from '../domain/spiritQueue';
 import { GameStore } from '../store/GameStore';
+import { energyUiStore } from '../store/energyUiStore';
 import { quizUiStore } from '../store/quizUiStore';
 
 function makeStore(partial?: Partial<ReturnType<typeof createDefaultSave>>): GameStore {
@@ -35,7 +36,7 @@ describe('GameStore', () => {
     expect(store.energy).toBe(50 - ENERGY_PER_CLICK);
   });
 
-  it('clickCat returns none when out of energy', () => {
+  it('clickCat opens energy modal when out of energy', () => {
     const store = makeStore({
       onboardingCompleted: true,
       energy: 0,
@@ -44,6 +45,8 @@ describe('GameStore', () => {
     const result = store.clickCat(() => 0.99);
     expect(result.kind).toBe('none');
     expect(store.catClickCount).toBe(0);
+    expect(energyUiStore.isOpen).toBe(true);
+    energyUiStore.close();
   });
 
   it('enforces onboarding energy floor of 20', () => {

@@ -3,7 +3,7 @@
  * Канон: instruction/dev/technical_requirements.md §6
  */
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 export const LOCAL_SAVE_KEY = 'slavic_myths_save_v1';
 export const CLOUD_SAVE_KEY = 'gameSave';
 
@@ -40,6 +40,8 @@ export const CAT_CLICK_FOOTNOTE_EVERY = 5;
 
 /** Локаль UI */
 export const LOCALE_STORAGE_KEY = 'slavic_myths_locale';
+
+export const SPARE_CHEST_KEYS_CAP = 3;
 
 /** Сундук */
 export const CHEST_COOLDOWN_HOURS = 3;

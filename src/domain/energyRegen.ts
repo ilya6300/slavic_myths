@@ -11,13 +11,16 @@ export function applyEnergyRegen(
   maxEnergy: number,
   lastEnergyAt: number,
   now: number = Date.now(),
+  regenBonusPercent: number = 0,
 ): { energy: number; lastEnergyAt: number } {
   if (energy >= maxEnergy) {
     return { energy, lastEnergyAt: now };
   }
 
   const elapsedMs = Math.max(0, now - lastEnergyAt);
-  const gained = Math.floor((elapsedMs / MS_PER_MINUTE) * ENERGY_REGEN_PER_MINUTE);
+  const ratePerMinute =
+    ENERGY_REGEN_PER_MINUTE * (1 + Math.max(0, regenBonusPercent) / 100);
+  const gained = Math.floor((elapsedMs / MS_PER_MINUTE) * ratePerMinute);
 
   if (gained <= 0) {
     return { energy, lastEnergyAt };

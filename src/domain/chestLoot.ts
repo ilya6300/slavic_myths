@@ -51,6 +51,7 @@ import { getBrownieLuckMultiplier } from './brownieLuck';
 import { addRewardEnergy } from './rewardEnergy';
 
 import { fragmentRequirements, miracleSpiritKeyTargets } from '../config/lootTables';
+import { applyChestKeyReward } from './spareChestKey';
 
 
 
@@ -67,7 +68,7 @@ export type ChestLootKind =
   | 'title'
 
   | 'spirit_key'
-
+  | 'chest_key'
   | 'energy'
 
   | 'obereg'
@@ -107,7 +108,9 @@ export interface ChestRollState {
   selectedFragmentSpiritId: string | null;
 
   domovoySkinId: string;
-
+  firstChestOpened?: boolean;
+  chestReadyAt?: number | null;
+  spareChestKeys?: number;
 }
 
 
@@ -129,7 +132,8 @@ export interface ChestLootPatch {
   talismans?: number;
 
   skins?: GameSkins;
-
+  chestReadyAt?: number | null;
+  spareChestKeys?: number;
 }
 
 
@@ -340,7 +344,7 @@ function rollTypeForGrade(
 
 
 
-    if (rewardType === 'smetana') {
+    if (rewardType === 'energy_bonus') {
 
       return { kind: 'energy', energyAmount: CHEST_ENERGY_BONUS };
 
@@ -467,6 +471,7 @@ export function applyChestLoot(
     talismans: number;
 
     skins: GameSkins;
+    now?: number;
 
   },
 
@@ -518,6 +523,19 @@ export function applyChestLoot(
 
       break;
 
+    }
+
+    case 'chest_key': {
+      const now = state.now ?? Date.now();
+      const result = applyChestKeyReward(
+        state.firstChestOpened ?? false,
+        state.chestReadyAt ?? null,
+        state.spareChestKeys ?? 0,
+        now,
+      );
+      patch.chestReadyAt = result.chestReadyAt;
+      patch.spareChestKeys = result.spareChestKeys;
+      break;
     }
 
     case 'energy':

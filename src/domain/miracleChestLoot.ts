@@ -26,6 +26,8 @@ import {
 
 } from '../config/lootTables';
 
+import { canReceiveSpareChestKey } from './spareChestKey';
+
 import { getSkinIdsForCategory } from '../data/skinPools';
 
 import { isDefaultOwnedSkin } from '../data/profileCatalog';
@@ -196,6 +198,10 @@ function rollConsolationReward(
 
       return { kind: 'energy', energyAmount: CHEST_ENERGY_X2_BONUS };
 
+    case 'chest_key':
+
+      return { kind: 'chest_key' };
+
     case 'spirit_key': {
 
       const locked = miracleSpiritKeyTargets.filter(
@@ -258,7 +264,19 @@ function rollConsolationReward(
 
       const skinId = pickUnownedSkin(pool, state.ownedSkinIds, rng);
 
-      if (!skinId) return null;
+      if (!skinId) {
+        if (
+          canReceiveSpareChestKey(
+            state.firstChestOpened ?? false,
+            state.chestReadyAt ?? null,
+            state.spareChestKeys ?? 0,
+            Date.now(),
+          )
+        ) {
+          return { kind: 'chest_key' };
+        }
+        return null;
+      }
 
       return { kind: 'izba_skin', itemId: skinId, grade: 'epic' };
 
@@ -294,6 +312,19 @@ function rollConsolationWithReroll(
 
       if (state.spiritStatuses[loot.itemId] !== 'locked') continue;
 
+    }
+
+    if (loot.kind === 'chest_key') {
+      if (
+        !canReceiveSpareChestKey(
+          state.firstChestOpened ?? false,
+          state.chestReadyAt ?? null,
+          state.spareChestKeys ?? 0,
+          Date.now(),
+        )
+      ) {
+        continue;
+      }
     }
 
     return loot;
@@ -361,6 +392,7 @@ export function applyMiracleChestLoot(
     talismans: number;
 
     skins: GameSkins;
+    now?: number;
 
   },
 

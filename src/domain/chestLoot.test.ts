@@ -97,34 +97,19 @@ describe('chestLoot', () => {
 
 
   it('should add energy directly from chest energy loot', () => {
-
     const state = baseRollState();
-
     const patch = applyChestLoot(
-
       { kind: 'energy', energyAmount: CHEST_ENERGY_BONUS },
-
       {
-
         ...state,
-
         energy: 90,
-
         maxEnergy: 100,
-
         talismans: 2,
-
         skins: createDefaultSave().skins,
-
       },
-
     );
-
     expect(patch.energy).toBe(140);
-
   });
-
-
 
   it('should unlock spirit on spirit_key loot', () => {
 
@@ -151,10 +136,50 @@ describe('chestLoot', () => {
     );
 
     expect(patch.spiritStatuses?.poludnica).toBe('available');
-
   });
 
+  it('should apply chest key when chest on cooldown', () => {
+    const now = 5_000_000;
+    const state = baseRollState({
+      firstChestOpened: true,
+      chestReadyAt: now + 60_000,
+      spareChestKeys: 0,
+    });
+    const patch = applyChestLoot(
+      { kind: 'chest_key' },
+      {
+        ...state,
+        energy: 100,
+        maxEnergy: 100,
+        talismans: 3,
+        skins: createDefaultSave().skins,
+        now,
+      },
+    );
+    expect(patch.chestReadyAt).toBe(now);
+    expect(patch.spareChestKeys).toBe(0);
+  });
 
+  it('should add spare chest key when chest already ready', () => {
+    const now = 5_000_000;
+    const state = baseRollState({
+      firstChestOpened: true,
+      chestReadyAt: now - 1,
+      spareChestKeys: 1,
+    });
+    const patch = applyChestLoot(
+      { kind: 'chest_key' },
+      {
+        ...state,
+        energy: 100,
+        maxEnergy: 100,
+        talismans: 3,
+        skins: createDefaultSave().skins,
+        now,
+      },
+    );
+    expect(patch.spareChestKeys).toBe(2);
+  });
 
   it('should add fragment on duplicate resolution', () => {
 

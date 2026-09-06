@@ -20,4 +20,10 @@ describe('applyEnergyRegen', () => {
     expect(result.energy).toBe(100);
     expect(result.lastEnergyAt).toBeGreaterThan(start);
   });
+
+  it('should apply regen bonus percent from spirit rewards', () => {
+    const start = 0;
+    const result = applyEnergyRegen(0, 100, start, start + 50 * 60_000, 5);
+    expect(result.energy).toBe(63);
+  });
 });

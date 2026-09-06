@@ -47,12 +47,12 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   bannik: {
     questHook: L(
-      'Пахнет парком. Банник ждёт поклон — не героя.',
-      'Smells like steam. The Bannik wants respect — not a hero.',
-      'Buhar kokuyor. Bannik kahraman değil, saygı bekliyor.',
+      'Пахнет паром. Банник любит порядок и уважение — не геройствуй.',
+      'Smells like steam. The Bannik likes order and respect — don\'t play hero.',
+      'Buhar kokuyor. Bannik düzen ve saygı sever — kahramanlık oynama.',
     ),
     loseLine: L(
-      'Не угодили. Теперь паримся… что не попарились.',
+      'Не угодили. Теперь паримся… что не попарились...',
       'We didn\'t please him. Now we steam… without steaming.',
       'Hoşnut etmedik. Şimdi buharlanıyoruz… buharlanmadan.',
     ),
@@ -86,9 +86,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Tarlanın ötesinde kıkırdama. Çiğneme — sor.',
     ),
     loseLine: L(
-      'Нырнул в траву. Косилкой? Нет. Колосьями и умом.',
-      'He dove into the grass. Scythe? No. Ears and wits.',
-      'Otuza daldı. Tırpan mı? Hayır. Başaklar ve akıl.',
+      'По полям, по полям, убегает кот от полевого!',
+      'Across the fields, the cat runs from the Field Spirit!',
+      'Tarlaya tarlaya, kedi tarla ruhundan kaçıyor!',
     ),
     lockedHint: L(
       'Сначала Кикимора. Полевой без порядка в избе не выйдет.',
@@ -103,9 +103,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Tahıl kokuyor. Ovinnik nemi sevmez. Ve dağınıklığı.',
     ),
     loseLine: L(
-      'Прятки. Сзади шорох… а, это мой хвост.',
-      'Hide and seek. Rustle behind… oh, that\'s my tail.',
-      'Saklambaç. Arkada hışırtı… ah, kuyruğum.',
+      'Шухер! Прятки! Тихо, сзади шорох… а, это мой хвост.',
+      'Hide and seek! Quiet, rustle behind… oh, that\'s my tail.',
+      'Saklambaç! Sessiz, arkada hışırtı… ah, kuyruğum.',
     ),
     lockedHint: L(
       'Сначала Полевой. Овинник зерно зря не отдаст.',
@@ -120,9 +120,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Patikalar karıştı. Leşy yakında. Islık çalma.',
     ),
     loseLine: L(
-      'Увёл в чащу. Придётся сначала. И без свиста.',
-      'He led us into the thicket. Start over. And no whistling.',
-      'Bizi çalılığa çekti. Baştan. Ve ıslık yok.',
+      'Увёл в чащу. Придётся сначала. Так, а как попасть в избу? Хм...',
+      'Led us into the thicket. Start over. Wait, how do we get back to the hut? Hm...',
+      'Bizi çalılığa çekti. Baştan. Peki kulübeye nasıl döneriz? Hm...',
     ),
     lockedHint: L(
       'Сначала Овинник. Леший тропу без очереди не даст.',
@@ -154,9 +154,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Ağır adımlar. Bal ve sessizlik. Kışkırtma.',
     ),
     loseLine: L(
-      'Ушёл гулять. Мёдом заманить? Сметану куплю — и съем. Идея сырая.',
-      'He went for a walk. Lure with honey? I\'ll buy sour cream — and eat it. Raw idea.',
-      'Yürüyüşe çıktı. Bal mı? Kaymak alırım — yerim. Ham fikir.',
+      'Это был медведь? Когда он в спячку впадает? Может подождём?',
+      'Was that a bear? When does he hibernate? Maybe we wait?',
+      'Bu ayı mıydı? Ne zaman kış uykusuna yatar? Bekleyelim mi?',
     ),
     lockedHint: L(
       'Ключ из сундука. Топтыгин сам не придёт.',
@@ -166,14 +166,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   poludnica: {
     questHook: L(
-      'Полдень печёт. Она учит: в жару не ломай себя.',
-      'Noon burns. She teaches: don\'t break yourself in the heat.',
-      'Öğle kavuruyor. Öğretir: sıcakta kendini kırma.',
+      'Полдень печёт. Она учит: в жару не мучай себя.',
+      'Noon burns. She teaches: don\'t torture yourself in the heat.',
+      'Öğle kavuruyor. Öğretir: sıcakta kendini yorma.',
     ),
     loseLine: L(
-      'Заморочила голову. Сворачиваем хвосты — обаяние сработало.',
-      'She spun our heads. Tails tucked — charm worked.',
-      'Kafamızı döndürdü. Kuyrukları kıvırdık — cazibe tuttu.',
+      'Закружила голову. Сворачиваем хвосты — что так жарко? Так, а где Полудница-то?',
+      'She spun our heads. Tails tucked — why so hot? Wait, where\'s Poludnitsa?',
+      'Kafamızı döndürdü. Kuyrukları kıvırdık — neden bu kadar sıcak? Poludnitsa nerede?',
     ),
     lockedHint: L(
       'Ключ из сундука. Редкий. Полудница не любит спешку.',
@@ -183,14 +183,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   rusalka: {
     questHook: L(
-      'Песня тянет. Слушай с берега — в омут не суйся.',
-      'A song pulls. Listen from the shore — don\'t dive in.',
-      'Şarkı çekiyor. Kıyıdan dinle — gölgeye atlama.',
+      'У воды тихо. Не лезь в омут — русалки любят с берега.',
+      'Quiet by the water. Don\'t dive in — rusalkas prefer the shore.',
+      'Su kenarında sessizlik. Gölgeye atlama — rusalkalar kıyıdan sever.',
     ),
     loseLine: L(
-      'В следующий раз удочку? Шучу. Почти.',
-      'Fishing rod next time? Kidding. Almost.',
-      'Bir dahaki sefere olta mı? Şaka. Neredeyse.',
+      'В следующий раз может удочку с собой взять? ',
+      'Maybe bring a fishing rod next time? ',
+      'Bir dahaki sefere olta mı getirsek? ',
     ),
     lockedHint: L(
       'Ключ из сундука. Эпик. Русалка сама не поётся.',
@@ -200,9 +200,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   lada: {
     questHook: L(
-      'В воздухе теплее. Лада — про лад, не про кучу монет.',
-      'Warmer in the air. Lada is about harmony, not a pile of coins.',
-      'Havada daha sıcak. Lada uyum içindir, jet yığını değil.',
+      'Чувствуешь, как тепло и комфортно стало? Лада — про лад, не про кучу монет.',
+      'Feel how warm and cozy it got? Lada is about harmony, not a pile of coins.',
+      'Ne kadar sıcak ve rahat oldu hissediyor musun? Lada uyum içindir, jet yığını değil.',
     ),
     loseLine: L(
       'Хватит глазеть. Гармонию так не поймаешь.',
@@ -227,7 +227,7 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Kulübeye. Hayvanlar çoktan gülüyor.',
     ),
     lockedHint: L(
-      '4 осколка. Велес терпелив. Ты — нет.',
+      '6 осколков. Велес терпелив. Ты — нет.',
       '4 shards. Veles is patient. You — aren\'t.',
       '4 parça. Veles sabırlı. Sen — değilsin.',
     ),
@@ -239,7 +239,7 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Tavuk ayaklı kulübe. Doğru söyle — ve havanın içine girme.',
     ),
     loseLine: L(
-      'Хорошо хоть не съела. Зайдём, когда аппетит поменьше.',
+      'Хорошо хоть не съела. Зайдём, когда аппетит поменьше будет.',
       'At least she didn\'t eat us. We\'ll visit when she\'s less hungry.',
       'En azından yemedi. İştahı azalınca geliriz.',
     ),
@@ -261,7 +261,7 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'O ölümsüz. Sen değilsin. İğne kuyruğa değmeden gidelim.',
     ),
     lockedHint: L(
-      '6 осколков. Смерть прячет — ты ищи.',
+      '5 осколков. Смерть прячет — ты ищи.',
       '6 shards. He hides death — you search.',
       '6 parça. Ölümü saklar — sen ara.',
     ),

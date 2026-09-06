@@ -15,13 +15,17 @@ import {
   getChestCooldownRemainingMs,
   isChestReady,
 } from '../domain/chestCooldown';
-import { applyChestLoot, rollRegularChestLoot } from '../domain/chestLoot';
+import { applyChestLoot, rollRegularChestLoot, type ChestLootPatch } from '../domain/chestLoot';
 import {
   resolveCatClickDialog,
   type CatClickDialogResult,
 } from '../domain/catClick';
 import { applyEnergyRegen } from '../domain/energyRegen';
 import { addRewardEnergy } from '../domain/rewardEnergy';
+import {
+  isChestOpenable,
+  shouldConsumeSpareKeyOnOpen,
+} from '../domain/spareChestKey';
 import {
   applySpiritReward,
   createRewardStateFromStore,
@@ -125,6 +129,7 @@ export class GameStore {
   trophiesUnlocked: string[] = [];
 
   chestReadyAt: number | null = null;
+  spareChestKeys = 0;
   wonderChestWeekSlotUsed = false;
   wonderChestClickProgress = 0;
   wonderChestPityCounter = 0;
@@ -199,9 +204,10 @@ export class GameStore {
 
   isChestReady(now: number = Date.now()): boolean {
     if (!this.isChestVisible()) return false;
-    return isChestReady(
+    return isChestOpenable(
       this.firstChestOpened,
       this.chestReadyAt,
+      this.spareChestKeys,
       now,
     );
   }
@@ -316,6 +322,7 @@ export class GameStore {
     this.trophiesUnlocked = [...save.trophiesUnlocked];
 
     this.chestReadyAt = save.chestReadyAt;
+    this.spareChestKeys = save.spareChestKeys ?? 0;
     this.wonderChestWeekSlotUsed = save.wonderChestWeekSlotUsed;
     this.wonderChestClickProgress = save.wonderChestClickProgress;
     this.wonderChestPityCounter = save.wonderChestPityCounter;
@@ -375,6 +382,7 @@ export class GameStore {
       trophiesUnlocked: [...this.trophiesUnlocked],
 
       chestReadyAt: this.chestReadyAt,
+      spareChestKeys: this.spareChestKeys,
       wonderChestWeekSlotUsed: this.wonderChestWeekSlotUsed,
       wonderChestClickProgress: this.wonderChestClickProgress,
       wonderChestPityCounter: this.wonderChestPityCounter,
@@ -419,6 +427,7 @@ export class GameStore {
       this.maxEnergy,
       this.lastEnergyAt,
       now,
+      this.energyRegenBonusPercent,
     );
     this.energy = result.energy;
     this.lastEnergyAt = result.lastEnergyAt;
@@ -728,11 +737,38 @@ export class GameStore {
       fragmentCounts: this.fragmentCounts,
       selectedFragmentSpiritId: this.selectedFragmentSpiritId,
       domovoySkinId: this.skins.domovoy,
+      firstChestOpened: this.firstChestOpened,
+      chestReadyAt: this.chestReadyAt,
+      spareChestKeys: this.spareChestKeys,
     };
+  }
+
+  private applyChestLootPatch(patch: ChestLootPatch): void {
+    if (patch.ownedSkinIds) this.ownedSkinIds = patch.ownedSkinIds;
+    if (patch.ownedTitleIds) this.ownedTitleIds = patch.ownedTitleIds;
+    if (patch.spiritStatuses) this.spiritStatuses = patch.spiritStatuses;
+    if (patch.fragmentCounts) this.fragmentCounts = patch.fragmentCounts;
+    if (patch.energy != null) this.energy = patch.energy;
+    if (patch.talismans != null) this.talismans = patch.talismans;
+    if (patch.chestReadyAt !== undefined) this.chestReadyAt = patch.chestReadyAt;
+    if (patch.spareChestKeys != null) this.spareChestKeys = patch.spareChestKeys;
+    if (patch.fragmentCounts) {
+      this.spiritStatuses = applyFragmentUnlocks(
+        this.spiritStatuses,
+        this.fragmentCounts,
+      );
+    }
   }
 
   openChest(rng: () => number = Math.random, now: number = Date.now()): boolean {
     if (!this.isChestVisible() || !this.isChestReady(now)) return false;
+
+    const useSpareKey = shouldConsumeSpareKeyOnOpen(
+      this.firstChestOpened,
+      this.chestReadyAt,
+      this.spareChestKeys,
+      now,
+    );
 
     const rollState = this.buildChestRollState();
     const loot = rollRegularChestLoot(rollState, rng);
@@ -742,19 +778,13 @@ export class GameStore {
       maxEnergy: this.maxEnergy,
       talismans: this.talismans,
       skins: this.skins,
+      now,
     });
 
-    if (patch.ownedSkinIds) this.ownedSkinIds = patch.ownedSkinIds;
-    if (patch.ownedTitleIds) this.ownedTitleIds = patch.ownedTitleIds;
-    if (patch.spiritStatuses) this.spiritStatuses = patch.spiritStatuses;
-    if (patch.fragmentCounts) this.fragmentCounts = patch.fragmentCounts;
-    if (patch.energy != null) this.energy = patch.energy;
-    if (patch.talismans != null) this.talismans = patch.talismans;
-    if (patch.fragmentCounts) {
-      this.spiritStatuses = applyFragmentUnlocks(
-        this.spiritStatuses,
-        this.fragmentCounts,
-      );
+    this.applyChestLootPatch(patch);
+
+    if (useSpareKey) {
+      this.spareChestKeys -= 1;
     }
 
     this.firstChestOpened = true;
@@ -830,20 +860,10 @@ export class GameStore {
       maxEnergy: this.maxEnergy,
       talismans: this.talismans,
       skins: this.skins,
+      now,
     });
 
-    if (patch.ownedSkinIds) this.ownedSkinIds = patch.ownedSkinIds;
-    if (patch.ownedTitleIds) this.ownedTitleIds = patch.ownedTitleIds;
-    if (patch.spiritStatuses) this.spiritStatuses = patch.spiritStatuses;
-    if (patch.fragmentCounts) this.fragmentCounts = patch.fragmentCounts;
-    if (patch.energy != null) this.energy = patch.energy;
-    if (patch.talismans != null) this.talismans = patch.talismans;
-    if (patch.fragmentCounts) {
-      this.spiritStatuses = applyFragmentUnlocks(
-        this.spiritStatuses,
-        this.fragmentCounts,
-      );
-    }
+    this.applyChestLootPatch(patch);
 
     chestUiStore.showLoot(loot, 'miracle');
     this.showMiracleLootCatLine(gotFragment);

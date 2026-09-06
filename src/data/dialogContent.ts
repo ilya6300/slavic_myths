@@ -522,6 +522,11 @@ export const settingsUiContent = {
   chestRewardWindowSkin: L('Вид из окна', 'Window view', 'Pencere manzarası'),
   chestRewardTitle: L('Титул', 'Title', 'Unvan'),
   chestRewardSpiritKey: L('Ключ к духу', 'Spirit key', 'Ruha anahtar'),
+  chestRewardChestKey: L(
+    'Ключ к сундуку',
+    'Chest key',
+    'Sandık anahtarı',
+  ),
   chestRewardEnergy: L('+{amount} энергии', '+{amount} energy', '+{amount} enerji'),
   chestRewardObereg: L('Тайный оберег', 'Secret charm', 'Gizli tılsım'),
   chestRewardFragment: L('Фрагмент', 'Fragment', 'Parça'),

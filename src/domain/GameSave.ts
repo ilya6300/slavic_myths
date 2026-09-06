@@ -54,6 +54,7 @@ export interface GameSave {
   trophiesUnlocked: string[];
 
   chestReadyAt: number | null;
+  spareChestKeys: number;
   wonderChestWeekSlotUsed: boolean;
   wonderChestClickProgress: number;
   wonderChestPityCounter: number;
@@ -161,6 +162,7 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     trophiesUnlocked: [],
 
     chestReadyAt: null,
+    spareChestKeys: 0,
     wonderChestWeekSlotUsed: false,
     wonderChestClickProgress: 0,
     wonderChestPityCounter: 0,

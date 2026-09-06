@@ -25,9 +25,9 @@ function ruleBody(selector: string, source: string): string {
 describe('TASK-019 book layout CSS contract', () => {
   const bookCss = epic10Block();
 
-  it('should keep scene book at 9vw so hi-res PNG does not fill the izba', () => {
+  it('should keep scene book compact (6vw) so hi-res PNG does not fill the izba', () => {
     const body = ruleBody('.scene-book', css);
-    expect(body).toMatch(/width:\s*9vw/);
+    expect(body).toMatch(/width:\s*6vw/);
   });
 
   it('should use open-book aspect 1.248 and not the obsolete 1.55 in Epic 10 CSS', () => {

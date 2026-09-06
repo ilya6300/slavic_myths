@@ -212,11 +212,11 @@ export const titles: TitleDefinition[] = [
     description: 'В жару знает меру: тень важнее клика.',
   },
   {
-    id: 'lunnyy_slushatel',
-    name: 'Лунный Слушатель',
+    id: 'kot_u_berega',
+    name: 'Кот у берега',
     grade: 'epic',
     source: 'quest',
-    description: 'Песню слышал с берега — и остался сухим.',
+    description: 'Сидел на берегу — и остался сухим.',
   },
   {
     id: 'gost_lada',

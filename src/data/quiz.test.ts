@@ -4,11 +4,13 @@ import { spiritQuizzes, shuffleQuizQuestions } from './quiz';
 describe('quiz data', () => {
   it('should contain 16 spirit quizzes from quests.md', () => {
     expect(spiritQuizzes).toHaveLength(16);
+    const brownie = spiritQuizzes.find((q) => q.spiritId === 'brownie')!;
+    expect(brownie.questions).toHaveLength(4);
     const totalQuestions = spiritQuizzes.reduce(
       (sum, q) => sum + q.questions.length,
       0,
     );
-    expect(totalQuestions).toBeGreaterThan(80);
+    expect(totalQuestions).toBe(120);
   });
 
   it('should shuffle answers and preserve correct index', () => {

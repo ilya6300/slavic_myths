@@ -114,23 +114,40 @@ describe('applySpiritReward', () => {
 
 
 
-  it('unlocks izba skin without auto-equip', () => {
-
+  it('adds lada quest title without skin unlock', () => {
     const state = getDefaultRewardState();
-
     const patch = applySpiritReward(
-
-      { kind: 'izba_skin_harmony', skinId: 'hut_rate' },
-
+      { kind: 'title_only', titleId: 'gost_lada' },
       state,
-
     );
-
-    expect(patch.ownedSkinIds).toContain('hut_rate');
-
-    expect(patch.skins).toBeUndefined();
-
+    expect(patch.ownedTitleIds).toContain('gost_lada');
+    expect(patch.ownedSkinIds).toBeUndefined();
   });
 
+  it('adds yaga quest title', () => {
+    const state = getDefaultRewardState();
+    const patch = applySpiritReward(
+      { kind: 'title_only', titleId: 'kogot_yagi' },
+      state,
+    );
+    expect(patch.ownedTitleIds).toContain('kogot_yagi');
+  });
+
+  it('adds max energy for poludnica reward', () => {
+    const state = getDefaultRewardState();
+    const patch = applySpiritReward({ kind: 'max_energy', amount: 15 }, state);
+    expect(patch.maxEnergy).toBe(135);
+    expect(patch.energy).toBe(135);
+  });
+
+  it('adds rusalka title and energy reward', () => {
+    const state = { ...getDefaultRewardState(), energy: 95 };
+    const patch = applySpiritReward(
+      { kind: 'title_and_energy', titleId: 'kot_u_berega', amount: 10 },
+      state,
+    );
+    expect(patch.ownedTitleIds).toContain('kot_u_berega');
+    expect(patch.energy).toBe(105);
+  });
 });
 

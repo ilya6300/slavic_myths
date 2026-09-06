@@ -278,7 +278,7 @@ button.profile-cell
 | rare | `hut_rate.png` |
 | epic | `hut_epic.png` |
 | epoch | `hut_the_age_of_miracles.png` |
-| квест Лады | скин «Гармония» — когда появится файл, отдельная строка (не подменять `hut_epic` молча) |
+| epic (квест) | `hut_harmony.png` — «Гармония», id `hut_harmony`; отдельная ячейка, не подменять `hut_epic` |
 
 Миниатюра: весь кадр избы `object-fit: cover`.
 
@@ -288,7 +288,7 @@ button.profile-cell
 |-------|------|--------|
 | common | `landscape_standart.jpeg` | есть, старт |
 | — | `landscape_night.jpeg` | не отдельный скин; ночной вид текущего |
-| epoch (Яга) | скин с избушкой на курьих ножках | ⏳ ключ с квеста Яги |
+| — (квест) | `landscape_yaga.jpeg` — id `landscape_yaga`; избушка в оконном проёме | ⏳ P1 |
 
 Пока скинов окна мало — сетка всё равно показывает **все известные** id из каталога, включая ⏳ (ячейка-заглушка с фильтром и подписью «Скоро» только если id ещё не в дропе; если id в дропе, но PNG нет — MVP-fallback пейзажа + `data-asset-pending`).
 

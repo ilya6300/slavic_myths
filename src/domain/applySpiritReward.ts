@@ -68,14 +68,6 @@ function addOwnedTitle(ids: string[], titleId: string): string[] {
 
 
 
-function addOwnedSkin(ids: string[], skinId: string): string[] {
-
-  return ids.includes(skinId) ? ids : [...ids, skinId];
-
-}
-
-
-
 export function applySpiritReward(
 
   reward: SpiritReward,
@@ -169,26 +161,6 @@ export function applySpiritReward(
       return { ownedTitleIds: addOwnedTitle(state.ownedTitleIds, titleId) };
 
     }
-
-
-
-    case 'izba_skin_harmony': {
-
-      const skinId = reward.skinId ?? 'hut_rate';
-
-      return {
-
-        ownedSkinIds: addOwnedSkin(state.ownedSkinIds, skinId),
-
-      };
-
-    }
-
-
-
-    case 'window_skin_yaga_hut':
-
-      return {};
 
 
 

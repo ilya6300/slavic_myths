@@ -43,7 +43,7 @@ export type RegularChestRewardType =
   | 'title_rare'
   | 'title_epic'
   | 'spirit_key'
-  | 'smetana'
+  | 'energy_bonus'
   | 'obereg'
   | 'fragment'
   | 'chest_key';
@@ -65,6 +65,7 @@ export const miracleChest = {
 export type MiracleConsolationReward =
   | 'obereg_x2'
   | 'energy_full'
+  | 'chest_key'
   | 'spirit_key'
   | 'title_epic'
   | 'izba_skin_epic'
@@ -77,6 +78,7 @@ export type MiracleConsolationReward =
 export const miracleConsolationWeights: Record<MiracleConsolationReward, number> = {
   obereg_x2: 2800,
   energy_full: 2600,
+  chest_key: 700,
   spirit_key: 900,
   title_epic: 600,
   izba_skin_epic: 500,
@@ -96,8 +98,8 @@ export const miracleSpiritKeyTargets = [
 export const fragmentRequirements: Record<string, number> = {
   lada: 3,
   baba_yaga: 3,
-  veles: 4,
-  koschei_immortal: 6,
+  veles: 6,
+  koschei_immortal: 5,
   chudo_yudo: 6,
 };
 
@@ -187,7 +189,7 @@ export const regularChestTypeWeightsByGrade: Record<
   common: {
     cat_skin: 2500,
     title_common: 1500,
-    smetana: 600,
+    energy_bonus: 600,
     obereg: 400,
     brownie_skin: 200,
     window_skin: 100,

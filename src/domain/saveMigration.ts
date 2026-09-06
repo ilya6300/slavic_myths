@@ -88,8 +88,6 @@ export function migrateSave(raw: GameSave): GameSave {
 
     delete save.smetanaCount;
 
-    delete save.spareChestKeys;
-
     save.ownedSkinIds = [
 
       ...new Set([...DEFAULT_OWNED_SKINS, ...(save.ownedSkinIds ?? [])]),
@@ -110,6 +108,36 @@ export function migrateSave(raw: GameSave): GameSave {
     save.dailyFindClaimedDayId = save.dailyFindClaimedDayId ?? null;
     save.folktaleIntroShown = save.folktaleIntroShown ?? false;
     save.version = 3;
+  }
+
+  if (save.version < 4) {
+    const completed = save.completedSpirits ?? [];
+
+    if (
+      completed.includes('poludnica') &&
+      (save.poludnicaCoinBonusPercent ?? 0) > 0
+    ) {
+      save.maxEnergy = (save.maxEnergy ?? 120) + 15;
+      save.energy = Math.min((save.energy ?? 0) + 15, save.maxEnergy);
+      save.poludnicaCoinBonusPercent = 0;
+    }
+
+    if (completed.includes('rusalka')) {
+      let owned = [...(save.ownedTitleIds ?? ['novenkiy'])];
+      owned = owned.map((id) =>
+        id === 'lunnyy_slushatel' ? 'kot_u_berega' : id,
+      );
+      if (!owned.includes('kot_u_berega')) {
+        owned.push('kot_u_berega');
+      }
+      save.ownedTitleIds = owned;
+      if (save.titleId === 'lunnyy_slushatel') {
+        save.titleId = 'kot_u_berega';
+      }
+      save.rusalkaZhirdyayReductionPercent = 0;
+    }
+
+    save.version = 4;
   }
 
   save.version = SAVE_VERSION;

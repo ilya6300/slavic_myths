@@ -1,13 +1,20 @@
 ---
 name: generate-game-image
 description: >-
-  Generates Slavic Myths game images via Cursor GenerateImage with mandatory
-  assets/ style references. Use when creating UI mockups, draft game assets,
-  or when game-designer-ui-ux gate mockup (A/C) is chosen; when the user asks
-  to generate/draw an image, mockup, or visual for this project.
+  ⏸ TEMPORARILY DISABLED — do not invoke. Generates Slavic Myths game images
+  via Cursor GenerateImage with mandatory assets/ style references. Re-enable
+  when owner removes the disable block in this file and game-designer-ui-ux.md.
 ---
 
 # Генерация изображений «Книга славянских духов»
+
+## ⏸ ВРЕМЕННО ОТКЛЮЧЕНО
+
+**Не вызывать `GenerateImage`.** Не использовать этот skill, пока владелец не снимет заглушку здесь и в `.cursor/roles/game-designer-ui-ux.md`.
+
+Дизайнер: только текстовые промпты в `design_assets_prompts.md` и UX-спеки.
+
+---
 
 Skill для **качественной** картинки в стиле проекта. Без референсов из `assets/` генерация **запрещена**.
 
@@ -53,14 +60,14 @@ Skill для **качественной** картинки в стиле про�
 
 ### 2. Собрать description
 
-Структура (английский предпочтителен для модели):
+Структура — **исключительно на русском**, развёрнуто (см. `.cursor/roles/game-designer-ui-ux.md` §«Как писать промпты»):
 
 ```text
-[SUBJECT — предмет, ракурс, состояние],
-[STYLE BLOCK из шаблона game-designer-ui-ux],
-Match the visual style of the attached reference images exactly —
-same material (clay/engraving/painterly), palette, lighting, level of detail.
-[negative constraints: no vector, flat, material design, neon, text, watermark]
+[ПРЕДМЕТ — предмет, ракурс, состояние; 2–3 предложения],
+[БЛОК СТИЛЯ из шаблона game-designer-ui-ux — материалы, свет, палитра],
+Повторить визуальный стиль приложенных референсов из assets/ —
+тот же материал, палитра, освещение и уровень детализации.
+[Чего не должно быть: развёрнутый список на русском, 8+ пунктов]
 ```
 
 Для **mockup целого экрана** добавить в description:
