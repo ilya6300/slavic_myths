@@ -140,6 +140,46 @@ export function migrateSave(raw: GameSave): GameSave {
     save.version = 4;
   }
 
+  if (save.version < 5) {
+    if (save.spiritStatuses?.baba_yaga === 'defeated') {
+      const owned = [...(save.ownedSkinIds ?? [])];
+      if (!owned.includes('landscape_yaga')) {
+        owned.push('landscape_yaga');
+      }
+      save.ownedSkinIds = owned;
+    }
+    save.version = 5;
+  }
+
+  if (save.version < 6) {
+    if (save.spiritStatuses?.lada === 'defeated') {
+      const owned = [...(save.ownedSkinIds ?? [])];
+      if (!owned.includes('hut_harmony')) {
+        owned.push('hut_harmony');
+      }
+      save.ownedSkinIds = owned;
+    }
+    save.version = 6;
+  }
+
+  if (save.version < 7) {
+    save.zhirdyayDefeatedCount = save.zhirdyayDefeatedCount ?? 0;
+    save.version = 7;
+  }
+
+  if (save.version < 8) {
+    save.regularChestEpochPityCounter = save.regularChestEpochPityCounter ?? 0;
+    save.version = 8;
+  }
+
+  if (save.version < 9) {
+    save.starterPackPurchased = save.starterPackPurchased ?? false;
+    save.yardGrass = save.yardGrass ?? 0;
+    save.yardOberegCraftedDayId = save.yardOberegCraftedDayId ?? null;
+    save.yardGrassSpawnDayId = save.yardGrassSpawnDayId ?? null;
+    save.version = 9;
+  }
+
   save.version = SAVE_VERSION;
 
   return save;

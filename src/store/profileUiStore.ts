@@ -1,17 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 
-export type ProfileTab = 'cat' | 'izba' | 'window' | 'brownie' | 'titles' | 'settings';
+export type ProfileTab = 'stats' | 'cat' | 'izba' | 'window' | 'brownie' | 'titles' | 'settings';
 
 export class ProfileUiStore {
   isOpen = false;
-  activeTab: ProfileTab = 'cat';
+  activeTab: ProfileTab = 'stats';
   selectedItemId: string | null = null;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  open(tab: ProfileTab = 'cat'): void {
+  open(tab: ProfileTab = 'stats'): void {
     this.activeTab = tab;
     this.selectedItemId = null;
     this.isOpen = true;

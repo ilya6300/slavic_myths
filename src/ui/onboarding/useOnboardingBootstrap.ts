@@ -12,7 +12,7 @@ import { sceneUiStore } from '../../store/sceneUiStore';
 export function useOnboardingBootstrap(locale: string): void {
   useEffect(() => {
     if (gameStore.onboardingCompleted && !gameStore.isFirstLaunch) {
-      sceneUiStore.catSleeping = true;
+      sceneUiStore.enterAfkSleep();
     }
   }, []);
 

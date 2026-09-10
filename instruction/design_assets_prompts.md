@@ -1,8 +1,8 @@
 # Промпты на отсутствующие изображения
 
-> **Версия:** 1.5  
-> **Дата:** 2026-09-05  
-> **Автор:** гейм-дизайнер UI/UX (исправлено по ревью критика)  
+> **Версия:** 1.6  
+> **Дата:** 2026-09-10  
+> **Автор:** гейм-дизайнер UI/UX (HUD 2.0: дар путника + компаньон Кикиморы)  
 > **Правило:** изображения **не генерируем в коде**. До появления файла — только fallback из § «MVP-fallback» или `alt`; **не** рисовать SVG/CSS/сгенерированный арт вместо PNG.  
 > **Генерация черновиков/mockup:** skill `.cursor/skills/generate-game-image/SKILL.md` → `instruction/design/`; в `assets/` — только после приёмки.  
 > **Агенты:** при отсутствии ассета — обновить промпт здесь; пути — в `assets_catalog.md`.
@@ -101,6 +101,53 @@ solid black background, no text,
 style reference: assets/furniture/bake.png samovar and pots
 --no vector, flat, emoji, spoon, text
 ```
+
+---
+
+### `assets/ui/kikimora_companion.png`
+
+**Экран:** левый рельс HUD главной комнаты (`hud_layout.md` §6). Приоритет **P0**.  
+**Не путать** с гравюрой `creatures_in_the_book/kikimora.png` (книга) и полнофигурной `furniture/kikimora_weaving.png` (модалка крафта).
+
+```
+Предмет: Кикимора — домашний дух пряжи для казуальной игры «Книга славянских духов». Нужен поясной портрет-компаньон (bust по грудь) для левого края экрана избы, читаемый при высоте около семидесяти двух пикселей на телефоне. Ракурс три четверти, чуть повёрнута к игроку, взгляд хитрый и внимательный, не злой и не комический клоун. В руках или у груди — моток шерсти и намёк на прядение: клубки, нить, тонкая веретено или путаница ниток, чтобы с первого взгляда было ясно: «эта про пряжу и оберег», а не профиль кота.
+
+Стиль: объёмный стилизованный 3D-рендер, будто фигурку вылепили из пластилина или полимерной глины вручную. Формы мягкие, округлые, «толстые», силуэт читается без мелкой штриховки. Поверхность матовая, без глянца и неона; видны следы лепки, лёгкая зернистость, тактильная ткань (домотканый платок, льняная рубаха) и тусклая шерсть клубков. Это тот же пластилин, что у кота и мебели избы, а не белая гравюра на чёрном и не плоская иконка.
+
+Освещение: мягкий студийный свет сверху-сбоку, тёплые объёмные тени под подбородком и под клубками, без жёстких бликов на глазах. Палитра тёплая, насыщенная, но не кислотная: терракота, мёд, беж, коричневый, приглушённый серый, тусклая шерсть цвета неотбелённого льна и чуть зеленоватый домашний платок — в духе избы, не болотный хоррор.
+
+Атмосфера: уютная славянская народная сказка, капризная хозяйка угла, которая может сплести оберег. Без мрака, без диснеевской милоты, без пауков-монстров.
+
+Композиция и фон: только персонаж по грудь, центр кадра, руки с пряжей входят в силуэт. Сплошной чёрный или полностью прозрачный фон, как у PNG в assets/furniture/. На изображении нет текста, водяных знаков, рамок, круглой медальонной обводки и UI-кнопок. Края силуэта чистые — спрайт встанет на рельс без подложки.
+
+Референс стиля: assets/furniture/kikimora_weaving.png (тот же персонаж и пряжа, но здесь только bust, крупнее лицо) и assets/pets/common/cat_standart/cat_standart_sid.png (плотность пластилина, свет, скруглённые формы). Новый файл должен выглядеть так, будто лежал в папке UI рядом с иконками HUD с самого начала — тот же уровень детализации, та же «глиняная» плотность.
+
+Чего не должно быть: векторная графика, плоский flat design, линейная гравюра как в книге духов, белые штрихи на чёрном, иконка UI, круглая рамка, Material Design, тонкие контурные линии, фотореализм, аниме, low poly, неон, глянцевый пластик, рыбий хвост, болото с клюквой, современная одежда, текст на картинке, водяной знак, второй персонаж, кот, изба в кадре.
+```
+
+**Технические требования:** PNG, прозрачный фон (генерация на чёрном/белом — вырезать α), без текста на арте, целевой путь `assets/ui/kikimora_companion.png`. Силуэт читается на ночном overlay.
+
+---
+
+### `assets/ui/icon_grass.png`
+
+**Экран:** чип шапки `.hud-grass` (`hud_layout.md` §4.1). Приоритет **P1** (до файла — `yard_grass.png` в 32×32 `contain`).
+
+```
+Предмет: иконка ресурса «пучок травы» для HUD казуальной игры «Книга славянских духов». Это не пейзажный куст на дворе, а узнаваемый значок инвентаря: один короткий пучок луговой травы, связанный тонкой ниткой или былинкой, читается как монета или миска сметаны — силуэт с первого взгляда при размере тридцать два пикселя. Ракурс чуть сверху-сбоку, пучок стоит вертикально, несколько стеблей и два-три колоска или широких лезвия, без цветов-букетов и без земли в горшке.
+
+Стиль: объёмный стилизованный 3D-рендер, пластилин / полимерная глина, как у остальных иконок HUD. Формы мягкие, толстые, матовая поверхность со следами лепки. Трава не фотореалистичная осока и не плоский листочек из icon-font.
+
+Освещение: мягкий студийный свет сверху-сбоку, тёплая объёмная тень у основания пучка, без неонового свечения. Палитра: живой луговой зелёный, приглушённый мёд на сухих кончиках, не кислотный салатовый и не болотный чёрный.
+
+Композиция и фон: только пучок в центре кадра, сплошной чёрный или полностью прозрачный фон. Нет текста, рамок, UI, избы, Кикиморы, кота и земли-поляны на весь кадр.
+
+Референс стиля: assets/furniture/yard_grass.png (тот же предмет, но здесь — компактная иконка, крупнее стебли, меньше «куста») и assets/UI/icon_smetana.png (масштаб HUD-иконки, плотность глины, обрезка). Новый файл должен лежать рядом с icon_energy и icon_smetana — тот же уровень детализации.
+
+Чего не должно быть: векторный листок, emoji 🌿, плоский flat, Material Icons, фотография газона, горшок, цветы в букете, текст, водяной знак, рамка, гравюра, неон, глянцевый пластик, персонаж в кадре.
+```
+
+**Технические требования:** PNG, прозрачный фон, без текста, путь `assets/ui/icon_grass.png`. Читаемость на ночном overlay в чипе `rgba(40,28,18,0.72)`.
 
 ---
 
@@ -404,16 +451,16 @@ style reference: assets/creatures_in_the_book/poludnica.png + assets/view/landsc
 
 #### `assets/trophies/rusalka_comb.png` — Русалка
 
-**Канон:** серебряный гребень с водорослями; не расчёсывать чужие сны.
+**Канон:** гребень из речного перламутра; не расчёсывать чужие сны.
 
 ```
-ornate Slavic river comb trophy silver-blue clay tones, decorative folk patterns on spine,
-few green seaweed strands wrapped around comb teeth, water spirit Rusalka gift,
+ornate Slavic river pearl comb trophy silver-pearl clay tones, decorative folk patterns on spine,
+river mother-of-pearl sheen on comb teeth, water spirit Rusalka gift from quiet backwater,
 palm-sized collectible stylized 3D plasticine matte pearlescent accents,
 front view comb teeth downward,
 pure flat white background #FFFFFF,
 style reference: assets/creatures_in_the_book/rusalka.png + assets/furniture/book_of_spirits.png subtle gold trim accent
---no vector, flat, line art, modern plastic hair comb product, black background
+--no vector, flat, line art, modern plastic hair comb product, green seaweed, mermaid, black background
 ```
 
 #### `assets/trophies/lada_harmony_vase.png` — Лада
@@ -509,6 +556,34 @@ stylized 3D clay wood, soft shadow, nine-slice capable,
 isolated black background, no text,
 style reference: assets/furniture/bench.png
 --no vector, flat, text baked in, neon button
+```
+
+### ~~`assets/quiz/chest_loot_bg.jpeg`~~ — отменён ❌
+
+**Статус:** не используется. Модалка сундука — **без JPEG**; juice через CSS confetti (`ChestLootFx`).
+
+```
+Фон модального окна «Сундук удачи» для казуальной игры «Книга славянских духов». Композиция горизонтальная 16:9. Уютный угол русской избы: деревянный пол с тёплым соломенным или льняным ковром, стена из брёвен сруба с грубой фактурой дерева и следами топора. Мягкий золотой свет падает слева, как из окна вне кадра — только тёплое световое пятно на полу и стене, без видимого окна и без леса. В правой нижней трети кадра — пустое чистое место на полу, куда поверх наложат 3D-спрайт сундука; там не должно быть сундука, мебели и персонажей. Слева можно намекнуть на край печи или скамьи, но не доминировать в кадре.
+
+Стиль: кинематографичная живопись, painterly stylized realism — как фоны викторины и интерьер избы в проекте. Тёплая палитра: мёд, терракота, коричневый, беж, приглушённый янтарный свет. Мягкие объёмные тени, без неона и HDR-пересвета. Атмосфера славянской народной сказки: безопасность, предвкушение награды, уют.
+
+Референс стиля: assets/house/hut_standart.png (дерево, тепло интерьера), assets/furniture/box_closed.png (материалы), assets/quiz/bg_banya.jpeg (живописность фона викторины). Повторить стиль референсов по материалу, палитре, освещению и детализации.
+
+Чего не должно быть: векторная графика, flat cartoon, low poly, anime, sci-fi, неон, люди, кот, домовой, готовый сундук на полу, текст, водяной знак, UI-элементы, чёрный студийный фон, зима и снег, сцена пряжи Кикиморы, клубки шерсти, веретено.
+```
+
+### `assets/quiz/trophy_tale_bg.jpeg` — модалка «Сказ о победе» ✅
+
+**Экран:** `TrophyModal` — блок `__scene` 16∶9. **Не** комната 2 целиком, **не** Кикимора.
+
+```
+Фон модального окна «Сказ о победе» (просмотр трофея) для игры «Книга славянских духов». Композиция горизонтальная 16:9. Фрагмент стены избы с двумя небольшими деревянными полками для трофеев — как комната трофеев при pan, но без всей комнаты целиком. Полки грубого необработанного дерева, следы топора, не современная мебель. Между полками или под ними — свободное центральное место, куда UI наложит один 3D-трофей в рамке; на полках нет предметов, трофеев, статуэток. Тёплый свет свечи или луча создаёт мягкие тени на бревенчатой стене. Фон стены — сруб, медовые и коричневые тона.
+
+Стиль: painterly stylized realism, кинематографичная живопись интерьера — не 3D-рендер UI и не flat. Палитра избы: терракота, мёд, тёмно-коричневый, беж. Без окна с лесом (лес отвлекает от предмета), без персонажей.
+
+Референс стиля: assets/house/hut_standart.png (материал дерева), assets/trophies/rusalka_comb.png (масштаб предметов на полке), assets/quiz/bg_banya.jpeg (живописность). Повторить стиль референсов по тактильности, теплу, детализации.
+
+Чего не должно быть: вектор, flat design, гигантские полки на весь экран, готовые трофеи на полках, люди, кот, текст, watermark, sci-fi, anime, неон, чёрный фон, gradient без текстуры, сцена крафта Кикиморы, клубки шерсти, сундук на полу.
 ```
 
 ### `assets/quiz/bg_izba.jpeg`
@@ -621,88 +696,120 @@ style reference: assets/house/hut_standart.png + assets/creatures_in_the_book/la
 
 ---
 
-### `assets/view/landscape_standart.jpeg` — обновлённый лес (замена дефолта)
+### `assets/view/landscape_standart.jpeg` — поле + дальний лес (v3, замена дефолта)
 
 **Приоритет:** P0 · **Экран:** `.layer-forest` / `.window-aperture__forest`, вкладка «Лес» (дефолт).
 
-**GenerateImage:** `aspect_ratio: "21:9"` · `reference_image_paths`: `assets/view/landscape_standart.jpeg`
+**Проблема v1–v2:** крупные берёзы и ели в среднем плане — в оконном проёме (~38% ширины сцены) выглядят «в упор к стеклу» и растянуто; нет ощущения глубины «из избы на поле».
+
+**Композиция v3 (канон):**
+
+| Зона кадра | Содержание |
+|------------|------------|
+| Нижние **50–55%** | Открытое **поле** — золотистая трава, редкие белые полевые цветы, ровный уход к горизонту; **без** стволов и крупных деревьев |
+| **Горизонт** ~55% высоты | Чёткая линия холмов |
+| Верхние **30–35%** | **Мелкий** дальний лес — сплошная полоска берёз и сосен на холме, атмосферная дымка, деревья маленькие, не доминируют |
+| Верх **15%** | Тёплое золотое небо, лёгкая дымка |
+
+**GenerateImage:** `aspect_ratio: "16:9"` → постобработка crop центр **21:9** (1536×658) · `reference_image_paths`: `assets/view/landscape_standart.jpeg`
 
 ```
-Slavic Russian forest panorama ultrawide 21:9, view as seen through izba window opening,
-birch trees and pine forest, lush green meadow, wildflowers in foreground,
-golden hour warm sunlight, cinematic painterly realism, soft bokeh on near grass,
-magical cozy fairy-tale atmosphere, center-weighted composition for window frame,
-no characters, no animals, no izba walls, no window frame, no UI, no text,
-Match the visual style of the attached reference images exactly —
-same painterly realism, warm palette, birch-pine mix, golden hour mood; sharper detail and richer depth than old file.
-style reference: assets/view/landscape_standart.jpeg
---no vector, flat, cartoon, low poly, winter snow, urban, photorealistic HDR, neon, watermark, text
+Сюжет: вид из окна русской избы на славянское поле в золотой час — не «лес в лицо», а «избы на луг смотрят».
+
+Композиция: нижняя половина кадра (50–55%) — только открытое золотистое поле с высокой травой и редкими белыми полевыми цветами; ровная перспектива, трава уходит к горизонту. На линии горизонта (~55% высоты) — пологие холмы. За горизонтом — сплошная полоска **мелкого** дальнего леса: берёзы и сосны как маленькие силуэты на гребне холма, лёгкая атмосферная дымка, без отдельных крупных стволов в среднем плане. Верхние 15% — тёплое бледно-золотое небо с мягкой дымкой заката.
+
+Стиль: кинематографичная живопись, painterly realism — не мультяшный flat и не вектор. Свет тёплый, «золотой час»: солнечные блики на траве, длинные мягкие тени, тёплые зелёные и золотистые тона, ощущение сказочной, но живой природы средней полосы России. **Резкость:** читаемая фактура травы в нижней трети; горизонт и дальний лес — чёткие силуэты; **без** тяжёлой дымки, bloom и «мыльного» soft-focus (в оконном проёме ~24% ширины кадра артефакт размытия критичен).
+
+**Постобработка:** crop 21:9 → **2560×1097**, `sharpen sigma≈1.2`, JPEG q95.
+
+Настроение: уют, безопасность, магия леса без угрозы — фон за стеклом избы, не отвлекает от HUD. Центр кадра — зона оконного проёма (~38% ширины сцены); края кадра тоже видны через α-стёкла.
+
+Технические требования: ultrawide 21:9 после crop; без персонажей, животных, построек, рамки окна, UI и текста.
+
+Референс стиля: assets/view/landscape_standart.jpeg — повторить палитру, мягкость мазка, золотой час; **изменить** только перспективу: поле вместо крупных берёз у стекла.
+
+Чего не должно быть: крупные стволы берёз или сосен в переднем и среднем плане; деревья «в упор» к окну; вектор; плоский cartoon; low poly; зима и снег; город; дороги; машины; неон; HDR-пересвет; люди; животные; рамка окна; водяной знак; текст.
 ```
 
 ---
 
-### `assets/view/landscape_temnyy_les.jpeg` — тёмный лес (скин окна)
+### `assets/view/landscape_temnyy_les.jpeg` — тёмный лес (скин окна, v3)
 
 **Приоритет:** P1 · **Дроп:** обычный сундук, `window_skin`, грейд `rare`.
 
-**GenerateImage:** `aspect_ratio: "21:9"` · `reference_image_paths`: `assets/view/landscape_standart.jpeg`
+**Композиция v3:** **не поле**, **не обычная ночь** — **мифический лес тридесятого царства**: узкая лесная тропа/мох внизу (~25%), дальше — глубокий чащобный лес, лунный свет, лёгкое **сказочное** свечение между стволами, дымка **в глубине леса**, не на лугу. Искривлённые берёзы и ели, звёзды сквозь кроны.
+
+**GenerateImage:** `aspect_ratio: "16:9"` → crop **21:9** **2560×1097**, sharpen · `reference_image_paths`: `assets/creatures_in_the_book/leshiy.png`
 
 ```
-Dark dense Slavic forest panorama ultrawide 21:9, view through izba window,
-twisted birch and pine trunks, low mist between trees, dusk blue-green light,
-no hut, no chicken legs, no characters, ominous but cozy fairy tale not horror,
-cinematic painterly stylized realism, center-weighted for window aperture,
-no window frame, no UI, no text,
-Match the visual style of the attached reference — same painterly forest language as landscape_standart but darker mood, 40% brightness feel.
-style reference: assets/view/landscape_standart.jpeg
---no vector, cartoon, bright sunny meadow, urban, Baba Yaga hut, chicken legs, gore, neon, watermark
+Сюжет: вид из окна на лес **тридесятого царства** — сказочный, мистический, не «ночное поле» и не бытовая ночь за окном.
+
+Композиция: низ (~25%) — тёмная лесная подстилка, мох, корни, тропа; **без** открытого луга и без поля. Основной кадр — глубокий тёмный лес: искривлённые берёзы и ели, синий лунный свет сквозь ветви, едва заметное **магическое** свечение между деревьями (не неон), низкая дымка в **глубине** чащи. Дальние ярусы крон уходят в mystery. Палитра: глубокий сине-зелёный, чёрный, ~40% яркости; уютная славянская сказка, не хоррор.
+
+Стиль: painterly realism, резкие стволы и мох внизу, без bloom на всём кадре. Только пейзаж, без рамки окна, без персонажей.
+
+Референс настроения: assets/creatures_in_the_book/leshiy.png (мифический лес).
+
+Чего не должно быть: открытое поле; луг; «обычная» лунная ночь над поляной; город; неон; крупные стволы вплотную к нижнему краю «как в окно»; рамка окна; текст.
 ```
 
 ---
 
-### `assets/view/landscape_omut.jpeg` — омут (скин окна)
+### `assets/view/landscape_omut.jpeg` — омут (скин окна, v5)
 
 **Приоритет:** P1 · **Дроп:** обычный сундук, `window_skin`, грейды `common` и `epoch`.
 
-**GenerateImage:** `aspect_ratio: "21:9"` · `reference_image_paths`: `assets/view/landscape_standart.jpeg`
+**Композиция v5 (разметка владельца):**
+
+| Зона | Высота | Содержание |
+|------|--------|------------|
+| **Красная** (низ) | ~55% | Только луг с волнами травы |
+| **Синяя** (середина) | ~12–15% | **Компактный омут** — овальное зеркало воды по центру, дымка |
+| **Верх** | ~30% | Дальний лес + сумеречное небо |
+
+Порядок снизу вверх: **поле → омут → лес**. Без ряда елей между полем и водой.
+
+**GenerateImage:** `aspect_ratio: "16:9"` → crop **21:9** **2560×1097**, sharpen · `reference_image_paths`: mockup владельца + `assets/view/landscape_standart.jpeg`
+
+**GenerateImage:** `aspect_ratio: "16:9"` → crop **21:9** **2560×1097**, sharpen · `reference_image_paths`: `assets/view/landscape_standart.jpeg`
 
 ```
-Slavic river bank and dark still pool omut panorama ultrawide 21:9,
-view through izba window, reeds and alder trees on muddy shore,
-calm water with soft reflection, cool blue-green painterly tones,
-Vodyanoy folklore mood respectful not scary, mist on water surface,
-cinematic painterly stylized realism, center-weighted composition,
-no characters, no monsters, no window frame, no UI, no text,
-Match attached reference painterly style with water variant palette.
-style reference: assets/view/landscape_standart.jpeg
---no vector, cartoon, ocean beach waves, swimming pool, urban, neon, bright tropical, watermark
+Сюжет: вид из окна — луг уходит к **далёкому** омуту; Водяной, без угрозы.
+
+Композиция: **низ ~55%** — только луг (красная зона разметки). **Середина ~28–42% от верха** — компактный овальный омут по центру, ~12% высоты кадра, зеркальная вода, лёгкий туман (синяя зона). **Верх** — дальний лес и сумеречное небо. Снизу вверх: поле → омут → лес; **без** ряда деревьев между полем и водой.
+
+Стиль: только пейзаж (без рамки окна, без стен избы на PNG), painterly, резкая трава. Центр — оконный проём.
+
+Чего не должно быть: крупное озеро в среднем плане; рамка окна; близкий берег; океан; персонажи; текст.
 ```
 
 ---
 
-### `assets/view/landscape_cyber_city.jpeg` — киберпанк-город (скин окна, редкий)
+### `assets/view/landscape_cyber_city.jpeg` — киберпанк-город (скин окна, v7)
 
-**Приоритет:** P1 · **Дроп:** обычный сундук, `window_skin`, грейд `epoch` (редкий пул; пасхалка к скину кота `cyberpank`).
+**Приоритет:** P1 · **Дроп:** обычный сундук, `window_skin`, грейд `epoch`.
 
-**GenerateImage:** `aspect_ratio: "21:9"` · `reference_image_paths`: `assets/view/landscape_standart.jpeg`, `assets/pets/rate/cyberpank/cyberpank_sid.png`
+**Композиция v7:** **только улица** — узкий кибер-переулок 2–3 этажа, крупные неоновые вывески magenta/cyan, мокрый асфальт в перспективе. **Без** леса, поля, небоскрёбов-«игл», vertical streak glitch. **Без** персонажей и кота.
+
+**CSS (окно смотрит на верхнюю часть 21:9):** `.window-aperture[data-window-skin='landscape_cyber_city'] .window-aperture__forest { transform: translateY(-62%); }` — сдвиг к уровню улицы.
+
+**GenerateImage:** `aspect_ratio: "16:9"` → crop **21:9** **2560×1097**, sharpen · **не** использовать `cyberpank_sid` (тянет кота в кадр)
 
 ```
-Futuristic cyberpunk city skyline panorama ultrawide 21:9,
-view through izba window as surreal contrast — neon towers, rain-slick rooftops,
-magenta and cyan accent lights, night haze, distant flying vehicles tiny silhouettes,
-foreground still hints Slavic birch treeline at bottom edge melting into city,
-cinematic painterly stylized not flat vector, center-weighted,
-no characters, no cat, no window frame, no UI, no text,
-Easter egg rare skin: folklore izba meets neon metropolis; neon accents echo cyber cat skin palette.
-style reference: assets/view/landscape_standart.jpeg + assets/pets/rate/cyberpank/cyberpank_sid.png
---no vector, flat, material design UI, daytime, medieval village only, watermark, readable logos
+Сюжет: за окном избы — **только** кибerpunk-улица (конtrast сказки и мегаполиса).
+
+Композиция: узкий кибerpunk-переулок ночью — **низкая** застройка 2–3 этажа, крупные прямоугольные неоновые вывески magenta и cyan, мокрый асфальт с отражениями в перспективе. **Без** леса, поля, небоскрёбов-игл, vertical glitch, персонажей. Палитра неона — как cyberpank, но **без** кота в кадре.
+
+Стиль: painterly cinematic cyberpunk, читаемые фасады и вывески. Центр — оконный проём; в коде `translateY(-62%)` для этого скина.
+
+Чего не должно быть: лес; поле; парк; деревья; трава; medieval; рамка окна; логотипы; текст.
 ```
 
 ---
 
 ### `assets/view/landscape_yaga.jpeg` — избушка в окне (скин леса, квест Яги)
 
-> ⏸ **Отложено (2026-09-05):** награда квеста Яги — титул «Коготь Яги» + трофей; скин `landscape_yaga` не нужен для MVP.
+> ✅ **В плане (2026-09-08):** `instruction/plans/quest_rewards_lada_yaga.plan.md` — TASK-026/027. Награда Яги: титул + трофей `yaga_hut` + скин `landscape_yaga`.
 
 **Приоритет:** P1 · **Экран:** `.window-aperture__forest`, вкладка «Лес» в профиле.  
 **Дроп:** квест Бабы-Яги (`window_skin_yaga_hut`, 3 фрагмента). **ID:** `landscape_yaga`. **Не** сундук; **не** путать с `landscape_temnyy_les` (тёмный лес без избушки).
@@ -1026,13 +1133,28 @@ style reference: assets/brownie/common/brownie_standart.png + assets/view/landsc
 **Грейд:** Эпический
 
 ```
-Rusalka river maiden spirit, pale young woman with long green hair with water weeds, flower wreath, melancholic gentle eyes, bare shoulders,
-miniature moonlit pond edge diorama: silver comb on rock, water lilies, reeds, calm reflective water,
+Rusalka Slavic folk river spirit, fair-haired young woman in loose white linen shirt, wildflower wreath, loose flowing hair,
+sitting on bent birch branch above quiet river backwater diorama, pearl comb on small wooden footbridge stone,
+calm reflective water, reeds, willow, birch leaves,
 volumetric stylized 3D clay/plasticine diorama miniature, hand-sculpted tactile matte finish,
 soft cool moonlit warm mix lighting, soft shadow, centered portrait,
 solid black background, no text,
 style reference: assets/brownie/common/brownie_standart.png + assets/furniture/box_closed.png + assets/creatures_in_the_book/rusalka.png
---no vector, flat, line art, photorealistic, anime, neon, horror
+--no fish tail, mermaid, green seaweed hair, bare shoulders, horror, vector, flat, line art, photorealistic, anime, neon
+```
+
+---
+
+### `assets/creatures_in_the_book/rusalka.png` — Русалка (силуэт в книге)
+
+**Канон:** белая гравюра/силуэт — девушка в рубахе и венке на ветке берёзы, без хвоста (стиль серии `creatures_in_the_book/`).
+
+```
+white engraved silhouette Rusalka folk spirit, young woman in white shirt and flower wreath sitting on birch branch,
+simple book illustration cutout style matching creatures_in_the_book series,
+clean high-contrast white figure on transparent or dark cutout, no fish tail,
+style reference: assets/creatures_in_the_book/brownie.png + assets/creatures_in_the_book/lada.png
+--no mermaid, green hair, horror, color fill, 3D render, photorealistic
 ```
 
 ---
@@ -1142,6 +1264,8 @@ style reference: assets/brownie/common/brownie_standart.png + assets/furniture/b
 | `bg_*.jpeg` | `landscape_standart.jpeg` / `hut_standart.png` + CSS filters |
 | `landscape_night.jpeg` | `landscape_standart.jpeg` + `brightness(0.4) hue-rotate(200deg)` |
 | HUD-иконки | Цветной круг + `alt` (только dev, не прод) |
+| `kikimora_companion.png` | кроп bust `furniture/kikimora_weaving.png` (`object-position: 50% 12%`), **не** `creatures_in_the_book/kikimora.png`, **не** круг с бордером `#8b6914` |
+| `icon_grass.png` | `furniture/yard_grass.png` 32×32 `contain` в `.hud-grass` |
 
 ---
 
@@ -1155,6 +1279,8 @@ style reference: assets/brownie/common/brownie_standart.png + assets/furniture/b
 | `icon_coin.png` | P0 | HUD | ✅ |
 | `icon_obereg.png` | P0 | HUD | ✅ |
 | `icon_smetana.png` | P0 | HUD | ✅ |
+| `kikimora_companion.png` | P0 | HUD рельс | ⏳ промпт §P0 |
+| `icon_grass.png` | P1 | HUD ресурс травы | ⏳ промпт §P0; fallback `yard_grass.png` |
 | `arrow_right_wood.png` | P0 | Навигация | ✅ |
 | `arrow_left_wood.png` | P0 | Навигация | ✅ |
 | `dialog_frame_wood.png` | P0 | Диалог кота | ✅ |
@@ -1172,6 +1298,9 @@ style reference: assets/brownie/common/brownie_standart.png + assets/furniture/b
 | `landscape_omut.jpeg` | P1 | Скин окна; сундук | ✅ §P1 |
 | `landscape_cyber_city.jpeg` | P1 | Скин окна; сундук epoch редкий | ✅ §P1 |
 | `quiz/bg_banya.jpeg` (21:9) | P1 | Викторина Банник | ✅ §P1 |
+| ~~`quiz/chest_loot_bg.jpeg`~~ | — | Отменён; сундук без JPEG + confetti | ❌ |
+| `quiz/trophy_tale_bg.jpeg` | P0 | Модалка трофея | ✅ §quiz/trophy_tale |
+| `quiz/kikimora_craft_bg.jpeg` | P0 | **Только** крафт Кикиморы | ✅ не переиспользовать |
 | `landscape_yaga.jpeg` | P1 | Скин леса (квест Яга); избушка в проёме | ✅ §P1 |
 | `hut_harmony.png` | P1 | Скин избы (квест Лада) | ✅ §P1 |
 | α-стёкла `hut_*.png` | P0 | Композитинг избы | ✅ задача |

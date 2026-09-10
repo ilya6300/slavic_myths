@@ -48,6 +48,7 @@ export function getProfileIzbaSkins(): ProfileSkinEntry[] {
     hut_rate: 'rare',
     hut_epic: 'epic',
     hut_the_age_of_miracles: 'epoch',
+    hut_harmony: 'epic',
   };
   return (Object.keys(houseSkins) as HouseSkinId[]).map((id) => ({
     id,

@@ -78,3 +78,21 @@ export function shouldIncrementWonderClickProgress(
   if (!eligible || !weekSlotUsed) return false;
   return clickProgress < miracleChest.clicksToOpen;
 }
+
+/** Бар на полу. Скрыт на бесплатном слоте недели — даже если clicks > 0 после sync понедельника. */
+export function shouldShowWonderChestProgress(
+  weekSlotUsed: boolean,
+  _clicks: number,
+  _required: number,
+): boolean {
+  return weekSlotUsed;
+}
+
+/** Источник `--chest-progress` (clamp 0…1). 0/required → 0; required/required → 1. */
+export function wonderChestFillRatio(clicks: number, required: number): number {
+  if (required <= 0) return 0;
+  const ratio = clicks / required;
+  if (ratio < 0) return 0;
+  if (ratio > 1) return 1;
+  return ratio;
+}

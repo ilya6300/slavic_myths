@@ -13,10 +13,15 @@ import { getTitleById } from '../../data/titles';
 import { getSpiritById } from '../../data/spirits';
 import type { ProfileSkinCategory } from '../../data/profileCatalog';
 import type { ChestLootItem } from '../../domain/chestLoot';
+import type { Grade } from '../../domain/grade';
 import { formatLocalizedTemplate, resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
 import { chestUiStore } from '../../store/chestUiStore';
+import { ModalCloseButton } from '../common/ModalCloseButton';
+import { WoodQuestButton } from '../common/WoodQuestButton';
+import { ChestDropChancesPanel, ChestDropChancesToggle } from './ChestDropChancesPanel';
+import { ChestLootFx } from './ChestLootFx';
 import { formatCooldownMs } from './formatCooldown';
 
 function skinCategoryForKind(
@@ -98,11 +103,16 @@ function resolveLootLabel(
   }
 }
 
+function resolveLootGrade(loot: ChestLootItem): Grade {
+  return loot.grade ?? (loot.kind === 'fragment' ? 'epoch' : 'common');
+}
+
 export const ChestLootModal = observer(function ChestLootModal() {
   const { locale } = useLocale();
   const loot = chestUiStore.lastLoot;
   const isMiracle = chestUiStore.source === 'miracle';
   const [remainingMs, setRemainingMs] = useState(0);
+  const [dropsExpanded, setDropsExpanded] = useState(false);
 
   useEffect(() => {
     if (!chestUiStore.isOpen || isMiracle) return;
@@ -116,10 +126,14 @@ export const ChestLootModal = observer(function ChestLootModal() {
 
   if (!chestUiStore.isOpen || !loot) return null;
 
-  const grade = loot.grade ?? (loot.kind === 'fragment' ? 'epoch' : 'common');
+  const grade = resolveLootGrade(loot);
   const frameSrc = gradeFrames[grade];
   const showHurry = !isMiracle && remainingMs > 0;
   const chestOpenSrc = isMiracle ? furniture.miracleChestOpen : furniture.boxOpen;
+  const takeLabel = resolveText(
+    isMiracle ? settingsUiContent.miracleLootTake : settingsUiContent.chestLootTake,
+    locale,
+  );
 
   const handleTake = () => {
     gameStore.dismissChestLoot();
@@ -130,10 +144,15 @@ export const ChestLootModal = observer(function ChestLootModal() {
   };
 
   return (
-    <div className={`chest-modal${isMiracle ? ' chest-modal--miracle' : ''}`} role="dialog" aria-modal="true">
-      <div className="chest-modal__backdrop" aria-hidden />
-      <div className="chest-modal__panel">
-        <h2 className="chest-modal__title">
+    <div
+      className={`game-modal chest-modal layer-modal${isMiracle ? ' chest-modal--miracle' : ''}`}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="game-modal__backdrop" aria-hidden onClick={handleTake} />
+      <div className="game-modal__panel chest-modal__panel">
+        <ModalCloseButton onClick={handleTake} />
+        <h2 className="game-modal__title chest-modal__title">
           {resolveText(
             isMiracle
               ? settingsUiContent.miracleLootTitle
@@ -142,8 +161,13 @@ export const ChestLootModal = observer(function ChestLootModal() {
           )}
         </h2>
 
-        <div className="chest-modal__reward">
+        <div className="game-modal__scene game-modal__scene--plain chest-modal__scene">
           <div className="chest-modal__frame-wrap">
+            <ChestLootFx
+              grade={grade}
+              isMiracle={isMiracle}
+              wasDuplicate={loot.wasDuplicate}
+            />
             <img
               className="chest-modal__frame"
               src={frameSrc}
@@ -157,37 +181,43 @@ export const ChestLootModal = observer(function ChestLootModal() {
               draggable={false}
             />
           </div>
-          <p className="chest-modal__loot-text">{resolveLootLabel(loot, locale)}</p>
+        </div>
+
+        <p className="chest-modal__loot-text">{resolveLootLabel(loot, locale)}</p>
+
+        {showHurry && (
+          <p className="chest-modal__timer">
+            {resolveText(settingsUiContent.chestCooldown, locale)}:{' '}
+            {formatCooldownMs(remainingMs)}
+          </p>
+        )}
+
+        <div className="chest-modal__drops-section">
+          <ChestDropChancesToggle
+            expanded={dropsExpanded}
+            onToggle={() => setDropsExpanded((v) => !v)}
+          />
+          {dropsExpanded && (
+            <ChestDropChancesPanel
+              preview={gameStore.getChestDropPreview(isMiracle ? 'miracle' : 'regular')}
+              isMiracle={isMiracle}
+            />
+          )}
         </div>
 
         {showHurry && (
-          <div className="chest-modal__cooldown">
-            <p className="chest-modal__timer">
-              {resolveText(settingsUiContent.chestCooldown, locale)}:{' '}
-              {formatCooldownMs(remainingMs)}
-            </p>
-            <button
-              type="button"
-              className="chest-modal__hurry"
-              onClick={handleHurry}
-            >
-              {resolveText(settingsUiContent.chestHurryLuck, locale)}
-            </button>
-          </div>
+          <WoodQuestButton
+            className="chest-modal__hurry"
+            label={resolveText(settingsUiContent.chestHurryLuck, locale)}
+            onClick={handleHurry}
+          />
         )}
 
-        <button
-          type="button"
+        <WoodQuestButton
           className="chest-modal__take"
+          label={takeLabel}
           onClick={handleTake}
-        >
-          {resolveText(
-            isMiracle
-              ? settingsUiContent.miracleLootTake
-              : settingsUiContent.chestLootTake,
-            locale,
-          )}
-        </button>
+        />
       </div>
     </div>
   );

@@ -32,6 +32,8 @@ describe('susedkoSteal', () => {
 
         catSleeping: true,
 
+        catSleepReason: 'afk',
+
         activeRoom: 1,
 
         zhirdyayActive: false,
@@ -44,6 +46,19 @@ describe('susedkoSteal', () => {
 
 
 
+  it('should block steal when cat is tired not AFK', () => {
+    expect(
+      canStartSusedkoSteal({
+        onboardingCompleted: true,
+        firstChestOpened: true,
+        catSleeping: true,
+        catSleepReason: 'tired',
+        activeRoom: 1,
+        zhirdyayActive: false,
+      }),
+    ).toBe(false);
+  });
+
   it('should block steal during onboarding', () => {
 
     expect(
@@ -55,6 +70,8 @@ describe('susedkoSteal', () => {
         firstChestOpened: true,
 
         catSleeping: true,
+
+        catSleepReason: 'afk',
 
         activeRoom: 1,
 

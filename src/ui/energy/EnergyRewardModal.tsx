@@ -5,6 +5,7 @@ import { resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
 import { energyUiStore } from '../../store/energyUiStore';
+import { ModalCloseButton } from '../common/ModalCloseButton';
 
 export const EnergyRewardModal = observer(function EnergyRewardModal() {
   const { locale } = useLocale();
@@ -27,6 +28,7 @@ export const EnergyRewardModal = observer(function EnergyRewardModal() {
         onClick={handleClose}
       />
       <div className="chest-modal__panel">
+        <ModalCloseButton onClick={handleClose} />
         <h2 className="chest-modal__title">
           {resolveText(settingsUiContent.energyRewardTitle, locale)}
         </h2>

@@ -68,6 +68,14 @@ function addOwnedTitle(ids: string[], titleId: string): string[] {
 
 
 
+function addOwnedSkin(ids: string[], skinId: string): string[] {
+
+  return ids.includes(skinId) ? ids : [...ids, skinId];
+
+}
+
+
+
 export function applySpiritReward(
 
   reward: SpiritReward,
@@ -159,6 +167,34 @@ export function applySpiritReward(
       const titleId = reward.titleId!;
 
       return { ownedTitleIds: addOwnedTitle(state.ownedTitleIds, titleId) };
+
+    }
+
+
+
+    case 'title_and_skin': {
+
+      const titleId = reward.titleId!;
+
+      const skinId = reward.skinId!;
+
+      return {
+
+        ownedTitleIds: addOwnedTitle(state.ownedTitleIds, titleId),
+
+        ownedSkinIds: addOwnedSkin(state.ownedSkinIds, skinId),
+
+      };
+
+    }
+
+
+
+    case 'skin_only': {
+
+      const skinId = reward.skinId!;
+
+      return { ownedSkinIds: addOwnedSkin(state.ownedSkinIds, skinId) };
 
     }
 

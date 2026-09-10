@@ -16,6 +16,7 @@ const skinLocalizedNames: Record<ProfileSkinCategory, Record<string, LocalizedTe
     black_green_spark: L('Искристый', 'Green Spark', 'Yeşil Kıvılcım'),
     cyberpank: L('Киберкот', 'Cyber Cat', 'Siber Kedi'),
     green_mage: L('Зелёный маг', 'Green Mage', 'Yeşil Büyücü'),
+    cat_pilgrim: L('Путник', 'Traveler', 'Yolcu'),
     mace: L('Тигровый', 'Tiger Mask', 'Kaplan Maskeli'),
     ninja: L('Ниндзя', 'Ninja', 'Ninja'),
     blue_mage: L('Синий маг', 'Blue Mage', 'Mavi Büyücü'),
@@ -31,12 +32,14 @@ const skinLocalizedNames: Record<ProfileSkinCategory, Record<string, LocalizedTe
     hut_rate: L('Редкая', 'Rare Hut', 'Nadir Kulübe'),
     hut_epic: L('Эпическая', 'Epic Hut', 'Epik Kulübe'),
     hut_the_age_of_miracles: L('Эпоха чудес', 'Age of Miracles', 'Mucizeler Çağı'),
+    hut_harmony: L('Гармония', 'Harmony', 'Uyum'),
   },
   window: {
     landscape_standart: L('Стандартный лес', 'Standard Forest', 'Standart Orman'),
     landscape_temnyy_les: L('Тёмный лес', 'Dark Forest', 'Karanlık Orman'),
     landscape_omut: L('Омут', 'Dark Pool', 'Gölet'),
     landscape_cyber_city: L('Неоновый город', 'Neon City', 'Neon Şehir'),
+    landscape_yaga: L('Избушка Яги', 'Yaga\'s Hut', 'Yaga\'nın Kulübesi'),
   },
   brownie: {
     brownie_standart: L('Стандартный', 'Standard Domovoy', 'Standart Domovoy'),

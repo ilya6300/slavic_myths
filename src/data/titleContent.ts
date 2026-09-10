@@ -34,7 +34,7 @@ export const titleLocalizedNames: Record<string, LocalizedText> = {
   tenevoy_okhotnik: L('Теневой Охотник', 'Shadow Hunter', 'Gölge Avcısı'),
   groza_zhirdyaev: L('Гроза Жирдяев', 'Bane of Zhirdyays', 'Zhirdyayların Belası'),
   poldnevnyy: L('Полдневный', 'Midday Cat', 'Öğle Vakti'),
-  kot_u_berega: L('Кот у берега', 'Shore Cat', 'Kıyı Kedisi'),
+  kot_u_berega: L('Кот на берегу', 'Cat on the Shore', 'Kıyıda Kedi'),
   gost_lada: L('Гость Лада', 'Lada\'s Guest', 'Lada\'nın Misafiri'),
   kogot_yagi: L('Коготь Яги', 'Yaga\'s Claw', 'Yaga\'nın Pençesi'),
   lapa_velesa: L('Лапа Велеса', 'Veles\'s Paw', 'Veles\'in Pençesi'),

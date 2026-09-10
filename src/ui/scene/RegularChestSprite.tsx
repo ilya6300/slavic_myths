@@ -39,9 +39,11 @@ export const RegularChestSprite = observer(function RegularChestSprite({
       className={`scene-chest-wrap ${chestRegularPlacement.className}${className ? ` ${className}` : ''}`}
     >
       {showTimer && (
-        <span className="scene-chest__timer" aria-live="polite">
-          {formatCooldownMs(remainingMs)}
-        </span>
+        <div className="scene-chest-floor scene-chest-floor--timer" aria-live="polite">
+          <span className="scene-chest-floor__label scene-chest-floor__label--zzz">
+            {formatCooldownMs(remainingMs)}
+          </span>
+        </div>
       )}
       <SceneSprite
         placementClassName="scene-chest-wrap__sprite"

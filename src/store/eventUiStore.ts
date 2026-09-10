@@ -189,6 +189,8 @@ export class EventUiStore {
 
       catSleeping: sceneUiStore.catSleeping,
 
+      catSleepReason: sceneUiStore.catSleepReason,
+
       activeRoom: sceneUiStore.activeRoom,
 
       zhirdyayActive: gameStore.zhirdyayActive,
@@ -327,9 +329,7 @@ export class EventUiStore {
 
 
 
-    if (!cooldownOk) {
-
-      if (this.susedkoPhase === 'stealing') this.resetSusedkoSteal();
+    if (this.susedkoPhase === 'idle' && !cooldownOk) {
 
       return;
 
@@ -444,9 +444,14 @@ export class EventUiStore {
 
     this.susedkoClicks += 1;
 
-    this.susedkoPositionIndex =
-
-      (this.susedkoPositionIndex + 1) % susedkoStealPositions.length;
+    const poolSize = susedkoStealPositions.length;
+    if (poolSize > 1) {
+      let next = Math.floor(rng() * poolSize);
+      while (next === this.susedkoPositionIndex) {
+        next = Math.floor(rng() * poolSize);
+      }
+      this.susedkoPositionIndex = next;
+    }
 
 
 

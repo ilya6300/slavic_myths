@@ -16,6 +16,7 @@ import {
 
   LOOT_POOL_TOTAL,
 
+  regularChest,
   regularChestExtraRolls,
 
   regularChestGradeWeights,
@@ -40,13 +41,11 @@ import {
 
 import { isDefaultOwnedSkin } from '../data/profileCatalog';
 
-import { applyLuckToGradeWeights } from '../config/lootTables';
+import { applyChestGradeWeights } from '../config/lootTables';
 
 import type { Grade } from './grade';
 
 import type { GameSkins, SpiritStatus } from './GameSave';
-
-import { getBrownieLuckMultiplier } from './brownieLuck';
 
 import { addRewardEnergy } from './rewardEnergy';
 
@@ -95,6 +94,16 @@ export interface ChestLootItem {
 
 
 
+export interface RegularRollResult {
+
+  loot: ChestLootItem;
+
+  nextEpochPityCounter: number;
+
+}
+
+
+
 export interface ChestRollState {
 
   ownedSkinIds: string[];
@@ -108,6 +117,7 @@ export interface ChestRollState {
   selectedFragmentSpiritId: string | null;
 
   domovoySkinId: string;
+  luckCoins: number;
   firstChestOpened?: boolean;
   chestReadyAt?: number | null;
   spareChestKeys?: number;
@@ -294,6 +304,46 @@ function allFragmentSpiritsUnlocked(state: ChestRollState): boolean {
 
 
 
+function hasAvailableEpochSkin(state: ChestRollState): boolean {
+
+  for (const category of ['cat', 'brownie', 'izba', 'window'] as SkinCategory[]) {
+
+    const pool = getSkinIdsForCategory(category, 'epoch');
+
+    if (pool.some((id) => !isSkinOwned(id, state.ownedSkinIds))) {
+
+      return true;
+
+    }
+
+  }
+
+  return false;
+
+}
+
+
+
+function isEpochSkinLoot(loot: ChestLootItem): boolean {
+
+  return (
+
+    loot.grade === 'epoch' &&
+
+    (loot.kind === 'cat_skin' ||
+
+      loot.kind === 'brownie_skin' ||
+
+      loot.kind === 'izba_skin' ||
+
+      loot.kind === 'window_skin')
+
+  );
+
+}
+
+
+
 function rollExtraFragment(
 
   state: ChestRollState,
@@ -428,31 +478,63 @@ export function rollRegularChestLoot(
 
   state: ChestRollState,
 
+  epochPityCounter: number,
+
   rng: () => number = Math.random,
 
-): ChestLootItem {
+): RegularRollResult {
+
+  const pityReady = epochPityCounter >= regularChest.epochPityEvery - 1;
+
+
+
+  if (pityReady && hasAvailableEpochSkin(state)) {
+
+    const loot = rollTypeForGrade('epoch', state, rng) ?? { kind: 'obereg' };
+
+    return { loot, nextEpochPityCounter: 0 };
+
+  }
+
+
+
+  const effectivePityCounter = pityReady ? 0 : epochPityCounter;
+
+
 
   const extra = rollExtraFragment(state, rng);
 
-  if (extra) return extra;
+  if (extra) {
+
+    return { loot: extra, nextEpochPityCounter: 0 };
+
+  }
 
 
 
-  const luckMult = getBrownieLuckMultiplier(state.domovoySkinId);
+  const weights = applyChestGradeWeights(regularChestGradeWeights, {
 
-  const weights = applyLuckToGradeWeights(
+    domovoySkinId: state.domovoySkinId,
 
-    regularChestGradeWeights,
+    luckCoins: state.luckCoins,
 
-    luckMult,
-
-  );
+  });
 
   const grade = pickWeightedGrade(weights, rng);
 
-  const result = rollTypeForGrade(grade, state, rng);
+  const loot = rollTypeForGrade(grade, state, rng) ?? { kind: 'obereg' };
 
-  return result ?? { kind: 'obereg' };
+
+
+  if (isEpochSkinLoot(loot)) {
+
+    return { loot, nextEpochPityCounter: 0 };
+
+  }
+
+
+
+  return { loot, nextEpochPityCounter: effectivePityCounter + 1 };
 
 }
 

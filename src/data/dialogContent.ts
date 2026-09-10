@@ -335,6 +335,42 @@ export const catDialogBanksContent = {
     ),
   ],
 
+  tired: [
+    L('Мур… лапы ватные. Сметаны бы.', 'Purr… paws are lead. Some sour cream.', 'Mır… pençeler ağır. Biraz kaymak.'),
+    L('В смысле работать? Я же выдохся.', 'Work? I\'m wiped out.', 'Çalışmak mı? Ben tükendim.'),
+    L('Клик-клик. Я сплю. Почти официально.', 'Click-click. I\'m asleep. Almost officially.', 'Tık-tık. Uyuyorum. Neredeyse resmi.'),
+    L('Усы ещё тут. Сил — нет.', 'Whiskers still here. Strength — not.', 'Bıyıklar hâlâ burada. Güç — yok.'),
+    L('Разбуди, когда миска вернётся.', 'Wake me when the bowl returns.', 'Kase geri gelince uyandır.'),
+  ],
+
+  yard_blocked_zhirdyay: [
+    L('В смысле на улицу? Тебе вообще меня не жалко.', 'The street? You don\'t care about me at all.', 'Sokağa mı? Beni hiç düşünmüyorsun.'),
+    L('Улица? Да ну, уже время много, я наверное спать.', 'The street? It\'s late, I should sleep.', 'Sokak mı? Geç oldu, uyuyayım.'),
+    L('Я? Иди ты посмотри?', 'Me? You go look?', 'Ben mi? Sen git bak?'),
+    L('Это кто в окне? Иди спроси, что ему надо…', 'Who\'s in the window? Go ask what he wants…', 'Pencerede kim var? Git sor ne istiyor…'),
+    L('Эй. Я тут один. Там темно. И стекло дребезжит.', 'Hey. I\'m alone here. It\'s dark. And the glass rattles.', 'Hey. Burada yalnızım. Karanlık. Cam titriyor.'),
+    L('На улицу? С удовольствием. Только ты первый. Я… подстрахую.', 'The street? Gladly. You first. I\'ll… cover you.', 'Sokağa mı? Memnuniyetle. Önce sen. Ben… arkanda olurum.'),
+    L('Нет. Лапы ватные. Хвост дрожит. Это не страх. Это… стратегия.', 'No. Lead paws. Shaking tail. Not fear. Strategy.', 'Hayır. Pençeler ağır. Kuyruk titriyor. Korku değil. Strateji.'),
+    L('Хозяин, у нас гость в окне. А ты меня на улицу?', 'Owner, we have a guest in the window. And you send me out?', 'Ev sahibi, pencerede misafir var. Beni sokağa mı?'),
+    L('Я бы вышел. Честно. Но кто тут сундук караулит?', 'I\'d go out. Honestly. But who guards the chest?', 'Giderdim. Ama sandığı kim bekliyor?'),
+    L('Дверь? За дверью Жирдяй. За мной — тоже кот. Выбирай.', 'The door? ZhirDyay\'s outside. Behind me — also a cat. Choose.', 'Kapı mı? Dışarıda JirDyay. Arkamda da kedi. Seç.'),
+  ],
+
+  yard_blocked_night: [
+    L('Роса на траве. Утром соберём.', 'Dew on the grass. We\'ll gather in the morning.', 'Çimde çiy var. Sabah toplarız.'),
+    L('Ночью на межу не ходят. Даже коты.', 'Nobody walks the yard at night. Even cats.', 'Geceleri bahçeye çıkılmaz. Kediler bile.'),
+    L('Улица спит. И я тоже почти.', 'The yard sleeps. And so do I, almost.', 'Sokak uyuyor. Ben de neredeyse.'),
+  ],
+
+  yard_need_kikimora: [
+    L('Сначала уговори хозяйку ниток.', 'First convince the mistress of threads.', 'Önce iplik hanımını ikna et.'),
+    L('Трава есть. Узла пока нет — Кикимора не плетёт.', 'Grass is here. No knot yet — Kikimora won\'t weave.', 'Ot var. Düğüm yok — Kikimora örmüyor.'),
+  ],
+
+  yard_craft_done: [
+    L('Узел ровный. Кикимора бы хмыкнула одобрительно.', 'Neat knot. Kikimora would hum approval.', 'Düğüm düzgün. Kikimora onaylar mırıldanırdı.'),
+  ],
+
   miracle_chest_event: [
     L(
       'Сундук чудес снова стучит. Первый раз на неделе — даром.',
@@ -512,9 +548,9 @@ export const settingsUiContent = {
   chestLootTake: L('Забрать', 'Take', 'Al'),
   chestCooldown: L('Следующий сундук через', 'Next chest in', 'Sonraki sandık'),
   chestHurryLuck: L(
-    'Домовой шепчет: поторопи удачу (−30 мин)',
-    'Domovoy whispers: hurry luck (−30 min)',
-    'Domovoy fısıldıyor: şansı acele ettir (−30 dk)',
+    'За сказку −30 мин',
+    'A tale −30 min',
+    'Masal −30 dk',
   ),
   chestRewardCatSkin: L('Скин кота', 'Cat skin', 'Kedi skini'),
   chestRewardBrownieSkin: L('Скин домового', 'Domovoy skin', 'Domovoy skini'),
@@ -532,6 +568,20 @@ export const settingsUiContent = {
   chestRewardFragment: L('Фрагмент', 'Fragment', 'Parça'),
   chestRewardOberegX2: L('Тайные обереги ×2', 'Secret charms ×2', 'Gizli tılsım ×2'),
   chestDuplicate: L('Дубликат', 'Duplicate', 'Kopya'),
+  chestShowDropChances: L('Шансы выпадения', 'Drop chances', 'Düşme şansları'),
+  chestHideDropChances: L('Скрыть шансы', 'Hide chances', 'Şansları gizle'),
+  chestLuckRarePlus: L('редким+', 'rare+', 'nadir+'),
+  chestLuckBonusLine: L(
+    'Домовой: +{domovoi}% к {rarePlus} · Монеты ({coins}): +{coinsBonus}% к {rarePlus}',
+    'Domovoy: +{domovoi}% to {rarePlus} · Luck coins ({coins}): +{coinsBonus}% to {rarePlus}',
+    'Domovoy: {rarePlus} için +{domovoi}% · Şans paraları ({coins}): {rarePlus} için +{coinsBonus}%',
+  ),
+  chestDropDisclaimer: L(
+    'Шансы с учётом вашей коллекции',
+    'Chances based on your collection',
+    'Koleksiyonunuza göre şanslar',
+  ),
+  chestDropInCollection: L('в коллекции', 'in collection', 'koleksiyonda'),
   miracleLootTitle: L('Сундук чудес!', 'Miracle chest!', 'Mucize sandığı!'),
   miracleLootTake: L('Забрать', 'Take', 'Al'),
   bookFragmentProgress: L(
@@ -555,6 +605,25 @@ export const settingsUiContent = {
   profileEquip: L('Выбрать', 'Equip', 'Seç'),
   profileEquipped: L('Выбрано', 'Equipped', 'Seçili'),
   profileLocked: L('Ещё не получено', 'Not owned yet', 'Henüz yok'),
+  skinBonusBrownieLuck: L(
+    '+{percent}% к шансу редкого лута из сундука',
+    '+{percent}% to rare loot chance from chest',
+    'Sandıktan nadir loot şansına +{percent}%',
+  ),
+  skinBonusCosmeticOnly: L('Только внешний вид', 'Cosmetic only', 'Sadece görünüm'),
+  profileStatMaxEnergy: L('Макс. энергия', 'Max energy', 'Maks. enerji'),
+  profileStatEnergyRegen: L('Реген энергии', 'Energy regen', 'Enerji yenilenmesi'),
+  profileStatLuckCoinsCap: L('Макс. монет', 'Max luck coins', 'Maks. şans parası'),
+  profileStatLuckCoinsNow: L('Монеты сейчас', 'Luck coins now', 'Şans paraları'),
+  profileStatBaseChestLuck: L('Базовый шанс сундука', 'Base chest luck', 'Temel sandık şansı'),
+  profileStatCurrentChestLuck: L('Текущий шанс сундука', 'Current chest luck', 'Güncel sandık şansı'),
+  profileStatCurrentChestLuckValue: L(
+    '+{total}% (домовой +{domovoi}%, монеты {coins} × 0.05% = +{coinsBonus}%)',
+    '+{total}% (domovoy +{domovoi}%, coins {coins} × 0.05% = +{coinsBonus}%)',
+    '+{total}% (domovoy +{domovoi}%, paralar {coins} × 0.05% = +{coinsBonus}%)',
+  ),
+  profileStatZhirdyayCaught: L('Поймано жирдяев', 'Zhirdyays caught', 'Yakalanan Zhirdyay'),
+  profileTabStats: L('Характеристики', 'Stats', 'İstatistikler'),
   profileTabCat: L('Кот', 'Cat', 'Kedi'),
   profileTabIzba: L('Изба', 'Hut', 'Kulübe'),
   profileTabWindow: L('Лес', 'Forest', 'Orman'),
@@ -605,6 +674,52 @@ export const settingsUiContent = {
     'Buluta kaydet',
   ),
   cloudBannerDismiss: L('Не сейчас', 'Not now', 'Şimdi değil'),
+  rewardedWaitSmetana: L(
+    'Кот лакает сметану…',
+    'The cat laps up sour cream…',
+    'Kedi kaymağı yalıyor…',
+  ),
+  rewardedWaitChest: L(
+    'Домовой шепчет удачу…',
+    'The Domovoy whispers luck…',
+    'Domovoy şans fısıldıyor…',
+  ),
+  rewardedWaitCancel: L('Отмена', 'Cancel', 'İptal'),
+  starterPackTitle: L('Дар путника', "Wanderer's gift", 'Yolcunun armağanı'),
+  starterPackRail: L('Дар путника', "Wanderer's gift", 'Yolcunun armağanı'),
+  starterPackLore: L(
+    'Домовой принёс ларец страннику.',
+    'The Domovoy brought a casket for the wanderer.',
+    'Domovoy yolcuya bir sandık getirdi.',
+  ),
+  starterPackPay: L(
+    'Оплатить {price} ₽',
+    'Pay {price} ₽',
+    '{price} ₽ öde',
+  ),
+  starterPackLater: L('Не сейчас', 'Not now', 'Şimdi değil'),
+  starterPackOwned: L('Дар уже твой', 'The gift is already yours', 'Armağan zaten senin'),
+  hudRailLabel: L('События', 'Events', 'Olaylar'),
+  hudGrassTooltip: L(
+    'Три пучка — Кикимора сплетёт оберег',
+    'Three bundles — Kikimora will weave a charm',
+    'Üç demet — Kikimora tılsım örer',
+  ),
+  kikimoraRailName: L('Кикимора', 'Kikimora', 'Kikimora'),
+  kikimoraRailWeave: L('Сплести', 'Weave', 'Ör'),
+  kikimoraRailAria: L(
+    'Кикимора — сплести оберег',
+    'Kikimora — weave a charm',
+    'Kikimora — tılsım ör',
+  ),
+  kikimoraCraftTitle: L('Тайный оберег', 'Secret charm', 'Gizli tılsım'),
+  kikimoraCraftHint: L(
+    'Кикимора знает узел. Три пучка — и оберег держится в викторине.',
+    'Kikimora knows the knot. Three bundles — and the charm holds in the quiz.',
+    'Kikimora düğümü bilir. Üç demet — tılsım viktorinada tutar.',
+  ),
+  kikimoraCraftBtn: L('Сплести оберег', 'Weave charm', 'Tılsım ör'),
+  kikimoraCraftLimit: L('Сегодня уже сплели', 'Already woven today', 'Bugün zaten ördük'),
 } as const;
 
 /** Подписи грейдов в бестиарии (profile_layout.md §4). */

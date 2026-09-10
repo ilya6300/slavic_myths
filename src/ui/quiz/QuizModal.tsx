@@ -18,6 +18,7 @@ import {
   viewSkins,
   type ViewSkinId,
 } from '../../config/assetRegistry';
+import { ModalCloseButton } from '../common/ModalCloseButton';
 
 const CORRECT_FLASH_MS = 400;
 const WRONG_FLASH_MS = 500;
@@ -116,14 +117,13 @@ export const QuizModal = observer(function QuizModal() {
       )}
       <div className="quiz-bg__overlay" aria-hidden />
 
+      <ModalCloseButton
+        className="modal-close--viewport"
+        onClick={handleAbandon}
+        ariaLabel={resolveText(settingsUiContent.quizExit, locale)}
+      />
+
       <div className="quiz-hud">
-        <button
-          type="button"
-          className="quiz-hud__exit"
-          onClick={handleAbandon}
-        >
-          {resolveText(settingsUiContent.quizExit, locale)}
-        </button>
         <span className="quiz-hud__energy">
           <img src={hudIcons.energy} alt="" />
           {gameStore.energy}
@@ -221,12 +221,14 @@ export const QuizModal = observer(function QuizModal() {
         </div>
       )}
 
-      <img
-        className="quiz-spirit-portrait"
-        src={spiritPortraitPaths[spiritId as SpiritId]}
-        alt=""
-        draggable={false}
-      />
+      {!usesHutOverlay && (
+        <img
+          className="quiz-spirit-portrait"
+          src={spiritPortraitPaths[spiritId as SpiritId]}
+          alt=""
+          draggable={false}
+        />
+      )}
     </div>
   );
 });

@@ -23,6 +23,7 @@ import { gameStore } from '../../store/GameStore';
 import { bookUiStore } from '../../store/bookUiStore';
 import { catDialogStore } from '../../store/catDialogStore';
 import { pickCatLine } from '../../data/catDialogs';
+import { ModalCloseButton } from '../common/ModalCloseButton';
 import {
   getFolktalePageCount,
   getFolktalePages,
@@ -283,15 +284,7 @@ export const BookOverlay = observer(function BookOverlay() {
           </button>
         )}
 
-        <button
-          type="button"
-          className="book-modal__close"
-          onClick={handleClose}
-          disabled={blocked}
-          aria-label={resolveText(settingsUiContent.dialogClose, locale)}
-        >
-          <img src={bookUi.closeBtn} alt="" draggable={false} />
-        </button>
+        <ModalCloseButton onClick={handleClose} disabled={blocked} />
 
         <div
           className={`book-modal__spread${showContent ? ' book-modal__spread--visible' : ''}${spreadMode === 'folktale' ? ' book-modal__spread--folktale' : ''}`}

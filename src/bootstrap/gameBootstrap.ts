@@ -1,3 +1,4 @@
+import { viewSkins, type ViewSkinId } from '../config/assetRegistry';
 import { appConfig, CLOUD_SAVE_KEY } from '../config/gameConstants';
 import type { GameSave } from '../domain/GameSave';
 import { migrateSave } from '../domain/saveMigration';
@@ -7,6 +8,28 @@ import { readLocalSave } from '../services/localSave';
 import { saveService } from '../services/saveService';
 import { gameStore } from '../store/GameStore';
 import { settingsUiStore } from '../store/settingsUiStore';
+
+/** DEV: все виды из окна в owned — переключение в профиле «Лес». Экипировку не меняем. */
+function applyDevUnlockAllWindowSkins(): void {
+  if (!import.meta.env.DEV) return;
+
+  const owned = new Set(gameStore.ownedSkinIds);
+  for (const id of Object.keys(viewSkins) as ViewSkinId[]) {
+    owned.add(id);
+  }
+  gameStore.ownedSkinIds = [...owned];
+}
+
+/** DEV: сразу экипировать избу «Гармония»; награда Лады не затрагивается. */
+function applyDevHutHarmonyPreview(): void {
+  if (!import.meta.env.DEV) return;
+
+  const skinId = 'hut_harmony';
+  if (!gameStore.ownedSkinIds.includes(skinId)) {
+    gameStore.ownedSkinIds = [...gameStore.ownedSkinIds, skinId];
+  }
+  gameStore.skins = { ...gameStore.skins, izba: skinId };
+}
 
 async function loadCloudSave(): Promise<GameSave | null> {
   try {
@@ -55,6 +78,9 @@ export async function bootstrapGame(): Promise<void> {
   if (best) {
     gameStore.hydrate(best);
   }
+
+  applyDevUnlockAllWindowSkins();
+  applyDevHutHarmonyPreview();
 
   bindCloudPersist();
   await settingsUiStore.refreshAuth();

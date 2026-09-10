@@ -4,6 +4,8 @@
  * Геймдизайн: instruction/scenario.md §5.4, §6
  */
 
+import { LUCK_COIN_GRADE_WEIGHT_BONUS_PER_COIN } from './gameConstants';
+import { getBrownieLuckBonusPercent } from '../domain/brownieLuck';
 import type { Grade } from '../domain/grade';
 
 /** Базовый размер пула весов (система удачи домового: до +10% к rare+). */
@@ -19,6 +21,8 @@ export const regularChest = {
   firstOpenInstant: true,
   /** Шанс фрагмента Эпохи на выбранного locked-духа (0–1). */
   fragmentChance: 0.05,
+  /** Гарант epoch-скина на N-м открытии подряд без epoch/фрагмента. */
+  epochPityEvery: 25,
   /** Титулы epoch из сундука чудес — не выпадают здесь. */
   epochTitlesAllowed: false,
 } as const;
@@ -28,10 +32,10 @@ export const regularChest = {
  * Удача домового умножает rare/epic/epoch на (1 + LUCK_BONUS_RARE_PLUS).
  */
 export const regularChestGradeWeights: Record<Grade, number> = {
-  common: 5_300,
-  rare: 3_000,
-  epic: 1_500,
-  epoch: 200,
+  common: 4_846,
+  rare: 3_122,
+  epic: 1_586,
+  epoch: 446,
 };
 
 export type RegularChestRewardType =
@@ -142,6 +146,29 @@ export function applyLuckToGradeWeights(
   };
 }
 
+/** Монеты удачи: +0.05% базового веса rare/epic/epoch за 1 монету. */
+export function applyLuckCoinsToGradeWeights(
+  weights: Record<Grade, number>,
+  luckCoins: number,
+): Record<Grade, number> {
+  const mult = 1 + luckCoins * LUCK_COIN_GRADE_WEIGHT_BONUS_PER_COIN;
+  return {
+    common: weights.common,
+    rare: Math.round(weights.rare * mult),
+    epic: Math.round(weights.epic * mult),
+    epoch: Math.round(weights.epoch * mult),
+  };
+}
+
+export function applyChestGradeWeights(
+  base: Record<Grade, number>,
+  options: { domovoySkinId: string; luckCoins: number },
+): Record<Grade, number> {
+  const domovoiMult = getBrownieLuckBonusPercent(options.domovoySkinId) / 100;
+  const withDomovoi = applyLuckToGradeWeights(base, domovoiMult);
+  return applyLuckCoinsToGradeWeights(withDomovoi, options.luckCoins);
+}
+
 export function rollFragmentMiracle(
   pityCounter: number,
   rng: () => number = Math.random,
@@ -187,38 +214,38 @@ export const regularChestTypeWeightsByGrade: Record<
   Partial<Record<RegularChestRewardType, number>>
 > = {
   common: {
-    cat_skin: 2500,
-    title_common: 1500,
-    energy_bonus: 600,
-    obereg: 400,
+    cat_skin: 2800,
+    title_common: 700,
+    energy_bonus: 250,
+    obereg: 200,
     brownie_skin: 200,
-    window_skin: 100,
+    window_skin: 450,
   },
   rare: {
-    cat_skin: 1200,
-    title_rare: 1000,
-    brownie_skin: 400,
-    izba_skin: 300,
-    spirit_key: 100,
+    cat_skin: 1400,
+    title_rare: 550,
+    brownie_skin: 550,
+    izba_skin: 500,
+    spirit_key: 150,
   },
   epic: {
-    cat_skin: 500,
-    title_epic: 400,
-    izba_skin: 300,
-    brownie_skin: 200,
+    cat_skin: 650,
+    title_epic: 150,
+    izba_skin: 400,
+    brownie_skin: 300,
     spirit_key: 100,
   },
   epoch: {
-    cat_skin: 80,
-    izba_skin: 60,
-    window_skin: 40,
-    brownie_skin: 20,
+    cat_skin: 160,
+    izba_skin: 120,
+    window_skin: 80,
+    brownie_skin: 90,
   },
 };
 
 /** Доп. роллы вне грейда (фрагмент ≤5%) */
 export const regularChestExtraRolls = {
-  fragment: 50,
+  fragment: 363,
 } as const;
 
 export function pickRegularChestTypeForGrade(

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   ENERGY_PER_CLICK,
   ENERGY_PER_QUEST,
@@ -9,6 +9,7 @@ import { createDefaultSave } from '../domain/GameSave';
 import { findNextAvailableSpirit } from '../domain/spiritQueue';
 import { GameStore } from '../store/GameStore';
 import { energyUiStore } from '../store/energyUiStore';
+import { sceneUiStore } from '../store/sceneUiStore';
 import { quizUiStore } from '../store/quizUiStore';
 
 function makeStore(partial?: Partial<ReturnType<typeof createDefaultSave>>): GameStore {
@@ -18,6 +19,14 @@ function makeStore(partial?: Partial<ReturnType<typeof createDefaultSave>>): Gam
 }
 
 describe('GameStore', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    energyUiStore.close();
+    sceneUiStore.tiredClickCount = 0;
+    sceneUiStore.catSleepReason = null;
+    sceneUiStore.catSleeping = false;
+  });
+
   it('clickCat is free during onboarding', () => {
     const store = makeStore({ onboardingCompleted: false, energy: 25 });
     store.clickCat(() => 0.99);
@@ -36,17 +45,34 @@ describe('GameStore', () => {
     expect(store.energy).toBe(50 - ENERGY_PER_CLICK);
   });
 
-  it('clickCat opens energy modal when out of energy', () => {
+  it('clickCat shows tired bubble when out of energy without opening modal on first click', () => {
     const store = makeStore({
       onboardingCompleted: true,
       energy: 0,
       lastEnergyAt: Date.now(),
     });
-    const result = store.clickCat(() => 0.99);
-    expect(result.kind).toBe('none');
+    const first = store.clickCat(() => 0.99);
+    expect(first.kind).toBe('footnote');
     expect(store.catClickCount).toBe(0);
+    expect(energyUiStore.isOpen).toBe(false);
+    sceneUiStore.catSleepReason = null;
+    sceneUiStore.tiredClickCount = 0;
+  });
+
+  it('clickCat opens energy modal after tired clicks', () => {
+    const store = makeStore({
+      onboardingCompleted: true,
+      energy: 0,
+      lastEnergyAt: Date.now(),
+    });
+    store.clickCat(() => 0.99);
+    store.clickCat(() => 0.99);
+    store.clickCat(() => 0.99);
     expect(energyUiStore.isOpen).toBe(true);
     energyUiStore.close();
+    sceneUiStore.tiredClickCount = 0;
+    sceneUiStore.catSleepReason = null;
+    sceneUiStore.catSleeping = false;
   });
 
   it('enforces onboarding energy floor of 20', () => {
@@ -195,6 +221,7 @@ describe('GameStore', () => {
   });
 
   it('should skip 30 minutes of chest cooldown with rewarded stub', () => {
+    vi.useFakeTimers();
     const now = 1_000_000;
     const readyAt = now + 3 * 60 * 60 * 1000;
     const store = makeStore({
@@ -207,7 +234,9 @@ describe('GameStore', () => {
     });
     expect(store.isChestReady(now)).toBe(false);
     store.skipChestCooldownWithRewarded(now);
+    vi.advanceTimersByTime(10_000);
     expect(store.chestReadyAt).toBe(readyAt - 30 * 60 * 1000);
+    vi.useRealTimers();
   });
 
   it('advances onboarding to step 6 after first chest loot', () => {
@@ -251,6 +280,7 @@ describe('GameStore', () => {
     store.completeZhirdyay();
     expect(store.zhirdyayActive).toBe(false);
     expect(store.ownedTitleIds).toContain('groza_zhirdyaev');
+    expect(store.zhirdyayDefeatedCount).toBe(1);
   });
 
   it('returns false from handleZhirdyayBlockedInteraction when zhirdyay inactive', () => {
@@ -368,5 +398,33 @@ describe('GameStore', () => {
     expect(store.onboardingStep).toBe(0);
     expect(store.energy).toBe(120);
     expect(store.luckCoins).toBe(0);
+  });
+
+  it('baba_yaga victory grants title, trophy, and landscape_yaga skin without equipping', () => {
+    const store = makeStore({
+      onboardingCompleted: true,
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        baba_yaga: 'available',
+      },
+    });
+    store.startQuiz('baba_yaga', () => 0.5);
+
+    while (quizUiStore.phase !== 'victory') {
+      const q = quizUiStore.currentQuestion!;
+      store.submitQuizAnswer(q.correctIndex);
+      if (quizUiStore.phase === 'correct') {
+        store.advanceQuizAfterCorrect();
+      }
+    }
+
+    const windowBefore = store.skins.window;
+    store.claimQuizVictory();
+
+    expect(store.spiritStatuses.baba_yaga).toBe('defeated');
+    expect(store.ownedTitleIds).toContain('kogot_yagi');
+    expect(store.ownedSkinIds).toContain('landscape_yaga');
+    expect(store.skins.window).toBe(windowBefore);
+    expect(store.trophiesUnlocked).toContain('baba_yaga');
   });
 });

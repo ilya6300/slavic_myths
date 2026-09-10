@@ -114,23 +114,30 @@ describe('applySpiritReward', () => {
 
 
 
-  it('adds lada quest title without skin unlock', () => {
+  it('adds lada quest hut_harmony skin without title or equipping', () => {
     const state = getDefaultRewardState();
     const patch = applySpiritReward(
-      { kind: 'title_only', titleId: 'gost_lada' },
+      { kind: 'skin_only', skinId: 'hut_harmony' },
       state,
     );
-    expect(patch.ownedTitleIds).toContain('gost_lada');
-    expect(patch.ownedSkinIds).toBeUndefined();
+    expect(patch.ownedSkinIds).toContain('hut_harmony');
+    expect(patch.ownedTitleIds).toBeUndefined();
+    expect(patch.skins).toBeUndefined();
   });
 
-  it('adds yaga quest title', () => {
+  it('adds yaga quest title and window skin without equipping', () => {
     const state = getDefaultRewardState();
     const patch = applySpiritReward(
-      { kind: 'title_only', titleId: 'kogot_yagi' },
+      {
+        kind: 'title_and_skin',
+        titleId: 'kogot_yagi',
+        skinId: 'landscape_yaga',
+      },
       state,
     );
     expect(patch.ownedTitleIds).toContain('kogot_yagi');
+    expect(patch.ownedSkinIds).toContain('landscape_yaga');
+    expect(patch.skins).toBeUndefined();
   });
 
   it('adds max energy for poludnica reward', () => {

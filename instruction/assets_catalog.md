@@ -4,7 +4,7 @@
 > **Канон пути:** всегда `assets/` (нижний регистр), прямые слэши `/`.  
 > **Дефолт избы:** `assets/house/hut_standart.png`.
 
-**Связанные файлы:** `design_assets_prompts.md` (промпты) · `izba_scene_layers.md` (слои) · `book_layout.md` (анимации бестиария) · `profile_layout.md` (рамки, сетка) · `room_01_layout.md` / `room_02_trophies_layout.md` (позиции) · `list_of_spirits.md` (портреты духов) · `technical_requirements.md` (реестр в коде).
+**Связанные файлы:** `design_assets_prompts.md` (промпты) · `hud_layout.md` (шапка и рельс HUD) · `izba_scene_layers.md` (слои) · `book_layout.md` (анимации бестиария) · `profile_layout.md` (рамки, сетка) · `room_01_layout.md` / `room_02_trophies_layout.md` (позиции) · `list_of_spirits.md` (портреты духов) · `technical_requirements.md` (реестр в коде).
 
 ---
 
@@ -47,7 +47,7 @@
 | `hut_rate.png` | `rare` | ✅ есть | Суффикс `rate`, не `rare` |
 | `hut_epic.png` | `epic` | ✅ есть | Камень / неон — другой материал, тот же слот окна |
 | `hut_the_age_of_miracles.png` | `epoch` | ✅ есть | |
-| `hut_harmony.png` | `epic` | ⏳ P1 | Квест Лады; id `hut_harmony`; **не** `hut_rate` / **не** `hut_epic`; 21:9, α-стёкла |
+| `hut_harmony.png` | `epic` | ✅ | Квест Лады; id `hut_harmony`; **не** `hut_rate` / **не** `hut_epic`; 21:9, α-стёкла |
 
 ---
 
@@ -57,7 +57,7 @@
 |------|--------|------------|
 | `landscape_standart.jpeg` | ✅ есть | День, дефолт |
 | `landscape_night.jpeg` | ⏳ нужен (P2) | Ночь текущего скина; не отдельная ячейка профиля |
-| `landscape_yaga.jpeg` | ⏳ P1 | Квест Бабы-Яги; id `landscape_yaga`; избушка **в проёме окна**, 21:9 |
+| `landscape_yaga.jpeg` | ✅ | Квест Бабы-Яги; id `landscape_yaga`; избушка **в проёме окна**, 21:9 |
 
 ---
 
@@ -70,6 +70,8 @@
 |------|--------|------------|
 | `common/cat_standart/cat_standart_sid.png` | ✅ есть | Сидит, кликабельный; кроп морды = HUD-аватар |
 | `common/cat_standart/cat_standart_sleep.png` | ✅ есть | Сон |
+| `rare/cat_pilgrim/cat_pilgrim_sid.png` | ✅ есть | IAP «Дар путника», путник |
+| `rare/cat_pilgrim/cat_pilgrim_sleep.png` | ✅ есть | Сон |
 | прочие `*_sid.png` / `*_sleep.png` | ✅ есть | См. `profile_layout.md` |
 
 Референс для диалога кота: `[skin]_sid.png` из активного скина. HUD не использует sleep.
@@ -101,6 +103,9 @@
 | `shelf.png` | ✅ есть | Полки трофеев |
 | `miracle_chest_closed.png` | ⏳ нужен (P0) | Сундук чудес (закрыт) |
 | `miracle_chest_open.png` | ⏳ нужен (P0) | Сундук чудес (открыт) |
+| `starter_casket.png` | ✅ есть | Дар путника: рельс HUD + модалка IAP (`hud_layout.md`) |
+| `yard_grass.png` | ✅ есть | Пучок травы на улице |
+| `kikimora_weaving.png` | ✅ есть | Кикимора в модалке крафта; fallback bust рельса |
 
 ---
 
@@ -180,8 +185,8 @@
 | `vodyanoy_shell.png` | Водяной | ⏳ P1 |
 | `toptygin_paw.png` | Топтыгин | ⏳ P1 |
 | `poludnica_sickle.png` | Полудница | ⏳ P1 | Серп с лентой; не венок (венок — у Полевого) |
-| `rusalka_comb.png` | Русалка | ⏳ P1 | |
-| `lada_harmony_vase.png` | Лада | ⏳ P1 | Глиняная гармония-ваза, не generic-ваза |
+| `rusalka_comb.png` | Русалка | ✅ | Гребень из речного перламутра; канон v2 (белая рубаха, берёза) |
+| `lada_harmony_vase.png` | Лада | ✅ | Глиняная гармония-ваза, две ручки, красно-чёрный орнамент |
 | `veles_bust.png` | Велес | ⏳ P1 | Бюст на полке; титул «Лапа Велеса» — в профиле |
 | `yaga_hut.png` | Баба-Яга | ⏳ P1 |
 | `koschei_needle.png` | Кощей | ⏳ P1 |
@@ -201,6 +206,10 @@
 | `bg_pole.jpeg` | `pole` | ⏳ P1 | `bg_les` + warm filter |
 | `bg_voda.jpeg` | `voda` | ⏳ P1 | `bg_les` + hue-rotate |
 | `bg_temnyy_les.jpeg` | `temnyy_les` | ⏳ P1 | `bg_les` + brightness(0.55) |
+| `kikimora_craft_bg.jpeg` | крафт оберега | ✅ есть | **Только** модалка крафта Кикиморы |
+| `trophy_tale_bg.jpeg` | сказ о трофее | ✅ есть | `TrophyModal` |
+
+**Запрещено:** подменять `kikimora_craft_bg.jpeg` в других модалках. Сундук — **без** JPEG; juice через CSS confetti (`ChestLootFx`).
 
 Портрет духа на экране викторины: `assets/creatures_in_the_book/[spirit].png`.
 
@@ -212,10 +221,12 @@
 
 | Файл | Назначение | Статус |
 |------|------------|--------|
-| `icon_energy.png` | Энергия | ⏳ P0 |
+| `icon_energy.png` | Энергия | ✅ есть |
 | `icon_coin.png` | Монеты удачи | ⏳ P0; факт: `assets/UI/monete_v1.png` (лапа на монете) |
 | `icon_obereg.png` | Тайные обереги | ⏳ P0; факт: `assets/UI/secret_amulet.png` |
-| `icon_smetana.png` | Сметана | ⏳ P0 |
+| `icon_smetana.png` | Сметана | ✅ есть |
+| `icon_grass.png` | Пучки травы (чип HUD `n/3`) | ⏳ P1; fallback: `furniture/yard_grass.png` |
+| `kikimora_companion.png` | Bust Кикиморы на левом рельсе HUD | ⏳ P0; fallback: кроп `kikimora_weaving.png` (**не** гравюра книги) |
 | `assets/UI/amulet_against_the_house_spirit.png` | оберег (вариант) | ✅ есть |
 | `fragment_shard.png` | Осколок фрагмента Эпохи | ⏳ P2 |
 
@@ -275,7 +286,7 @@
 
 | Экран | Основные пути |
 |-------|---------------|
-| Изба (комн. 1) | `house/`, `view/`, `furniture/`, `pets/`, `brownie/`, `enemy/fatso.png`, HUD |
+| Изба (комн. 1) | `house/`, `view/`, `furniture/`, `pets/`, `brownie/`, `enemy/fatso.png`, HUD (`hud_layout.md`: ларец, `ui/kikimora_companion`) |
 | Трофеи (комн. 2) | тот же `house/` + `furniture/shelf`, `trophies/` |
 | Викторина | фон из `Локация квеста` духа → `quiz/bg_*.jpeg` |
 | Диалог кота | `pets/..._sid.png`, `ui/dialog_frame_wood` |
@@ -293,4 +304,4 @@
 
 ---
 
-*Версия: 1.2 · Иллюстрации бестиария = `assets/illustration_book/`. Анимации книги = `book_layout.md`. Слои избы = `izba_scene_layers.md`. Профиль = `profile_layout.md`.*
+*Версия: 1.3 · HUD = `hud_layout.md`. Иллюстрации бестиария = `assets/illustration_book/`. Анимации книги = `book_layout.md`. Слои избы = `izba_scene_layers.md`. Профиль = `profile_layout.md`.*

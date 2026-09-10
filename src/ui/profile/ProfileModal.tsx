@@ -28,11 +28,19 @@ import { sceneUiStore } from '../../store/sceneUiStore';
 
 import { ProfilePreview } from './ProfilePreview';
 
+import { ProfileStatsPanel } from './ProfileStatsPanel';
+
 import { SettingsPanel } from '../SettingsPanel';
+import { ModalCloseButton } from '../common/ModalCloseButton';
+import { WoodQuestButton } from '../common/WoodQuestButton';
+
+import { getSkinBonusLines } from '../../domain/skinBonuses';
 
 
 
 const TABS: { id: ProfileTab; labelKey: keyof typeof settingsUiContent }[] = [
+
+  { id: 'stats', labelKey: 'profileTabStats' },
 
   { id: 'cat', labelKey: 'profileTabCat' },
 
@@ -160,34 +168,31 @@ export const ProfileModal = observer(function ProfileModal() {
     selectedId != null && selectedId === getEquippedId(tab);
 
   const previewName = getPreviewItemName(tab, selectedId, locale);
+  const bonusLines =
+    tab === 'cat' || tab === 'izba' || tab === 'window' || tab === 'brownie'
+      ? getSkinBonusLines(
+          tab as ProfileSkinCategory,
+          selectedId ?? getEquippedId(tab) ?? '',
+          locale,
+        )
+      : [];
 
 
 
   return (
 
-    <div className="layer-modal profile-modal" role="dialog" aria-modal="true">
+    <div className="game-modal profile-modal layer-modal" role="dialog" aria-modal="true">
 
-      <div className="profile-modal__panel">
+      <div className="game-modal__backdrop" aria-hidden onClick={handleClose} />
 
-        <button
+      <div className="game-modal__panel game-modal__panel--wide profile-modal__panel">
 
-          type="button"
-
-          className="profile-modal__close"
-
+        <ModalCloseButton
           onClick={handleClose}
+          ariaLabel={resolveText(settingsUiContent.profileClose, locale)}
+        />
 
-          aria-label={resolveText(settingsUiContent.profileClose, locale)}
-
-        >
-
-          ×
-
-        </button>
-
-
-
-        <h2 className="profile-modal__heading">
+        <h2 className="game-modal__title profile-modal__heading">
 
           {resolveText(settingsUiContent.profileHeading, locale)}
 
@@ -195,51 +200,47 @@ export const ProfileModal = observer(function ProfileModal() {
 
 
 
-        <div className={`profile-modal__layout${tab === 'settings' ? ' profile-modal__layout--settings' : ''}`}>
+        <div className="profile-modal__layout">
 
-          {tab !== 'settings' && (
           <div className="profile-modal__preview">
 
             <ProfilePreview />
 
-            {previewName && (
+            {tab !== 'settings' && tab !== 'stats' && previewName && (
 
               <p className="profile-modal__preview-name">{previewName}</p>
 
             )}
 
-            {selectedOwned ? (
-              isEquipped ? (
-                <p className="profile-modal__equipped">
-                  {resolveText(settingsUiContent.profileEquipped, locale)}
-                </p>
+            {tab !== 'settings' && tab !== 'stats' && bonusLines.length > 0 && (
+              <div className="profile-modal__bonus-desc">
+                {bonusLines.map((line) => (
+                  <p key={line} className="profile-modal__bonus-line">{line}</p>
+                ))}
+              </div>
+            )}
+
+            {tab !== 'settings' && tab !== 'stats' && (
+              selectedOwned ? (
+                isEquipped ? (
+                  <p className="profile-modal__equipped">
+                    {resolveText(settingsUiContent.profileEquipped, locale)}
+                  </p>
+                ) : (
+                  <WoodQuestButton
+                    className="profile-modal__equip"
+                    label={resolveText(settingsUiContent.profileEquip, locale)}
+                    onClick={handleEquip}
+                  />
+                )
               ) : (
-              <button
-
-                type="button"
-
-                className="profile-modal__equip"
-
-                onClick={handleEquip}
-
-              >
-
-                {resolveText(settingsUiContent.profileEquip, locale)}
-
-              </button>
+                <p className="profile-modal__locked">
+                  {resolveText(settingsUiContent.profileLocked, locale)}
+                </p>
               )
-            ) : (
-
-              <p className="profile-modal__locked">
-
-                {resolveText(settingsUiContent.profileLocked, locale)}
-
-              </p>
-
             )}
 
           </div>
-          )}
 
 
 
@@ -273,10 +274,16 @@ export const ProfileModal = observer(function ProfileModal() {
 
 
 
-            <div className="profile-grid">
+            <div className={`profile-grid${tab === 'stats' || tab === 'settings' ? ' profile-grid--text' : ''}`}>
 
               {tab === 'settings' ? (
-                <SettingsPanel embedded />
+                <div className="profile-grid__full">
+                  <SettingsPanel embedded />
+                </div>
+              ) : tab === 'stats' ? (
+                <div className="profile-grid__full">
+                  <ProfileStatsPanel />
+                </div>
               ) : tab === 'titles'
 
                 ? getAllProfileTitles().map((title) => {

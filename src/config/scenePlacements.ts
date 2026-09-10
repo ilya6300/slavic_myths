@@ -43,7 +43,7 @@ export const catPlacement = {
 
 /** Позиции Суседко при краже — className в index.css */
 export const susedkoStealPlacementClasses: Record<string, string> = {
-  floor_left: 'scene-susedko-steal--floor-left',
+  after_stove: 'scene-susedko-steal--after-stove',
   under_bench: 'scene-susedko-steal--under-bench',
   floor_center: 'scene-susedko-steal--floor-center',
   window_corner: 'scene-susedko-steal--window-corner',

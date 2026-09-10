@@ -86,12 +86,13 @@ export const BROWNIE_SPAWN_FALLBACK_ID = 'stove_peek';
 
 // --- Суседко при краже (izba_scene_layers.md §1.7.2) ---
 
+/** Канон пикселей — index.css (.scene-susedko-steal--*). left/bottom — справочно (% ≈ vw). */
 export const susedkoStealPositions: NamedPlacement[] = [
-  { id: 'floor_left', left: 8, bottom: 6, width: 11, zIndex: layerZIndex.susedkoSteal },
-  { id: 'under_bench', left: 22, bottom: 8, width: 10, zIndex: layerZIndex.susedkoSteal },
-  { id: 'floor_center', left: 38, bottom: 7, width: 10, zIndex: layerZIndex.susedkoSteal },
-  { id: 'window_corner', left: 48, bottom: 10, width: 9, zIndex: layerZIndex.susedkoSteal },
-  { id: 'near_chest', left: 58, bottom: 5, width: 11, zIndex: layerZIndex.susedkoSteal },
+  { id: 'after_stove', left: 24, bottom: 7, width: 0, zIndex: layerZIndex.susedkoSteal },
+  { id: 'under_bench', left: 33, bottom: 12, width: 0, zIndex: layerZIndex.susedkoSteal },
+  { id: 'floor_center', left: 44, bottom: 8, width: 0, zIndex: layerZIndex.susedkoSteal },
+  { id: 'window_corner', left: 55, bottom: 10, width: 0, zIndex: layerZIndex.susedkoSteal },
+  { id: 'near_chest', left: 63, bottom: 11, width: 0, zIndex: layerZIndex.susedkoSteal },
 ];
 
 // --- Жирдяй (izba_scene_layers.md §1.5) ---

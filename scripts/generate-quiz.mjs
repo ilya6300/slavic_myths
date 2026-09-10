@@ -54,7 +54,7 @@ function parseSpiritSections(text) {
       section.match(/\*\*Мини-сказ:\*\* (.+?)(?=\n\n|$)/s)?.[1]?.trim() ?? '';
 
     const questions = [];
-    const qBlocks = section.split(/\n### Вопрос \d+\n/).slice(1);
+    const qBlocks = section.split(/\n### Вопрос \d+(?: \[характер духа\])?\n/).slice(1);
 
     for (const block of qBlocks) {
       const lines = block.trim().split('\n');
@@ -65,6 +65,7 @@ function parseSpiritSections(text) {
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line.startsWith('- ')) continue;
+        if (line.startsWith('> ')) continue;
         const isCorrect = line.includes('*(верный)*');
         const text = line
           .replace(/^- /, '')
@@ -191,3 +192,11 @@ export function shuffleQuizQuestions(
 writeFileSync(join(root, 'src/data/quiz.ts'), out, 'utf8');
 const totalQ = quests.reduce((s, q) => s + q.questions.length, 0);
 console.log(`Generated ${quests.length} quizzes, ${totalQ} questions`);
+if (quests.length !== 16) {
+  console.error(`Expected 16 quizzes, got ${quests.length}`);
+  process.exit(1);
+}
+if (totalQ !== 119 && totalQ !== 120) {
+  console.error(`Expected 119–120 questions, got ${totalQ}`);
+  process.exit(1);
+}

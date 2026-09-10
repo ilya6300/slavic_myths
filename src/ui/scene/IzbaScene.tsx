@@ -28,6 +28,10 @@ import { SusedkoStealLayer } from './SusedkoStealLayer';
 
 import { GameHud } from './GameHud';
 
+import { RewardedWaitOverlay } from '../ads/RewardedWaitOverlay';
+import { KikimoraCraftModal } from '../street/KikimoraCraftModal';
+import { StreetYard } from '../street/StreetYard';
+import { StarterPackModal } from '../starter/StarterPackModal';
 import { Room1Scene, Room2Scene } from './IzbaSceneLayers';
 
 import { ScenePanNav } from './ScenePanNav';
@@ -94,6 +98,8 @@ export const IzbaScene = observer(function IzbaScene() {
 
         <div className="izba-scene__inner">
 
+          <StreetYard />
+
           <Room1Scene>
             <BrownieLayer />
             <SusedkoStealLayer />
@@ -121,6 +127,9 @@ export const IzbaScene = observer(function IzbaScene() {
       <ChestLootModal />
       <ChestCooldownModal />
       <EnergyRewardModal />
+      <StarterPackModal />
+      <KikimoraCraftModal />
+      <RewardedWaitOverlay />
       <ProfileModal />
       <TrophyModal />
 

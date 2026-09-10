@@ -12,7 +12,8 @@ alwaysApply: false
 - Нарушение `.cursor/rules/frontend-principles.mdc` (сложность, нечитаемость, YAGNI).
 - Нарушение слоёв `.cursor/rules/project-architecture.mdc` (SDK в UI, ads в SaveService).
 - Код без тестов на новое поведение / багфикс без регрессионного теста.
-- Багфикс без доказанного root cause (см. `bugfix-protocol.mdc`).
+- Багфикс без доказанного root cause и отчёта DOM/CSS/Asset (см. `bugfix-protocol.mdc`).
+- Визуальный баг: CSS-обход (`mix-blend-mode`, `filter`, `opacity`) вместо исправления ассета / разметки / логики.
 - Расхождение с `scenario.md` / `scenario_draft.md` / `instruction/dev/tasks.md`.
 - UI-задача: композиция не как mockup (`instruction/design/`); CTA растянута (`object-fit: fill` + `width: 100%`); пункт пользователя не выполнен.
 - Тихий пропуск пункта задания (нет `skipped_item`).

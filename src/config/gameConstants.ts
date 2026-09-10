@@ -3,7 +3,12 @@
  * Канон: instruction/dev/technical_requirements.md §6
  */
 
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 9;
+
+export const STARTER_PACK_PRICE_RUB = 199;
+export const STARTER_PACK_ENERGY_BONUS = 100;
+export const STARTER_PACK_OBEREG_BONUS = 5;
+export const STARTER_PACK_CAT_SKIN_ID = 'cat_pilgrim';
 export const LOCAL_SAVE_KEY = 'slavic_myths_save_v1';
 export const CLOUD_SAVE_KEY = 'gameSave';
 
@@ -28,6 +33,8 @@ export const ONBOARDING_ENERGY_FLOOR = 20;
 export const LUCK_COINS_CAP = 200;
 export const LUCK_COINS_CAP_KOSCHEI_BONUS = 20;
 export const LUCK_COINS_PER_CLICK = 1;
+/** +0.05% к весу rare/epic/epoch за 1 монету удачи в обычном сундуке */
+export const LUCK_COIN_GRADE_WEIGHT_BONUS_PER_COIN = 0.0005;
 
 /** Обереги */
 export const START_TALISMANS = 3;

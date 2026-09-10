@@ -213,7 +213,7 @@ export const titles: TitleDefinition[] = [
   },
   {
     id: 'kot_u_berega',
-    name: 'Кот у берега',
+    name: 'Кот на берегу',
     grade: 'epic',
     source: 'quest',
     description: 'Сидел на берегу — и остался сухим.',

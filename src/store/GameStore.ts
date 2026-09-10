@@ -8,6 +8,9 @@ import {
   LUCK_COINS_PER_CLICK,
   REWARDED_ENERGY_BONUS,
   CLOUD_SAVE_KEY,
+  STARTER_PACK_CAT_SKIN_ID,
+  STARTER_PACK_ENERGY_BONUS,
+  STARTER_PACK_OBEREG_BONUS,
 } from '../config/gameConstants';
 import {
   applyRewardedSkip,
@@ -16,6 +19,11 @@ import {
   isChestReady,
 } from '../domain/chestCooldown';
 import { applyChestLoot, rollRegularChestLoot, type ChestLootPatch } from '../domain/chestLoot';
+import {
+  getMiracleChestDropPreview,
+  getRegularChestDropPreview,
+  type ChestDropPreview,
+} from '../domain/chestDropChances';
 import {
   resolveCatClickDialog,
   type CatClickDialogResult,
@@ -56,6 +64,16 @@ import {
   type IzbaItemId,
 } from '../domain/izbaItemDialog';
 import { rollZhirdyayClicksRequired } from '../domain/zhirdyay';
+import { shouldOpenEnergyModalAfterTiredClick } from '../domain/tiredCat';
+import {
+  canCollectYardGrass,
+  canCraftYardObereg,
+  shouldSpawnYardGrassToday,
+  yardGrassSpawnCount,
+  YARD_GRASS_PER_CRAFT,
+} from '../domain/yardCraft';
+import { getStreetBlockReason } from '../domain/yardAccess';
+import { isNightTime } from '../domain/nightTime';
 import { getNightId } from '../domain/GameSave';
 import { isDefaultOwnedSkin } from '../data/profileCatalog';
 import { detectBrowserLocale } from '../i18n/resolve';
@@ -81,7 +99,7 @@ import { energyUiStore } from './energyUiStore';
 import { eventUiStore } from './eventUiStore';
 import { profileUiStore } from './profileUiStore';
 import { quizUiStore } from './quizUiStore';
-import { sceneUiStore } from './sceneUiStore';
+import { bindSceneGameStore, sceneUiStore } from './sceneUiStore';
 
 import { LOCALE_STORAGE_KEY } from '../config/gameConstants';
 
@@ -133,6 +151,7 @@ export class GameStore {
   wonderChestWeekSlotUsed = false;
   wonderChestClickProgress = 0;
   wonderChestPityCounter = 0;
+  regularChestEpochPityCounter = 0;
   wonderChestWeekId: string | null = null;
   fragmentVictoryBonusGranted: string[] = [];
   cloudBannerDismissed = false;
@@ -152,6 +171,7 @@ export class GameStore {
   zhirdyayActive = false;
   zhirdyayClickProgress = 0;
   zhirdyayClicksRequired = 0;
+  zhirdyayDefeatedCount = 0;
 
   language: Locale = readStoredLocale() ?? detectBrowserLocale();
   catClickCount = 0;
@@ -164,8 +184,14 @@ export class GameStore {
   rusalkaZhirdyayReductionPercent = 0;
   luckCoinsCapBonus = 0;
 
+  starterPackPurchased = false;
+  yardGrass = 0;
+  yardOberegCraftedDayId: string | null = null;
+  yardGrassSpawnDayId: string | null = null;
+
   constructor() {
     makeAutoObservable(this);
+    bindSceneGameStore(this);
     applyDocumentLang(this.language);
     saveService.bind(() => this.toSave());
   }
@@ -283,6 +309,9 @@ export class GameStore {
     catDialogStore.dismiss();
     sceneUiStore.activeRoom = 1;
     sceneUiStore.catSleeping = false;
+    sceneUiStore.catSleepReason = null;
+    sceneUiStore.tiredClickCount = 0;
+    sceneUiStore.yardGrassSlots = [];
     sceneUiStore.panBlocked = false;
     sceneUiStore.registerActivity();
     eventUiStore.resetSusedkoSteal();
@@ -326,6 +355,7 @@ export class GameStore {
     this.wonderChestWeekSlotUsed = save.wonderChestWeekSlotUsed;
     this.wonderChestClickProgress = save.wonderChestClickProgress;
     this.wonderChestPityCounter = save.wonderChestPityCounter;
+    this.regularChestEpochPityCounter = save.regularChestEpochPityCounter ?? 0;
     this.wonderChestWeekId = save.wonderChestWeekId;
     this.fragmentVictoryBonusGranted = [...(save.fragmentVictoryBonusGranted ?? [])];
     this.cloudBannerDismissed = save.cloudBannerDismissed ?? false;
@@ -341,6 +371,7 @@ export class GameStore {
     this.zhirdyayActive = save.zhirdyayActive ?? false;
     this.zhirdyayClickProgress = save.zhirdyayClickProgress ?? 0;
     this.zhirdyayClicksRequired = save.zhirdyayClicksRequired ?? 0;
+    this.zhirdyayDefeatedCount = save.zhirdyayDefeatedCount ?? 0;
 
     this.language = save.language;
     this.catClickCount = save.catClickCount;
@@ -351,9 +382,15 @@ export class GameStore {
     this.rusalkaZhirdyayReductionPercent = save.rusalkaZhirdyayReductionPercent ?? 0;
     this.luckCoinsCapBonus = save.luckCoinsCapBonus ?? 0;
 
+    this.starterPackPurchased = save.starterPackPurchased ?? false;
+    this.yardGrass = save.yardGrass ?? 0;
+    this.yardOberegCraftedDayId = save.yardOberegCraftedDayId ?? null;
+    this.yardGrassSpawnDayId = save.yardGrassSpawnDayId ?? null;
+
     applyDocumentLang(this.language);
     this.applyEnergyRegen();
     this.syncWonderChestWeek();
+    sceneUiStore.syncTiredSleepFromEnergy();
   }
 
   toSave(): GameSave {
@@ -386,6 +423,7 @@ export class GameStore {
       wonderChestWeekSlotUsed: this.wonderChestWeekSlotUsed,
       wonderChestClickProgress: this.wonderChestClickProgress,
       wonderChestPityCounter: this.wonderChestPityCounter,
+      regularChestEpochPityCounter: this.regularChestEpochPityCounter,
       wonderChestWeekId: this.wonderChestWeekId,
       fragmentVictoryBonusGranted: [...this.fragmentVictoryBonusGranted],
       cloudBannerDismissed: this.cloudBannerDismissed,
@@ -400,6 +438,7 @@ export class GameStore {
       zhirdyayActive: this.zhirdyayActive,
       zhirdyayClickProgress: this.zhirdyayClickProgress,
       zhirdyayClicksRequired: this.zhirdyayClicksRequired,
+      zhirdyayDefeatedCount: this.zhirdyayDefeatedCount,
 
       language: this.language,
       catClickCount: this.catClickCount,
@@ -409,6 +448,11 @@ export class GameStore {
       poludnicaCoinBonusPercent: this.poludnicaCoinBonusPercent,
       rusalkaZhirdyayReductionPercent: this.rusalkaZhirdyayReductionPercent,
       luckCoinsCapBonus: this.luckCoinsCapBonus,
+
+      starterPackPurchased: this.starterPackPurchased,
+      yardGrass: this.yardGrass,
+      yardOberegCraftedDayId: this.yardOberegCraftedDayId,
+      yardGrassSpawnDayId: this.yardGrassSpawnDayId,
     };
   }
 
@@ -448,14 +492,26 @@ export class GameStore {
     const freeClick = this.isOnboarding;
 
     if (!freeClick && this.energy < ENERGY_PER_CLICK) {
-      if (this.onboardingCompleted) {
+      sceneUiStore.enterTiredSleep();
+      sceneUiStore.tiredClickCount += 1;
+      const line = pickCatLine('tired', this.language, rng);
+      if (line) {
+        this.lastCatBubble = { kind: 'footnote', text: line };
+      }
+      if (
+        this.onboardingCompleted &&
+        shouldOpenEnergyModalAfterTiredClick(sceneUiStore.tiredClickCount)
+      ) {
         energyUiStore.open();
       }
-      return { kind: 'none' };
+      return line ? { kind: 'footnote', text: line } : { kind: 'none' };
     }
+
+    sceneUiStore.tiredClickCount = 0;
 
     if (!freeClick) {
       this.energy -= ENERGY_PER_CLICK;
+      sceneUiStore.syncTiredSleepFromEnergy();
     }
 
     if (this.luckCoins < this.luckCoinsCap) {
@@ -737,10 +793,19 @@ export class GameStore {
       fragmentCounts: this.fragmentCounts,
       selectedFragmentSpiritId: this.selectedFragmentSpiritId,
       domovoySkinId: this.skins.domovoy,
+      luckCoins: this.luckCoins,
       firstChestOpened: this.firstChestOpened,
       chestReadyAt: this.chestReadyAt,
       spareChestKeys: this.spareChestKeys,
     };
+  }
+
+  getChestDropPreview(source: 'regular' | 'miracle'): ChestDropPreview {
+    const state = this.buildChestRollState();
+    if (source === 'miracle') {
+      return getMiracleChestDropPreview(state, this.wonderChestPityCounter);
+    }
+    return getRegularChestDropPreview(state, this.regularChestEpochPityCounter);
   }
 
   private applyChestLootPatch(patch: ChestLootPatch): void {
@@ -771,7 +836,12 @@ export class GameStore {
     );
 
     const rollState = this.buildChestRollState();
-    const loot = rollRegularChestLoot(rollState, rng);
+    const { loot, nextEpochPityCounter } = rollRegularChestLoot(
+      rollState,
+      this.regularChestEpochPityCounter,
+      rng,
+    );
+    this.regularChestEpochPityCounter = nextEpochPityCounter;
     const patch = applyChestLoot(loot, {
       ...rollState,
       energy: this.energy,
@@ -924,18 +994,133 @@ export class GameStore {
     if (!this.firstChestOpened) return;
     if (this.isChestReady(now)) return;
 
-    adsService.showRewarded(() => {
-      this.chestReadyAt = applyRewardedSkip(this.chestReadyAt, now);
-      saveService.schedulePersist();
-    });
+    adsService.showRewarded(
+      () => {
+        this.chestReadyAt = applyRewardedSkip(this.chestReadyAt, now);
+        saveService.schedulePersist();
+      },
+      undefined,
+      'chest',
+    );
   }
 
   restoreEnergyWithRewarded(): void {
     adsService.showRewarded(() => {
       this.energy = addRewardEnergy(this.energy, REWARDED_ENERGY_BONUS);
+      sceneUiStore.syncTiredSleepFromEnergy();
       energyUiStore.close();
       saveService.schedulePersist();
     });
+  }
+
+  isStarterPackOfferVisible(): boolean {
+    return (
+      this.onboardingCompleted &&
+      this.firstChestOpened &&
+      !this.starterPackPurchased
+    );
+  }
+
+  applyStarterPackPurchase(): 'success' | 'already_owned' {
+    if (this.starterPackPurchased) return 'already_owned';
+
+    this.applyEnergyRegen();
+    this.energy = addRewardEnergy(this.energy, STARTER_PACK_ENERGY_BONUS);
+    this.talismans += STARTER_PACK_OBEREG_BONUS;
+    const owned = [...this.ownedSkinIds];
+    if (!owned.includes(STARTER_PACK_CAT_SKIN_ID)) {
+      owned.push(STARTER_PACK_CAT_SKIN_ID);
+    }
+    this.ownedSkinIds = owned;
+    this.starterPackPurchased = true;
+    sceneUiStore.syncTiredSleepFromEnergy();
+    saveService.schedulePersist();
+    return 'success';
+  }
+
+  isKikimoraCraftAvailable(): boolean {
+    return this.spiritStatuses.kikimora === 'defeated';
+  }
+
+  tryEnterStreet(now: Date = new Date()): boolean {
+    const block = getStreetBlockReason({
+      onboardingCompleted: this.onboardingCompleted,
+      zhirdyayActive: this.zhirdyayActive,
+      isNight: isNightTime(now),
+    });
+    if (block != null) {
+      const tag =
+        block === 'zhirdyay'
+          ? 'yard_blocked_zhirdyay'
+          : block === 'night'
+            ? 'yard_blocked_night'
+            : null;
+      if (tag) {
+        const line = pickCatLine(tag, this.language);
+        if (line) {
+          this.lastCatBubble = { kind: 'footnote', text: line };
+        }
+      }
+      return false;
+    }
+    sceneUiStore.setRoom('street');
+    this.maybeSpawnYardGrass();
+    return true;
+  }
+
+  maybeSpawnYardGrass(rng: () => number = Math.random): void {
+    if (!this.onboardingCompleted) return;
+    if (isNightTime()) return;
+    const todayId = getCalendarDayId();
+    if (
+      !shouldSpawnYardGrassToday(this.yardGrassSpawnDayId, todayId, rng)
+    ) {
+      return;
+    }
+    this.yardGrassSpawnDayId = todayId;
+    const count = yardGrassSpawnCount(rng);
+    const slots: number[] = [];
+    const pool = [0, 1, 2];
+    for (let i = 0; i < count && pool.length > 0; i++) {
+      const idx = Math.floor(rng() * pool.length);
+      slots.push(pool.splice(idx, 1)[0]!);
+    }
+    sceneUiStore.setYardGrassSlots(slots);
+    saveService.schedulePersist();
+  }
+
+  collectYardGrass(slotIndex: number): boolean {
+    if (!canCollectYardGrass(this.yardGrass)) return false;
+    if (!sceneUiStore.yardGrassSlots.includes(slotIndex)) return false;
+    this.yardGrass += 1;
+    sceneUiStore.setYardGrassSlots(
+      sceneUiStore.yardGrassSlots.filter((s) => s !== slotIndex),
+    );
+    sceneUiStore.triggerGrassChipFlash();
+    saveService.schedulePersist();
+    return true;
+  }
+
+  craftYardObereg(): boolean {
+    if (!this.isKikimoraCraftAvailable()) return false;
+    const todayId = getCalendarDayId();
+    if (!canCraftYardObereg(this.yardGrass, this.yardOberegCraftedDayId, todayId)) {
+      return false;
+    }
+    this.yardGrass -= YARD_GRASS_PER_CRAFT;
+    this.talismans += 1;
+    this.yardOberegCraftedDayId = todayId;
+    const line = pickCatLine('yard_craft_done', this.language);
+    if (line) {
+      this.lastCatBubble = { kind: 'footnote', text: line };
+    }
+    saveService.schedulePersist();
+    return true;
+  }
+
+  getYardCraftBlockedHint(): string | undefined {
+    if (this.isKikimoraCraftAvailable()) return undefined;
+    return pickCatLine('yard_need_kikimora', this.language);
   }
 
   markSusedkoStealStarted(now: number = Date.now()): void {
@@ -970,6 +1155,7 @@ export class GameStore {
     this.zhirdyaySeenThisNight = true;
     this.zhirdyayClickProgress = 0;
     this.zhirdyayClicksRequired = 0;
+    this.zhirdyayDefeatedCount += 1;
     if (!this.ownedTitleIds.includes('groza_zhirdyaev')) {
       this.ownedTitleIds = [...this.ownedTitleIds, 'groza_zhirdyaev'];
     }

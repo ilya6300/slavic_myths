@@ -34,7 +34,9 @@ export const CatLayer = observer(function CatLayer() {
     if (!catInteractive) return;
     if (gameStore.handleZhirdyayBlockedInteraction()) return;
 
-    sceneUiStore.registerActivity();
+    if (sceneUiStore.catSleepReason !== 'tired') {
+      sceneUiStore.registerActivity();
+    }
     const before = gameStore.catClickCount;
     gameStore.clickCat();
     if (gameStore.catClickCount > before) {

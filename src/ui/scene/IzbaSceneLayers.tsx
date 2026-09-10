@@ -37,8 +37,6 @@ import {
 
   bookStandPlacement,
 
-  chestMiraclePlacement,
-
   stovePlacement,
 
 } from '../../config/scenePlacements';
@@ -49,6 +47,7 @@ import { chestUiStore } from '../../store/chestUiStore';
 import { eventUiStore } from '../../store/eventUiStore';
 import { TrophyRoom } from '../trophies/TrophyRoom';
 import { SceneSprite } from './SceneSprite';
+import { MiracleChestSprite } from './MiracleChestSprite';
 import { RegularChestSprite } from './RegularChestSprite';
 import { TutorialHighlight } from './TutorialHighlight';
 
@@ -92,7 +91,7 @@ const WindowAperture = observer(function WindowAperture() {
 
   return (
 
-    <div className="window-aperture" aria-hidden>
+    <div className="window-aperture" data-window-skin={gameStore.skins.window} aria-hidden>
 
       <img
         key={viewUrl}
@@ -290,23 +289,11 @@ const Room1Furniture = observer(function Room1Furniture() {
 
       {showMiracleChest && (
 
-        <SceneSprite
-
-          placementClassName={chestMiraclePlacement.className}
-
-          src={furniture.miracleChestClosed}
-
-          alt=""
+        <MiracleChestSprite
 
           interactive={miracleAllowed && gameStore.canOpenWonderChest()}
 
-          onSpriteClick={handleMiracleChestClick}
-
-          className={
-            miracleAllowed && !gameStore.canOpenWonderChest()
-              ? 'scene-chest--cooldown scene-chest-miracle--glow'
-              : 'scene-chest-miracle--glow'
-          }
+          onClick={handleMiracleChestClick}
 
         />
 
@@ -360,7 +347,11 @@ export const Room1Scene = observer(function Room1Scene({
 
   return (
 
-    <div className="izba-room izba-room--1" data-room="1">
+    <div
+      className="izba-room izba-room--1"
+      data-room="1"
+      data-izba-skin={gameStore.skins.izba}
+    >
 
       <WindowAperture />
 
@@ -400,7 +391,12 @@ export const Room2Scene = observer(function Room2Scene() {
 
   return (
 
-    <div className="izba-room izba-room--2" data-room="2" aria-label="Trophies room">
+    <div
+      className="izba-room izba-room--2"
+      data-room="2"
+      data-izba-skin={gameStore.skins.izba}
+      aria-label="Trophies room"
+    >
 
       <WindowAperture />
 

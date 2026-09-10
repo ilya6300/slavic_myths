@@ -11,6 +11,7 @@ const HOUSE_SKIN_GRADES: Record<HouseSkinId, Grade> = {
   hut_rate: 'rare',
   hut_epic: 'epic',
   hut_the_age_of_miracles: 'epoch',
+  hut_harmony: 'epic',
 };
 
 const BROWNIE_SKIN_GRADES: Record<BrownieSkinId, Grade> = {
@@ -20,9 +21,9 @@ const BROWNIE_SKIN_GRADES: Record<BrownieSkinId, Grade> = {
   the_age_of_miracles_brownie: 'epoch',
 };
 
-/** Скины окна в регулярном сундуке (дефолт `landscape_standart` — только старт). */
+/** Скины окна в регулярном сундуке (дефолт `landscape_standart` — только старт; `landscape_yaga` — только квест Яги). */
 const WINDOW_SKIN_CHEST_GRADES: Record<
-  Exclude<ViewSkinId, 'landscape_standart'>,
+  Exclude<ViewSkinId, 'landscape_standart' | 'landscape_yaga'>,
   Grade[]
 > = {
   landscape_temnyy_les: ['rare'],
@@ -35,12 +36,18 @@ const WINDOW_SKIN_DISPLAY_GRADE: Record<ViewSkinId, Grade> = {
   landscape_temnyy_les: 'rare',
   landscape_omut: 'common',
   landscape_cyber_city: 'epoch',
+  landscape_yaga: 'epoch',
 };
 
 export type SkinCategory = 'cat' | 'brownie' | 'izba' | 'window';
 
+/** Только IAP / квест — не в сундуке */
+const CAT_SKIN_CHEST_EXCLUDED = new Set(['cat_pilgrim']);
+
 export function getCatSkinIdsByGrade(grade: Grade): string[] {
-  return catSkins.filter((s) => s.grade === grade).map((s) => s.id);
+  return catSkins
+    .filter((s) => s.grade === grade && !CAT_SKIN_CHEST_EXCLUDED.has(s.id))
+    .map((s) => s.id);
 }
 
 export function getBrownieSkinIdsByGrade(grade: Grade): string[] {
@@ -51,7 +58,7 @@ export function getBrownieSkinIdsByGrade(grade: Grade): string[] {
 
 export function getIzbaSkinIdsByGrade(grade: Grade): string[] {
   return (Object.entries(HOUSE_SKIN_GRADES) as [HouseSkinId, Grade][])
-    .filter(([, g]) => g === grade)
+    .filter(([id, g]) => g === grade && id !== 'hut_harmony')
     .map(([id]) => id);
 }
 

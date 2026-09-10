@@ -6,11 +6,15 @@ import { resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
 import { chestUiStore } from '../../store/chestUiStore';
+import { ModalCloseButton } from '../common/ModalCloseButton';
+import { WoodQuestButton } from '../common/WoodQuestButton';
+import { ChestDropChancesPanel, ChestDropChancesToggle } from './ChestDropChancesPanel';
 import { formatCooldownMs } from './formatCooldown';
 
 export const ChestCooldownModal = observer(function ChestCooldownModal() {
   const { locale } = useLocale();
   const [remainingMs, setRemainingMs] = useState(0);
+  const [dropsExpanded, setDropsExpanded] = useState(false);
 
   useEffect(() => {
     if (!chestUiStore.cooldownOpen) return;
@@ -39,46 +43,56 @@ export const ChestCooldownModal = observer(function ChestCooldownModal() {
   };
 
   return (
-    <div className="chest-modal chest-modal--cooldown" role="dialog" aria-modal="true">
+    <div
+      className="game-modal chest-modal chest-modal--cooldown layer-modal"
+      role="dialog"
+      aria-modal="true"
+    >
       <div
-        className="chest-modal__backdrop"
+        className="game-modal__backdrop"
         aria-hidden
         onClick={handleClose}
       />
-      <div className="chest-modal__panel">
-        <h2 className="chest-modal__title">
+      <div className="game-modal__panel chest-modal__panel">
+        <ModalCloseButton onClick={handleClose} />
+        <h2 className="game-modal__title chest-modal__title">
           {resolveText(settingsUiContent.chestCooldown, locale)}
         </h2>
 
-        <div className="chest-modal__reward">
+        <div className="game-modal__scene game-modal__scene--plain chest-modal__scene">
           <img
             className="chest-modal__chest-closed"
             src={furniture.boxClosed}
             alt=""
             draggable={false}
           />
-          <p className="chest-modal__timer chest-modal__timer--large">
-            {formatCooldownMs(remainingMs)}
-          </p>
         </div>
 
-        <div className="chest-modal__cooldown">
-          <button
-            type="button"
-            className="chest-modal__hurry"
-            onClick={handleHurry}
-          >
-            {resolveText(settingsUiContent.chestHurryLuck, locale)}
-          </button>
+        <p className="chest-modal__timer chest-modal__timer--large">
+          {formatCooldownMs(remainingMs)}
+        </p>
+
+        <div className="chest-modal__drops-section">
+          <ChestDropChancesToggle
+            expanded={dropsExpanded}
+            onToggle={() => setDropsExpanded((v) => !v)}
+          />
+          {dropsExpanded && (
+            <ChestDropChancesPanel preview={gameStore.getChestDropPreview('regular')} />
+          )}
         </div>
 
-        <button
-          type="button"
+        <WoodQuestButton
+          className="chest-modal__hurry"
+          label={resolveText(settingsUiContent.chestHurryLuck, locale)}
+          onClick={handleHurry}
+        />
+
+        <WoodQuestButton
           className="chest-modal__take"
+          label={resolveText(settingsUiContent.chestLootTake, locale)}
           onClick={handleClose}
-        >
-          {resolveText(settingsUiContent.chestLootTake, locale)}
-        </button>
+        />
       </div>
     </div>
   );

@@ -58,6 +58,7 @@ export interface GameSave {
   wonderChestWeekSlotUsed: boolean;
   wonderChestClickProgress: number;
   wonderChestPityCounter: number;
+  regularChestEpochPityCounter: number;
   wonderChestWeekId: string | null;
 
   /** Разовый бонус фрагмента за победу rare+ духов */
@@ -74,6 +75,7 @@ export interface GameSave {
   zhirdyayActive: boolean;
   zhirdyayClickProgress: number;
   zhirdyayClicksRequired: number;
+  zhirdyayDefeatedCount: number;
 
   language: Locale;
   catClickCount: number;
@@ -94,6 +96,16 @@ export interface GameSave {
   poludnicaCoinBonusPercent?: number;
   rusalkaZhirdyayReductionPercent?: number;
   luckCoinsCapBonus?: number;
+
+  /** Ларец новичка (IAP) куплен один раз */
+  starterPackPurchased?: boolean;
+
+  /** Трава с двора (cap 3) */
+  yardGrass?: number;
+  /** Календарный день последнего крафта оберега с двора */
+  yardOberegCraftedDayId?: string | null;
+  /** День последнего спавна травы на улице */
+  yardGrassSpawnDayId?: string | null;
 }
 
 /** Локальная «ночь» для сброса Жирдяя: дата рассвета 06:00 */
@@ -166,6 +178,7 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     wonderChestWeekSlotUsed: false,
     wonderChestClickProgress: 0,
     wonderChestPityCounter: 0,
+    regularChestEpochPityCounter: 0,
     wonderChestWeekId: null,
 
     fragmentVictoryBonusGranted: [],
@@ -179,6 +192,7 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     zhirdyayActive: false,
     zhirdyayClickProgress: 0,
     zhirdyayClicksRequired: 0,
+    zhirdyayDefeatedCount: 0,
 
     language: DEFAULT_LOCALE,
     catClickCount: 0,
@@ -194,6 +208,11 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     poludnicaCoinBonusPercent: 0,
     rusalkaZhirdyayReductionPercent: 0,
     luckCoinsCapBonus: 0,
+
+    starterPackPurchased: false,
+    yardGrass: 0,
+    yardOberegCraftedDayId: null,
+    yardGrassSpawnDayId: null,
   };
 }
 

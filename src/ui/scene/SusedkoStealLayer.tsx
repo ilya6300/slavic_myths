@@ -11,7 +11,7 @@ export const SusedkoStealLayer = observer(function SusedkoStealLayer() {
     susedkoStealPositions[eventUiStore.susedkoPositionIndex] ??
     susedkoStealPositions[0]!;
   const placementClass =
-    susedkoStealPlacementClasses[pos.id] ?? 'scene-susedko-steal--floor-left';
+    susedkoStealPlacementClasses[pos.id] ?? 'scene-susedko-steal--after-stove';
 
   return (
     <div className="layer-susedko-steal">

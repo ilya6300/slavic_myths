@@ -160,7 +160,8 @@ npm run generate:quiz
 
 ## Scope вне задачи
 
-- Asset-TASK из хвоста draft (hut_harmony, landscape_yaga) — **отменены**, не трогаем.
+- Asset-TASK `hut_harmony` — **отменён** (backlog P2).
+- Asset-TASK `landscape_yaga` — отмена **снята** (2026-09-08): см. `quest_rewards_lada_yaga.plan.md`, TASK-026/027.
 - CSS викторины, фоны локаций, логика оберегов — без изменений.
 - Перевод EN/TR — синхронизировать вместе с RU, без отдельного этапа «потом».
 

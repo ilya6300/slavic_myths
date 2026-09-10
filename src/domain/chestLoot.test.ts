@@ -44,6 +44,8 @@ function baseRollState(
 
     domovoySkinId: save.skins.domovoy,
 
+    luckCoins: 0,
+
     ...partial,
 
   };
@@ -88,7 +90,7 @@ describe('chestLoot', () => {
 
   it('should roll obereg from deterministic rng', () => {
 
-    const loot = rollRegularChestLoot(baseRollState(), () => 0.9999);
+    const { loot } = rollRegularChestLoot(baseRollState(), 0, () => 0.9999);
 
     expect(loot.kind).toBeTruthy();
 
@@ -251,7 +253,7 @@ describe('chestLoot', () => {
 
     for (let i = 0; i < 30; i++) {
 
-      const loot = rollRegularChestLoot(state, () => Math.random());
+      const { loot } = rollRegularChestLoot(state, 0, () => Math.random());
 
       if (loot.kind === 'brownie_skin') {
 

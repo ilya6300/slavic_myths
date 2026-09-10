@@ -854,3 +854,276 @@ CSS (`.book-modal`): `--book-open-aspect: 1.248`; `--book-stage-max-w` / `--book
 | TASK-018 | `bookUiStore.isFlipping`, `BookOverlay` swipe, `index.css` §3 |
 
 | TASK-019 | `bookStage.ts`, `index.css` (9vw, 1.248, зоны, CTA contain), `BookOverlay` (paw/illustration), `book_layout.md` §2.5–2.6 |
+
+---
+
+## Epic 13 — Монетизация, усталый кот, улица, реклама
+
+> Источник: `instruction/plans/plan.md`; tasks TASK-028…037.
+
+### SAVE v9
+
+Новые поля `GameSave`:
+
+| Поле | Тип | Default |
+|------|-----|---------|
+| `starterPackPurchased` | `boolean` | `false` |
+| `yardGrass` | `number` | `0` (cap 3) |
+| `yardOberegCraftedDayId` | `string \| null` | `null` |
+| `yardGrassSpawnDayId` | `string \| null` | `null` |
+
+Миграция v8→v9: инициализация полей; `version = 9`.
+
+### IzbaRoom и pan (3 кадра)
+
+```ts
+export type IzbaRoom = 'street' | 1 | 2;
+```
+
+Inner `300vw`, три `.izba-room` по `100vw`:
+
+| `data-room` | `translateX(inner)` | Содержимое |
+|-------------|---------------------|------------|
+| `street` | `0` | view `skins.window` fullscreen, трава, без `.layer-izba` |
+| `1` | `-100vw` | изба (эталон комнаты 1 без изменений) |
+| `2` | `-200vw` | трофеи (эталон комнаты 2) |
+
+Дефолт `activeRoom = 1` — визуально та же изба, что раньше при `translateX(0)`.
+
+`resolvePanRoomAfterGesture`: свайп вправо с комнаты 1 → street (если `canEnterStreet`); влево → 2; обратные жесты с street/2.
+
+Блокировка улицы: онбординг (!completed), `zhirdyayActive`, `isNightTime()` — pan и стрелка; кот показывает `yard_blocked_*`.
+
+### catSleepReason
+
+```ts
+export type CatSleepReason = 'afk' | 'tired';
+```
+
+`sceneUiStore`: `catSleeping`, `catSleepReason: CatSleepReason | null`, `tiredClickCount`.
+
+| Причина | Условие | Клик | registerActivity | Суседко |
+|---------|---------|------|------------------|---------|
+| `afk` | tickIdle 45–60 с | будит, монета | будит | да |
+| `tired` | `energy === 0`, onboarding done | tired bubble, не монета | не будит | нет |
+
+`tiredClickCount`: 1–2 клика — только bubble; с 3-го — `energyUiStore.open()`.
+
+### paymentsService (stub)
+
+`src/services/paymentsService.ts` — не в SaveService:
+
+```ts
+purchaseStarterPack(): Promise<'success' | 'already_owned' | 'cancelled'>
+```
+
+Dev: модалка «Оплатить 199 ₽» → `success`. `GameStore.purchaseStarterPack()`: +100 energy (`addRewardEnergy`), +5 talismans, `ownedSkinIds += cat_pilgrim`, `starterPackPurchased = true`.
+
+`cat_pilgrim` — `rare`, только IAP; исключить из `getCatSkinIdsByGrade` / сундуков.
+
+### adsService stub overlay
+
+`adsUiStore` + `RewardedWaitOverlay`: в DEV/`isTestMode` — 10 с отсчёт, отмена до 3 с без награды. Прод SDK — прямой `showRewardedVideo`.
+
+### Домен двора
+
+`src/domain/yardCraft.ts`: cap 3, craft 3→1 obereg, `yardOberegCraftedDayId` лимит 1/сутки.
+
+`src/domain/yardAccess.ts`: `canEnterStreet`, `getStreetBlockTag`.
+
+### UI новые модули
+
+| Модуль | Назначение |
+|--------|------------|
+| `StreetYard.tsx` | комната street, спавн/сбор травы |
+| `KikimoraCraftModal.tsx` | крафт оберега |
+| `KikimoraHudAvatar.tsx` | аватар под HUD (если kikimora defeated) |
+| `StarterPackModal.tsx` | ларец 199 ₽ |
+| `RewardedWaitOverlay.tsx` | 10 с заглушка рекламы |
+
+### Соответствие задачам
+
+| TASK | Модули |
+|------|--------|
+| TASK-030–031 | `sceneUiStore`, `GameStore.clickCat`, `susedkoSteal`, `dialogContent` |
+| TASK-032 | `adsService`, `adsUiStore`, `RewardedWaitOverlay` |
+| TASK-033 | `paymentsService`, `StarterPackModal`, save v9, `skinPools` |
+| TASK-034–035 | `yardCraft`, `StreetYard`, pan CSS, `ScenePanNav` |
+| TASK-036 | `index.css` trophy-modal, profile-tabs |
+
+---
+
+## Epic 14 — Пол-таймер сундука и бар чудес (диегетика комнаты 1)
+
+> Источник: TASK-038; канон визуала — `room_01_layout.md` §4.4, §4.4.1, §4.5 (числа 3D/цвета **не** дублировать здесь — сверять по файлу). Пиксели на экране — `index.css`. Epic 8 HUD-чип `.hud-miracle` **снят** (`hud_layout.md`); этот эпик его **не** возвращает.
+
+### Решение
+
+Только сцена комнаты 1: общий CSS-якорь `.scene-chest-floor` (диегетик на досках, CSS 3D трапеция) внутри уже существующего wrap сундука. Обычный сундук — перенос кулдаун-таймера с «золотого span над крышкой» на пол; видимость **как сейчас** (`firstChestOpened && cooldown`). Сундук чудес — тот же wrap-паттерн, что `RegularChestSprite`, плюс бар (дорожка + заливка + `n/total`) когда слот недели уже потрачен. Данных, store, save, SDK, PNG **не** добавляем: прогресс читается из `GameStore` / `domain/wonderChest.ts` (поля Epic 8). `--chest-progress` — единственный runtime inline, по образцу `--rewarded-progress` в `RewardedWaitOverlay`.
+
+### Структура модулей
+
+| Path | Ответственность | Менять? |
+|------|----------------|---------|
+| `src/domain/wonderChest.ts` | Чистый шов видимости бара + ratio заливки 0…1. Существующие `canOpenWonderChest` / `wonderChestClicksRequired` / `syncWonderChestWeekState` **не** ломать | **дописать** 2 функции |
+| `src/ui/scene/RegularChestSprite.tsx` | Таймер в `.scene-chest-floor--timer` **под** спрайтом; тик 1 с и `formatCooldownMs` без изменений | да |
+| `src/ui/scene/MiracleChestSprite.tsx` | **новый** презентационный observer (не god): wrap + `SceneSprite` + пол-бар. Клик/онбординг остаются в `IzbaSceneLayers` | **создать** |
+| `src/ui/scene/IzbaSceneLayers.tsx` | Заменить голый `SceneSprite` чуда на `MiracleChestSprite`; `handleMiracleChestClick` / `showMiracleChest` без новой логики | тонкая замена |
+| `src/ui/index.css` | `.scene-chest-floor*` (perspective + rotateX); снять антипример `.scene-chest__timer { bottom: 100% }`; wrap чуда по аналогии `.scene-chest-wrap.scene-chest-regular` | да |
+| `src/ui/scene/GameHud.tsx` | Не трогать. `.hud-miracle` **не** возвращать | нет |
+| `src/store/GameStore.ts` | Геттеры уже есть: `getWonderChestClickProgress`, `getWonderChestClicksRequired`, `canOpenWonderChest`, `isWonderChestFreeThisWeek`, `wonderChestWeekSlotUsed` | нет |
+| `src/config/lootTables.ts` | `miracleChest.clicksToOpen` (700) — источник `required`, **не** хардкодить 700 в UI | нет |
+| `src/config/scenePlacements.ts` | Классы `scene-chest-regular` / `scene-chest-miracle` без новых координат | нет |
+| `src/domain/GameSave.ts` / SaveService / platform | — | нет |
+
+Не плодить: общий React-компонент «ChestFloor» (два разных интерьера; CSS-класс общий достаточен). Не плодить store/`chestFloorUiStore`.
+
+### Ключевые типы / интерфейсы
+
+Новых типов save **нет**. Публичный доменный шов:
+
+```ts
+/** Бар на полу. Скрыт на бесплатном слоте недели — даже если clicks > 0 после sync понедельника. */
+export function shouldShowWonderChestProgress(
+  weekSlotUsed: boolean,
+  clicks: number,
+  required: number,
+): boolean;
+
+/** Источник `--chest-progress` (clamp 0…1). 0/required → 0; required/required → 1. */
+export function wonderChestFillRatio(clicks: number, required: number): number;
+```
+
+Реализация видимости: `return weekSlotUsed`. Аргументы `clicks` / `required` — контракт матрицы тестов (гриндинг и `700/700` не прячут бар; бесплатный слот прячет даже при leftover-кликах).
+
+`MiracleChestSprite` — props как у обычного (тонкий): `interactive`, `onClick`, опционально `className`. Ready/cooldown/прогресс читает из `gameStore` (observer). Не прокидывать клики через новый store.
+
+Runtime inline (единственный `style=` на поле):
+
+```tsx
+style={{ '--chest-progress': wonderChestFillRatio(clicks, required) } as CSSProperties}
+```
+
+Комментарий в TSX: `runtime fill 0…1 (css-styling.mdc)`. CSS: `width: calc(var(--chest-progress, 0) * 100%)`; `transition: width 180ms ease-out` — в stylesheet, не в JS.
+
+### Поток данных
+
+```
+Кот / тик кулдауна
+  → GameStore (уже есть: clickCat → wonderChestClickProgress; chestReadyAt)
+  → observer RegularChestSprite | MiracleChestSprite
+  → DOM пола в том же wrap, что спрайт
+  → persist не меняется
+```
+
+**Обычный (`RegularChestSprite`):**
+
+1. `showTimer = firstChestOpened && onCooldown && !isChestReady()` — **не** менять условие.
+2. DOM: пол **перед** спрайтом (раньше в дереве → спрайт рисуется поверх дальнего края). Удалить `span.scene-chest__timer`.
+3. Готов: пол скрыт; пульс `.scene-chest--ready` как сейчас.
+4. Текст: `formatCooldownMs(remainingMs)` (`h:mm:ss` / `m:ss`), `aria-live="polite"`.
+
+**Чудо (`MiracleChestSprite`):**
+
+1. `required = getWonderChestClicksRequired()` (= `lootTables.miracleChest.clicksToOpen`).
+2. `clicks = getWonderChestClickProgress()`.
+3. Бар в DOM ⇔ `shouldShowWonderChestProgress(wonderChestWeekSlotUsed, clicks, required)`.
+   - бесплатный слот (`!weekSlotUsed` / `isWonderChestFreeThisWeek()`): бар **нет**; готовность = свечение спрайта.
+   - гриндинг (`weekSlotUsed && clicks < required`): track + fill + `n/total`.
+   - набор (`weekSlotUsed && clicks >= required`, ещё не открыт): заливка 1 + `required/required` + пульс спрайта.
+4. После `openWonderChest` прогресс уже сбрасывается в store (−700, `weekSlotUsed` остаётся true) → бар снова `0/required`. UI только читает.
+5. Спрайт: сохранить `scene-chest-miracle--glow`; `--cooldown` когда `!canOpenWonderChest()`; `.scene-chest--ready` когда `canOpenWonderChest()` (бесплатный слот **или** 700/700).
+6. `interactive` / `onClick` — с родителя, как сейчас (`miracleAllowed && canOpenWonderChest`).
+
+**`IzbaSceneLayers`:** `{showMiracleChest && <MiracleChestSprite … />}` вместо голого `SceneSprite`. Хендлер открытия без изменений.
+
+### CSS / DOM-контракт
+
+Пиксели (`rotateX` 55–65°, ширина ближнего края ×1.15–1.3, цвета выемки/аметиста, высота ~10–12px) — `room_01_layout.md` §4.4.1 + дизайнер. Здесь — **классы и запреты**.
+
+| Класс | Роль |
+|-------|------|
+| `.scene-chest-wrap` | якорь; `overflow: visible`; **без** `perspective` на wrap (иначе 3D сломает спрайт) |
+| `.scene-chest-wrap.scene-chest-miracle` | `left`/`bottom` как у текущего `.scene-chest-miracle` (`58vw` / `19vh`); зеркало `.scene-chest-wrap.scene-chest-regular` |
+| `.scene-chest-wrap__sprite` | спрайт; `z-index` выше пола |
+| `.scene-chest-floor` | позиция у ножек (`bottom: 0`, не `bottom: 100%`); `z-index` ниже спрайта; `pointer-events: none`; **`perspective` здесь** |
+| `.scene-chest-floor__plate` | ребёнок: `rotateX` + `transform-origin: top center` — трапеция (дальний край уже, заходит под ножки) |
+| `.scene-chest-floor--timer` / `--progress` | модификаторы |
+| `.scene-chest-floor__track` | выемка дорожки |
+| `.scene-chest-floor__fill` | заливка; только `var(--chest-progress)` |
+| `.scene-chest-floor__label` | цифры поверх (`tabular-nums`); таймер или `n/total` |
+
+A11y бара: `role="progressbar"`, `aria-valuemin={0}`, `aria-valuemax={required}`, `aria-valuenow={clicks}` на `.scene-chest-floor--progress`.
+
+Удалить правило `.scene-chest__timer { bottom: 100%; … color: #f0c14a; text-shadow }`. Класс `.scene-chest__timer` не использовать.
+
+**Запрещено в CSS/TSX этого эпика:** `.hud-miracle`; `mix-blend-mode` на поле/таймере; `width`/`min-width` на `.scene-chest-regular` / `.scene-chest-miracle` / `__sprite` «под подпись» (эталон `6.8%` не увеличивать); новые PNG; Material-progress; инлайн `transform`/`width` кроме `--chest-progress`.
+
+Ночь: читаемость через непрозрачную выемку на `__plate`, не тонкий текст на брёвнах и не blend. Подписи живут в `.izba-room` комнаты 1 → pan 1→2 уезжает вместе со сценой, в комнате 2 не дублировать.
+
+### Инварианты
+
+- Save / `GameSave.version` / hydrate / SDK / `clicksToOpen` — без изменений.
+- Онбординг и `canInteract(..., 'chest' | 'chestMiracle')` — без изменений.
+- `syncWonderChestWeekState` по-прежнему сбрасывает `weekSlotUsed`, **клики оставляет**: на новой неделе бар скрыт, даже если leftover ≥ 700.
+- Слои: пол-лейбл внутри мебельного wrap (z 40), не HUD, не `.layer-night`. `pointer-events: none` — хит всегда в `SceneSprite`.
+- Эталон комнаты 1 (`scene-visual-etalon.mdc`): не трогать `.scene-stove`…`.scene-cat`; не ставить `width` на мебель для hit-area.
+- Juice: клик по коту уже инкрементит `wonderChestClickProgress` → observer двигает `--chest-progress` (transition 180ms). Новый action не нужен.
+- Модалки лута / баланс 700 — вне scope.
+
+### Риски
+
+| Риск | Как не словить |
+|------|----------------|
+| `perspective` на `.scene-chest-wrap` искажает PNG сундука | perspective только на `.scene-chest-floor`, rotateX на `__plate` |
+| Таймер снова «в воздухе» | нет `bottom: 100%`; пол `bottom: 0` у ножек |
+| Бар на бесплатном слоте / после понедельника | только `shouldShowWonderChestProgress`; не `clicks > 0` |
+| Слипание двух подписей / ковёр кота | ширина плиты ≈ основание спрайта (rotateX даёт ближний край шире); не раздувать wrap |
+| Регрессия Epic 8 | `openWonderChest` / eligibility / glow/hue-rotate fallback не рефакторить «заодно» |
+| Дизайнер ещё не зафиксировал vw | разработчик ставит классы + 3D-контракт; точный `rotateX`/цвет — после UI/UX; не выдумывать PNG |
+
+### Test-seams (для тестировщика)
+
+**Импорт / мок (unit, без DOM-снапшотов сцены):**
+
+| Шов | Где | Что assert |
+|-----|-----|------------|
+| `shouldShowWonderChestProgress` | импорт из `domain/wonderChest.ts` | `(false, 0, 700) → false`; `(false, 700, 700) → false` (free week + leftover); `(true, 0, 700) → true`; `(true, 350, 700) → true`; `(true, 700, 700) → true` |
+| `wonderChestFillRatio` | импорт оттуда же | `(0, 700) → 0`; `(350, 700) → 0.5`; `(700, 700) → 1`; `(800, 700) → 1` (clamp) |
+| `formatCooldownMs` | уже есть | длинный `12:00:00` / короткий `m:ss` — не регрессировать |
+| `GameStore` | **не** мокать новый API; существующих геттеров достаточно | не требовать новых actions |
+
+Не мокать CSS. Не мокать SDK.
+
+**DOM/CSS assert (текст `index.css` / разметка, паттерн `bookLayoutCss.test.ts`):**
+
+Допустимо:
+
+- `.scene-chest-floor` содержит `perspective`, `pointer-events: none`; **нет** `bottom: 100%`; **нет** `mix-blend-mode`
+- `.scene-chest-floor__plate` содержит `rotateX`, `transform-origin: top` (center)
+- `.scene-chest-floor__fill` содержит `var(--chest-progress`
+- селектор `.scene-chest__timer` отсутствует **или** его body не содержит `bottom: 100%`
+- в `GameHud.tsx` нет класса `hud-miracle`
+- `.scene-chest-regular` / `.scene-chest-miracle`: ширина не выше текущего эталона `6.8%` (не раздувать «под подпись»)
+- `MiracleChestSprite` / `RegularChestSprite`: пол — sibling спрайта внутри `.scene-chest-wrap`; `--chest-progress` только как CSS variable в `style`
+
+Не делать: снапшот всей избы; E2E на каждую секунду таймера; тесты реализации имён хуков.
+
+**visual_check (ревьювер / билд, не автотест):** ночь; pan 1→2 (лейблы не в комнате 2); оба сундука сразу; `0/700` пустая заливка и `700/700` до края + пульс.
+
+### Соответствие задачам
+
+| Критерий TASK-038 | Модуль |
+|-------------------|--------|
+| Таймер не HUD над крышкой; материал выемка §4.4.1 | `index.css` `.scene-chest-floor*`; `RegularChestSprite` |
+| Часы под сундуком, трапеция perspective+rotateX, origin top | `.scene-chest-floor` + `__plate` |
+| `pointer-events: none`; width спрайта не увеличивать | CSS-контракт; эталон `6.8%` |
+| Бар эпика снова виден, track+fill+`n/total`, не чип | `MiracleChestSprite` + `shouldShowWonderChestProgress` |
+| `--chest-progress` 0…1 runtime | `wonderChestFillRatio` + inline как `--rewarded-progress` |
+| Бесплатный слот: бар скрыт | `shouldShowWonderChestProgress` |
+| Кулдаун: таймер на полу; готов: скрыт + `.scene-chest--ready` | `RegularChestSprite` (условие showTimer как сейчас) |
+| `.hud-miracle` не в шапке | `GameHud` не трогать |
+| Эталон комнаты 1, pan, ночь | только wrap сундуков + CSS пола; без правок эталона печки/кота |
+| Вне scope: PNG, HUD-чип, модалки, баланс 700 | не открывать |
+
+---

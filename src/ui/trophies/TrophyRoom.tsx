@@ -75,6 +75,7 @@ export const TrophyRoom = observer(function TrophyRoom() {
                   {unlocked ? (
                     <img
                       className="room-trophy-slot__img"
+                      data-spirit-id={spiritId}
                       src={getTrophyUrl(spiritId)}
                       alt=""
                       draggable={false}

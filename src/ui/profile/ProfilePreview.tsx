@@ -66,8 +66,11 @@ export const ProfilePreview = observer(function ProfilePreview() {
     );
   }
 
-  if (tab === 'cat') {
-    const catId = selectedId ?? gameStore.skins.cat;
+  if (tab === 'stats' || tab === 'settings' || tab === 'cat') {
+    const catId =
+      tab === 'stats' || tab === 'settings'
+        ? gameStore.skins.cat
+        : (selectedId ?? gameStore.skins.cat);
     const catSkin = getCatSkinById(catId);
     if (!catSkin) return <div className="profile-modal__preview-stage" />;
     return (

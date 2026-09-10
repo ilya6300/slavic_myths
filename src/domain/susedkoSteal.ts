@@ -12,12 +12,14 @@ export function canStartSusedkoSteal(input: {
   onboardingCompleted: boolean;
   firstChestOpened: boolean;
   catSleeping: boolean;
-  activeRoom: 1 | 2;
+  catSleepReason: 'afk' | 'tired' | null;
+  activeRoom: 'street' | 1 | 2;
   zhirdyayActive: boolean;
 }): boolean {
   if (!input.onboardingCompleted) return false;
   if (!input.firstChestOpened) return false;
   if (!input.catSleeping) return false;
+  if (input.catSleepReason !== 'afk') return false;
   if (input.activeRoom !== 1) return false;
   if (input.zhirdyayActive) return false;
   return true;

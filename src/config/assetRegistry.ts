@@ -19,6 +19,7 @@ export const houseSkins = {
   hut_rate: fromAssets('house/hut_rate.png'),
   hut_epic: fromAssets('house/hut_epic.png'),
   hut_the_age_of_miracles: fromAssets('house/hut_the_age_of_miracles.png'),
+  hut_harmony: fromAssets('house/hut_harmony.png'),
 } as const;
 
 export type HouseSkinId = keyof typeof houseSkins;
@@ -32,6 +33,7 @@ export const viewSkins = {
   landscape_temnyy_les: fromAssets('view/landscape_temnyy_les.jpeg'),
   landscape_omut: fromAssets('view/landscape_omut.jpeg'),
   landscape_cyber_city: fromAssets('view/landscape_cyber_city.jpeg'),
+  landscape_yaga: fromAssets('view/landscape_yaga.jpeg'),
 } as const;
 
 export type ViewSkinId = keyof typeof viewSkins;
@@ -41,6 +43,8 @@ export const DEFAULT_VIEW_SKIN: ViewSkinId = 'landscape_standart';
 /** Фоны викторины (только квест; баня не в профиле) */
 export const quizSceneBackgrounds = {
   banya: fromAssets('quiz/bg_banya.jpeg'),
+  kikimoraCraft: fromAssets('quiz/kikimora_craft_bg.jpeg'),
+  trophyTale: fromAssets('quiz/trophy_tale_bg.jpeg'),
 } as const;
 
 // --- Мебель ---
@@ -86,6 +90,9 @@ export const furniture = {
   boxClosed: fromAssets('furniture/box_closed.png'),
   boxOpen: fromAssets('furniture/box_open.png'),
   shelf: fromAssets('furniture/shelf.png'),
+  starterCasket: fromAssets('furniture/starter_casket.png'),
+  yardGrass: fromAssets('furniture/yard_grass.png'),
+  kikimoraWeaving: fromAssets('furniture/kikimora_weaving.png'),
   /** ⏳ файла ещё нет — fallback на box + hue-rotate в UI */
   miracleChestClosed: fromAssets('furniture/box_closed.png'),
   miracleChestOpen: fromAssets('furniture/box_open.png'),
@@ -128,9 +135,10 @@ export const hudIcons = {
   coin: fromAssets('UI/monete_v1.png'),
   obereg: fromAssets('UI/secret_amulet.png'),
   oberegAlt: fromAssets('UI/amulet_against_the_house_spirit.png'),
-  /** ⏳ отдельные icon_*.png — промпт в design_assets_prompts.md */
-  energy: fromAssets('UI/monete_v1.png'),
-  smetana: fromAssets('UI/monete_v1.png'),
+  energy: fromAssets('UI/icon_energy.png'),
+  smetana: fromAssets('UI/icon_smetana.png'),
+  /** P1: assets/UI/icon_grass.png — пока fallback на пучок двора */
+  grass: fromAssets('furniture/yard_grass.png'),
 } as const;
 
 // --- Духи: гравюра (книга, викторина, fallback трофеев) ---
@@ -218,6 +226,7 @@ export const catSkins: CatSkinAssets[] = [
   catSkin('rare', 'green_mage', 'green_mage', 'green_mage_sid.png', 'green_mage_sleep.png'),
   catSkin('rare', 'mace', 'mace', 'mace_sid.png', 'mace_sleep.png'),
   catSkin('rare', 'ninja', 'ninja', 'ninja_sid.png', 'ninja_sleep.png'),
+  catSkin('rare', 'cat_pilgrim', 'cat_pilgrim', 'cat_pilgrim_sid.png', 'cat_pilgrim_sleep.png'),
   catSkin('epic', 'blue_mage', 'blue_mage', 'blue_mage_sid.png', 'blue_mage_sleep.png'),
   catSkin('epic', 'epic_hero', 'epic_hero', 'epic_hero_sid.png', 'epic_hero_sleep.png'),
   catSkin('epic', 'red_gunner', 'red_gunner', 'red_gunner_sid.png', 'red_gunner_sleep.png'),
