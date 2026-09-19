@@ -1,15 +1,44 @@
 import {
   brownieSkins,
   catSkins,
+  getCatSkinById,
   houseSkins,
   viewSkins,
   type BrownieSkinId,
   type HouseSkinId,
   type ViewSkinId,
 } from '../config/assetRegistry';
+import { STARTER_PACK_CAT_SKIN_ID } from '../config/gameConstants';
 import type { Grade } from '../domain/grade';
 import { getWindowSkinDisplayGrade } from './skinPools';
 import { titles, type TitleDefinition } from './titles';
+
+const GRADE_SORT_ORDER: Record<Grade, number> = {
+  common: 0,
+  rare: 1,
+  epic: 2,
+  epoch: 3,
+};
+
+function sortProfileSkinEntries(entries: ProfileSkinEntry[]): ProfileSkinEntry[] {
+  return [...entries].sort((a, b) => {
+    const byGrade = GRADE_SORT_ORDER[a.grade] - GRADE_SORT_ORDER[b.grade];
+    if (byGrade !== 0) return byGrade;
+    if (a.id === STARTER_PACK_CAT_SKIN_ID) return -1;
+    if (b.id === STARTER_PACK_CAT_SKIN_ID) return 1;
+    return a.id.localeCompare(b.id);
+  });
+}
+
+function toProfileCatEntry(skin: (typeof catSkins)[number]): ProfileSkinEntry {
+  return {
+    id: skin.id,
+    category: 'cat',
+    grade: skin.grade,
+    previewSrc: skin.sit,
+    label: skin.id,
+  };
+}
 
 export type ProfileSkinCategory = 'cat' | 'izba' | 'window' | 'brownie';
 
@@ -32,23 +61,26 @@ export function isDefaultOwnedSkin(skinId: string): boolean {
   return DEFAULT_OWNED_SKINS.has(skinId);
 }
 
+/** Все скины кота в профиле, включая IAP «Путник» (не в сундуке). */
 export function getProfileCatSkins(): ProfileSkinEntry[] {
-  return catSkins.map((s) => ({
-    id: s.id,
-    category: 'cat',
-    grade: s.grade,
-    previewSrc: s.sit,
-    label: s.id,
-  }));
+  const byId = new Map<string, ProfileSkinEntry>();
+  for (const s of catSkins) {
+    byId.set(s.id, toProfileCatEntry(s));
+  }
+  const pilgrim = getCatSkinById(STARTER_PACK_CAT_SKIN_ID);
+  if (pilgrim && !byId.has(STARTER_PACK_CAT_SKIN_ID)) {
+    byId.set(STARTER_PACK_CAT_SKIN_ID, toProfileCatEntry(pilgrim));
+  }
+  return sortProfileSkinEntries([...byId.values()]);
 }
 
 export function getProfileIzbaSkins(): ProfileSkinEntry[] {
   const grades: Record<HouseSkinId, Grade> = {
     hut_standart: 'common',
     hut_rate: 'rare',
-    hut_epic: 'epic',
     hut_the_age_of_miracles: 'epoch',
     hut_harmony: 'epic',
+    hut_cyberpank: 'epoch',
   };
   return (Object.keys(houseSkins) as HouseSkinId[]).map((id) => ({
     id,

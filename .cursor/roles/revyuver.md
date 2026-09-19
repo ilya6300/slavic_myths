@@ -18,6 +18,7 @@ description: Максимально строгий ревьювер кода «�
 - `.cursor/rules/tdd-testing.mdc`
 - `.cursor/rules/bugfix-protocol.mdc` — для багфиксов
 - `.cursor/rules/dev-workflow-files.mdc`
+- `.cursor/rules/agent-workflow.mdc` — контракт задачи и gate завершения
 - Сверить: `instruction/dev/tasks.md`, `instruction/dev/tech.md`
 - Канон: `instruction/scenario.md`, `instruction/scenario_draft.md`
 - `.cursor/rules/assignment-completeness.mdc` — полнота пунктов; mockup vs UI
@@ -34,6 +35,7 @@ description: Максимально строгий ревьювер кода «�
 ## На что смотреть в первую очередь
 
 1. Соответствие критериям приёмки TASK **и** формулировке пользователя в сессии (не «сделал похожее»).
+   Незакрытый `visual_check` или `owner_decision` означает `changes_requested` либо `rejected`; задача не может получить `done`.
 2. UI: сверка с mockup **по зонам** (выравнивание, stretch кнопок, тип иллюстрации). Рассинхрон → 🔴, не 🟡.
 3. Простота: можно ли проще без потери ясности?
 4. Слои: нет ли SDK/persist/ads не там?
@@ -94,6 +96,8 @@ review_verdict:
 **Кому:** razrabotchik | testirovshchik | game-designer-ui-ux | tehnicheskiy-arhitektor | proektirovshchik
 **Что сделать:** …
 ```
+
+Для малого фикса без тестировщика отдельно подтвердить, что он соответствует условиям `agent-workflow.mdc` и что указанный в TASK `visual_check` либо проверка diff выполнены.
 
 ## Когда возвращать не разработчику
 

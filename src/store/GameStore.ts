@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import type { SpiritId } from '../config/assetRegistry';
+import type { IzbaEffectId } from '../data/izbaEffects';
 import {
   ENERGY_PER_CLICK,
   ENERGY_PER_QUEST,
@@ -16,7 +17,6 @@ import {
   applyRewardedSkip,
   chestReadyAtAfterOpen,
   getChestCooldownRemainingMs,
-  isChestReady,
 } from '../domain/chestCooldown';
 import { applyChestLoot, rollRegularChestLoot, type ChestLootPatch } from '../domain/chestLoot';
 import {
@@ -66,10 +66,10 @@ import {
 import { rollZhirdyayClicksRequired } from '../domain/zhirdyay';
 import { shouldOpenEnergyModalAfterTiredClick } from '../domain/tiredCat';
 import {
+  advanceYardGrassSpawn,
+  applyDailyYardGrassSpawn,
   canCollectYardGrass,
   canCraftYardObereg,
-  shouldSpawnYardGrassToday,
-  yardGrassSpawnCount,
   YARD_GRASS_PER_CRAFT,
 } from '../domain/yardCraft';
 import { getStreetBlockReason } from '../domain/yardAccess';
@@ -82,7 +82,7 @@ import { LOCALES } from '../i18n/types';
 import { pickCatLine } from '../data/catDialogs';
 import { getSpiritById } from '../data/spirits';
 import { getQuizBySpiritId, shuffleQuizQuestions } from '../data/quiz';
-import { miracleChest, fragmentVictoryBonusSpiritIds } from '../config/lootTables';
+import { miracleChest, fragmentVictoryBonusSpiritIds, fragmentRequirements } from '../config/lootTables';
 import {
   DEFAULT_VIEW_SKIN,
   viewSkins,
@@ -144,6 +144,8 @@ export class GameStore {
   skins = { cat: 'cat_standart', domovoy: 'brownie_standart', izba: 'hut_standart', window: 'landscape_standart' };
   ownedSkinIds: string[] = [];
   ownedTitleIds: string[] = [];
+  ownedIzbaEffectIds: string[] = [];
+  equippedIzbaEffectId: string | null = null;
   trophiesUnlocked: string[] = [];
 
   chestReadyAt: number | null = null;
@@ -187,7 +189,9 @@ export class GameStore {
   starterPackPurchased = false;
   yardGrass = 0;
   yardOberegCraftedDayId: string | null = null;
+  yardGrassSpawnCheckedAt: number | null = null;
   yardGrassSpawnDayId: string | null = null;
+
 
   constructor() {
     makeAutoObservable(this);
@@ -348,6 +352,8 @@ export class GameStore {
     };
     this.ownedSkinIds = [...save.ownedSkinIds];
     this.ownedTitleIds = [...save.ownedTitleIds];
+    this.ownedIzbaEffectIds = [...(save.ownedIzbaEffectIds ?? [])];
+    this.equippedIzbaEffectId = save.equippedIzbaEffectId ?? null;
     this.trophiesUnlocked = [...save.trophiesUnlocked];
 
     this.chestReadyAt = save.chestReadyAt;
@@ -383,14 +389,23 @@ export class GameStore {
     this.luckCoinsCapBonus = save.luckCoinsCapBonus ?? 0;
 
     this.starterPackPurchased = save.starterPackPurchased ?? false;
+    if (
+      this.starterPackPurchased &&
+      !save.ownedSkinIds?.includes(STARTER_PACK_CAT_SKIN_ID)
+    ) {
+      this.ownedSkinIds = [...this.ownedSkinIds, STARTER_PACK_CAT_SKIN_ID];
+    }
     this.yardGrass = save.yardGrass ?? 0;
     this.yardOberegCraftedDayId = save.yardOberegCraftedDayId ?? null;
+    this.yardGrassSpawnCheckedAt = save.yardGrassSpawnCheckedAt ?? null;
     this.yardGrassSpawnDayId = save.yardGrassSpawnDayId ?? null;
+    sceneUiStore.setYardGrassSlots(save.yardGrassFieldSlots ?? []);
 
     applyDocumentLang(this.language);
     this.applyEnergyRegen();
     this.syncWonderChestWeek();
     sceneUiStore.syncTiredSleepFromEnergy();
+    this.maybeSpawnYardGrass();
   }
 
   toSave(): GameSave {
@@ -416,6 +431,8 @@ export class GameStore {
       skins: { ...this.skins },
       ownedSkinIds: [...this.ownedSkinIds],
       ownedTitleIds: [...this.ownedTitleIds],
+      ownedIzbaEffectIds: [...this.ownedIzbaEffectIds],
+      equippedIzbaEffectId: this.equippedIzbaEffectId,
       trophiesUnlocked: [...this.trophiesUnlocked],
 
       chestReadyAt: this.chestReadyAt,
@@ -452,6 +469,8 @@ export class GameStore {
       starterPackPurchased: this.starterPackPurchased,
       yardGrass: this.yardGrass,
       yardOberegCraftedDayId: this.yardOberegCraftedDayId,
+      yardGrassFieldSlots: [...sceneUiStore.yardGrassSlots],
+      yardGrassSpawnCheckedAt: this.yardGrassSpawnCheckedAt,
       yardGrassSpawnDayId: this.yardGrassSpawnDayId,
     };
   }
@@ -751,6 +770,9 @@ export class GameStore {
     if (patch.ownedSkinIds != null) {
       this.ownedSkinIds = patch.ownedSkinIds;
     }
+    if (patch.ownedIzbaEffectIds != null) {
+      this.ownedIzbaEffectIds = patch.ownedIzbaEffectIds;
+    }
     if (patch.energyRegenBonusPercent != null) {
       this.energyRegenBonusPercent = patch.energyRegenBonusPercent;
     }
@@ -878,13 +900,7 @@ export class GameStore {
   }
 
   selectFragmentSpirit(spiritId: SpiritId): boolean {
-    const fragmentSpirits: SpiritId[] = [
-      'lada',
-      'veles',
-      'baba_yaga',
-      'koschei_immortal',
-      'chudo_yudo',
-    ];
+    const fragmentSpirits = Object.keys(fragmentRequirements) as SpiritId[];
     if (!fragmentSpirits.includes(spiritId)) return false;
     if (this.spiritStatuses[spiritId] !== 'locked') return false;
 
@@ -1064,33 +1080,50 @@ export class GameStore {
       return false;
     }
     sceneUiStore.setRoom('street');
-    this.maybeSpawnYardGrass();
     return true;
   }
 
-  maybeSpawnYardGrass(rng: () => number = Math.random): void {
+  handleStreetRoomEntered(): void {
+    this.maybeSpawnYardGrass();
+  }
+
+  maybeSpawnYardGrass(
+    rng: () => number = Math.random,
+    now: number = Date.now(),
+  ): void {
     if (!this.onboardingCompleted) return;
-    if (isNightTime()) return;
-    const todayId = getCalendarDayId();
-    if (
-      !shouldSpawnYardGrassToday(this.yardGrassSpawnDayId, todayId, rng)
-    ) {
-      return;
+
+    const prevChecked = this.yardGrassSpawnCheckedAt;
+    const prevSpawnDayId = this.yardGrassSpawnDayId;
+    const prevSlotsKey = sceneUiStore.yardGrassSlots.join(',');
+    const intervalResult = advanceYardGrassSpawn(
+      sceneUiStore.yardGrassSlots,
+      this.yardGrassSpawnCheckedAt,
+      now,
+      rng,
+    );
+    this.yardGrassSpawnCheckedAt = intervalResult.lastSpawnCheckAt;
+
+    const dayId = getCalendarDayId(new Date(now));
+    const dailyResult = applyDailyYardGrassSpawn(
+      intervalResult.fieldSlots,
+      this.yardGrassSpawnDayId,
+      dayId,
+      rng,
+    );
+    this.yardGrassSpawnDayId = dailyResult.lastSpawnDayId;
+    sceneUiStore.setYardGrassSlots(dailyResult.fieldSlots);
+
+    const slotsChanged = prevSlotsKey !== dailyResult.fieldSlots.join(',');
+    const anchorMoved = prevChecked !== intervalResult.lastSpawnCheckAt;
+    const dayAdvanced = prevSpawnDayId !== this.yardGrassSpawnDayId;
+    if (slotsChanged || anchorMoved || dayAdvanced) {
+      saveService.schedulePersist();
     }
-    this.yardGrassSpawnDayId = todayId;
-    const count = yardGrassSpawnCount(rng);
-    const slots: number[] = [];
-    const pool = [0, 1, 2];
-    for (let i = 0; i < count && pool.length > 0; i++) {
-      const idx = Math.floor(rng() * pool.length);
-      slots.push(pool.splice(idx, 1)[0]!);
-    }
-    sceneUiStore.setYardGrassSlots(slots);
-    saveService.schedulePersist();
   }
 
   collectYardGrass(slotIndex: number): boolean {
-    if (!canCollectYardGrass(this.yardGrass)) return false;
+    if (!canCollectYardGrass()) return false;
     if (!sceneUiStore.yardGrassSlots.includes(slotIndex)) return false;
     this.yardGrass += 1;
     sceneUiStore.setYardGrassSlots(
@@ -1103,13 +1136,11 @@ export class GameStore {
 
   craftYardObereg(): boolean {
     if (!this.isKikimoraCraftAvailable()) return false;
-    const todayId = getCalendarDayId();
-    if (!canCraftYardObereg(this.yardGrass, this.yardOberegCraftedDayId, todayId)) {
+    if (!canCraftYardObereg(this.yardGrass)) {
       return false;
     }
     this.yardGrass -= YARD_GRASS_PER_CRAFT;
     this.talismans += 1;
-    this.yardOberegCraftedDayId = todayId;
     const line = pickCatLine('yard_craft_done', this.language);
     if (line) {
       this.lastCatBubble = { kind: 'footnote', text: line };
@@ -1187,6 +1218,17 @@ export class GameStore {
   equipTitle(titleId: string): boolean {
     if (!this.isTitleOwned(titleId)) return false;
     this.titleId = titleId;
+    saveService.schedulePersist();
+    return true;
+  }
+
+  isIzbaEffectOwned(effectId: IzbaEffectId): boolean {
+    return this.ownedIzbaEffectIds.includes(effectId);
+  }
+
+  equipIzbaEffect(effectId: IzbaEffectId | null): boolean {
+    if (effectId != null && !this.isIzbaEffectOwned(effectId)) return false;
+    this.equippedIzbaEffectId = effectId;
     saveService.schedulePersist();
     return true;
   }

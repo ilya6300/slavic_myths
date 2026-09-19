@@ -1,3 +1,170 @@
+## Epic 15 — Ярило, Перун и «Грозовая изба»
+
+> Контракт для TASK-040…047. Канон контента: `list_of_spirits.md` (Ярило, Перун), `quests.md`, `dev/loot_tables.md`. В этой итерации единственный runtime-ID эффекта — **`thunder_izba`**; старое имя `grozovaya_izba` из плана не использовать.
+
+### Решение
+
+Прогрессия остаётся data-driven: `SPIRIT_ORDER` и `spirits` получают Ярилу и Перуна сразу после `chudo_yudo`, а existing generic-потоки очереди и фрагментов читают их без списка из 16 ID. Атмосфера — отдельная коллекция, не вариант `GameSkins`: save хранит owned IDs и один выбранный ID либо `null`; каталог в `data/` пока содержит ровно один entry. Победа над Перуном выдаёт ownership через reward patch, но не меняет selection. Сцена читает только выбранный ID и рисует в каждой комнате один некликабельный FX-слой между night и gameplay FX.
+
+### Структура модулей
+
+| Path | Ответственность / изменение |
+|---|---|
+| `src/data/izbaEffects.ts` | **Новый** единый каталог эффектов, типы `IzbaEffectId` / `IzbaEffectDefinition`, lookup. Не импортирует skins, loot или UI. |
+| `src/domain/GameSave.ts` | Добавить persist-поля атмосфер; default statuses для `yarilo`/`perun` = `locked`. |
+| `src/config/gameConstants.ts` | Поднять `SAVE_VERSION` с 11 до 12. |
+| `src/domain/saveMigration.ts` | v11→v12: добавить отсутствующие statuses и пустое владение/`null`, не меняя текущую прогрессию, скины или выбор фрагмента. |
+| `src/data/spirits.ts` | Расширить `SpiritId`, `SPIRIT_ORDER`, `SpiritRewardKind` и определения двух духов; порядок `chudo_yudo → yarilo → perun`. |
+| `src/config/assetRegistry.ts` | Добавить accepted portrait/illustration/trophy paths Ярилы и Перуна как partial registry entries; `getTrophyUrl` продолжает fallback на portrait при отсутствии PNG. Не регистрировать effect как house skin. |
+| `src/config/lootTables.ts` | Добавить `yarilo: 8`, `perun: 10` в `fragmentRequirements`; existing consumers используют `Object.keys(fragmentRequirements)`, без отдельного списка. Шансы и pity не менять. |
+| `src/domain/applySpiritReward.ts` | Reward state / patch получает только `ownedIzbaEffectIds`; обработчик `atmosphere_only` добавляет effect идемпотентно и не содержит поля equipped. |
+| `src/store/GameStore.ts` | Единственная runtime-точка ownership/equip, `toSave`/`hydrate`, применение reward patch и persist. |
+| `src/store/profileUiStore.ts`, `src/data/profileCatalog.ts`, `src/ui/profile/ProfileModal.tsx`, `src/ui/profile/ProfilePreview.tsx` | Отдельная вкладка `atmosphere`; каталог формирует presentation data, UI не хранит selection и не изменяет save напрямую. |
+| `src/ui/scene/IzbaEffectLayer.tsx` | **Новый** чистый observer-слой: получает effect ID, возвращает `null` для `null`; не содержит наград, persist или profile-логики. |
+| `src/ui/scene/IzbaSceneLayers.tsx`, `src/ui/scene/IzbaScene.tsx`, `src/ui/index.css` | Монтировать FX в обе `izba-room`; CSS hook и строгий z-order. |
+| `src/config/sceneLayout.ts`, `src/ui/trophies/TrophyRoom.tsx`, `src/ui/index.css` | После UX-решения TASK-040 — 17-slot layout; не менять эталонные классы комнаты 1. |
+
+### Ключевые типы и публичные API
+
+```ts
+// src/data/izbaEffects.ts
+export const izbaEffects = [
+  {
+    id: 'thunder_izba',
+    name: { ru: 'Грозовая изба', en: 'Thunder Hut', tr: 'Gök Gürültülü İzba' },
+    description: { /* локализованное описание */ },
+    grade: 'epoch',
+    source: { kind: 'spirit_victory', spiritId: 'perun' },
+    sceneClassName: 'izba-effect--thunder',
+  },
+] as const satisfies readonly IzbaEffectDefinition[];
+
+export type IzbaEffectId = (typeof izbaEffects)[number]['id'];
+export interface IzbaEffectDefinition {
+  id: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  grade: Grade;
+  source: { kind: 'spirit_victory'; spiritId: SpiritId };
+  sceneClassName: string;
+}
+export function getIzbaEffectById(id: string): IzbaEffectDefinition | undefined;
+```
+
+`LocalizedText` uses the existing locale-content shape; import that type rather than create a second localization abstraction. The catalog is extensible by entries, but this Epic adds no Yaga shop, price, currency, entitlement service, or second effect.
+
+```ts
+// src/domain/GameSave.ts
+interface GameSave {
+  // existing fields
+  ownedIzbaEffectIds: IzbaEffectId[];
+  equippedIzbaEffectId: IzbaEffectId | null;
+}
+
+// src/data/spirits.ts
+type SpiritRewardKind = /* existing kinds */ | 'atmosphere_only';
+interface SpiritReward {
+  kind: SpiritRewardKind;
+  effectId?: IzbaEffectId; // required for atmosphere_only
+}
+
+// src/domain/applySpiritReward.ts
+interface RewardState {
+  // existing fields
+  ownedIzbaEffectIds: IzbaEffectId[];
+}
+type RewardPatch = Partial<RewardState>;
+
+// src/store/GameStore.ts
+isIzbaEffectOwned(effectId: string): boolean;
+equipIzbaEffect(effectId: IzbaEffectId | null): boolean;
+```
+
+The Perun definition is `{ kind: 'atmosphere_only', effectId: 'thunder_izba' }`. `applySpiritReward` uses an add-if-absent helper and returns `ownedIzbaEffectIds` only; it must never return or mutate `equippedIzbaEffectId`.
+
+`equipIzbaEffect(null)` always clears selection and persists. For a non-null ID, it returns `false` unless the ID is both present in `izbaEffects` and owned; on success it sets that one ID and schedules persist. There is no toggle API or multi-equip state. `hydrate` defensively normalizes an unknown selected ID to `null` and deduplicates/filter-validates owned IDs against the catalog; `toSave` is the only reverse mapping.
+
+### Progression, rewards, and persist flow
+
+1. `createDefaultSpiritStatuses()` includes 18 IDs. Existing and new saves start `yarilo` and `perun` as `locked`; they do not become available merely because the client updates.
+2. The accepted definitions are fragment unlocks: `yarilo` needs 8, `perun` needs 10. `SPIRIT_ORDER` is the runtime order and ends `… koschei_immortal, chudo_yudo, yarilo, perun`. `applyFragmentUnlocks`, chest candidate selection, and book fragment selection derive targets from `spirits`/`fragmentRequirements`; the current hardcoded `GameStore.selectFragmentSpirit` list must be removed in TASK-043.
+3. On quiz victory, `GameStore.claimQuizVictory()` must first reject an already `defeated` spirit. It then applies status/unlocks, one-time fragment bonus where applicable, `applySpiritReward`, trophy unlock/reveal, closes quiz, and schedules one persist. This guard is the reward boundary: retrying/calling victory after completion cannot issue a second reward.
+4. `applyRewardPatch` copies an `ownedIzbaEffectIds` patch to the store. The Perun grant is set-like (exactly one `thunder_izba` ID) and preserves `equippedIzbaEffectId` exactly. Defeating Perun neither enables the effect nor opens/selects the profile tab.
+5. `toSave()` serializes both atmosphere fields; `hydrate()` restores normalized values. Existing `SaveService`, local/cloud storage, debounce, and flush behavior remain unchanged.
+
+### Migration and existing-save behavior
+
+`SAVE_VERSION = 12`. The migration branch is `if (save.version < 12)`:
+
+```ts
+save.spiritStatuses = {
+  ...save.spiritStatuses,
+  yarilo: save.spiritStatuses?.yarilo ?? 'locked',
+  perun: save.spiritStatuses?.perun ?? 'locked',
+};
+save.ownedIzbaEffectIds = [];
+save.equippedIzbaEffectId = null;
+save.version = 12;
+```
+
+The implementation must preserve valid effect values when a v12 save is hydrated again; migration only initializes missing fields for pre-v12 saves. It must not infer Perun victory, grant `thunder_izba`, modify `ownedSkinIds`/`skins`, alter fragment counts or selected target, or retroactively unlock the new spirits. A future catalog rename needs an explicit ID mapping, never a skin migration.
+
+### Profile and scene boundaries
+
+`ProfileTab` gains `'atmosphere'`; `profileUiStore.selectedItemId` remains transient UI selection. `profileCatalog` exposes all catalog entries, including locked `thunder_izba`, plus a virtual always-owned `none` card. `ProfileModal` determines locked/owned/equipped from `GameStore`, sends only `null` or an `IzbaEffectId` to `equipIzbaEffect`, and renders copy/preview from catalog data. A preview is isolated to the profile preview container; it must not write to `GameStore` or change the live scene until the user chooses it.
+
+The live scene reads `gameStore.equippedIzbaEffectId` only. Ownership without selection is visually inert. `IzbaEffectLayer` is mounted once in each `Room1Scene` and `Room2Scene`, not in `GameHud`, `WindowAperture`, `GameSkins`, or a separate room-2 background. Both room instances use the same effect ID and move with their rooms during pan.
+
+### FX DOM/CSS contract
+
+```text
+.izba-room
+  WindowAperture
+  .layer-izba                         z 20
+  .layer-furniture / cat              z 40 / 50
+  .layer-night (existing shared)      z 60
+  .layer-izba-effect[effectId]        z 65, pointer-events: none
+  .layer-fx (coin/gameplay effects)   z 70
+HUD                                    z 100
+```
+
+The implementation may keep the existing shared `.layer-night`; the effect layer belongs to each izba room so it darkens rooms 1 and 2 only. It must have `position: absolute; inset: 0; z-index: 65; pointer-events: none`, must not establish hit areas, and must not modify `skins.izba`, `WindowAperture`, `.layer-izba`, furniture dimensions, or pan transforms. `thunder_izba` is CSS-only: a persistent soft darken plus a periodic lightning pseudo-element. At `prefers-reduced-motion: reduce`, retain only static darken and disable/hide lightning animation and flash; no timer-based JavaScript fallback.
+
+### Trophy capacity constraint
+
+There will be 17 trophies: all 18 spirits except Domovoy, including `yarilo_spring_shield` and `perun_oak_shield`; each uses `getTrophyUrl` → portrait fallback until TASK-041 supplies PNG. TASK-039 fixes the stricter Epic-15 rule of **at most two trophies per support**, with natural sprite dimensions. The current accepted room-2 layout has six wall shelves and 15 slots (including three-slot shelves), so it has capacity 12 under this rule; 17 requires **at least nine support surfaces**.
+
+Design input is mandatory before TASK-047: `room_02_trophies_layout.md` provides neither coordinates nor accepted composition for three additional supports. Its extension rule permits only added `bench.png` in the lower zone (`top ≥ 75vh`), while its current per-bench capacity of three conflicts with the Epic-15 two-trophy maximum. TASK-040 must choose and document three or more support positions (or another owner-approved layout), each with at most two trophies, clear of window and controls. Until then, implementation must not invent coordinates, add wall shelves, use the obsolete 3×5 grid, or change room-1 CSS. Shelf PNGs and trophy sprites remain natural-sized: no `width` on `.room-shelf`, `.room-shelf__img`, or trophy sprites for hit-area/layout expansion; positions use approved `vw`/`vh` layout data.
+
+### Verification notes for TASK-042 and implementation
+
+**Unit/domain/save tests**
+
+- Assert exactly 18 unique `SPIRIT_ORDER` IDs and tail `chudo_yudo, yarilo, perun`; both default statuses are locked.
+- Assert `fragmentRequirements.yarilo === 8`, `fragmentRequirements.perun === 10`, `isSpiritUnlockMet`/`applyFragmentUnlocks`, and fragment target selection work without a 16-ID allowlist.
+- Assert the Yarilo title + trophy and Perun trophy; Perun reward produces one `thunder_izba` ownership entry after repeated reward/victory attempts and leaves `equippedIzbaEffectId === null`.
+- Migrate representative v11 saves: old state is retained, new statuses are locked, effects are `[]`/`null`, and migration yields version 12.
+- Assert `equipIzbaEffect('thunder_izba')` rejects unowned/unknown IDs, accepts owned, `equipIzbaEffect(null)` clears, and each success persists through `toSave`/`hydrate`.
+
+**Profile / DOM-CSS contract tests**
+
+- Catalog and profile render the always-available none card and locked/owned/equipped `thunder_izba` states; absence of final PNG never throws.
+- Require an effect layer in both izba rooms only when selected, `pointer-events: none`, z 65 (above 60 night, below 70 gameplay FX and HUD 100), with no effect child in HUD.
+- Require reduced-motion CSS to retain darken but suppress lightning animation/flash; verify no interactive element loses its hit-area.
+- Require 17 configured trophy IDs with no duplicate, no support containing more than two, no width rule on shelves/shelf images or trophy sprites, and `WindowAperture` before `.layer-izba` in room 2. Exact support coordinates and final visual readability remain TASK-040/TASK-047 visual checks.
+
+### Соответствие задачам
+
+| TASK | Architectural handoff |
+|---|---|
+| TASK-039 | This section: data model, APIs, v12 migration, reward/store boundary, FX stack, 17-trophy constraint. |
+| TASK-040 | Resolve profile wording/preview and mandatory 9+ support-surface trophy layout; specify fallbacks and exact CSS composition. |
+| TASK-042 | Write red tests against the public seams and DOM/CSS contract above. |
+| TASK-043 | Add canonical 18-spirit data, 8/10 requirements, generic fragment targeting, registry fallbacks. |
+| TASK-044 | Implement GameSave v12, catalog, reward patch, exact-once victory guard, and `equipIzbaEffect`. |
+| TASK-045 | Implement profile tab using catalog/store boundary; do not auto-open or auto-equip after Perun. |
+| TASK-046 | Implement two room-scoped `IzbaEffectLayer` instances at z 65 and reduced-motion behavior. |
+| TASK-047 | Implement only TASK-040-approved 17-trophy layout; visual review validates natural scale and both-room rules. |
 # Техническая документация
 
 

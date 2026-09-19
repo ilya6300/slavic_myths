@@ -245,7 +245,14 @@ export const titles: TitleDefinition[] = [
     name: 'Славянский Герой',
     grade: 'epoch',
     source: 'quest',
-    description: 'Много голов — один верный ответ. Финал пути.',
+    description: 'Много голов — один верный ответ. После него — Ярило и Перун.',
+  },
+  {
+    id: 'khranitel_vesny',
+    name: 'Хранитель весны',
+    grade: 'epoch',
+    source: 'quest',
+    description: 'Белый конь прошёл по краю поля — весна кивнула.',
   },
   {
     id: 'razgadchik_smerti',

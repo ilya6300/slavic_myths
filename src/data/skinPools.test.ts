@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest';
 import {
   getCatSkinIdsByGrade,
   getIzbaSkinIdsByGrade,
+  getMiracleCatSkinIds,
   getSkinGrade,
+  getSkinIdsForCategory,
   getWindowSkinIdsByGrade,
 } from './skinPools';
 
@@ -29,6 +31,13 @@ describe('skinPools window skins', () => {
     }
   });
 
+  it('should exclude epic and epoch cat skins from regular chest pool', () => {
+    expect(getSkinIdsForCategory('cat', 'epic')).toEqual([]);
+    expect(getSkinIdsForCategory('cat', 'epoch')).toEqual([]);
+    expect(getMiracleCatSkinIds('epic')).toContain('epic_hero');
+    expect(getMiracleCatSkinIds('epoch')).toContain('purple_mage');
+  });
+
   it('should not include quest-only landscape_yaga in chest pool', () => {
     for (const grade of ['common', 'rare', 'epic', 'epoch'] as const) {
       expect(getWindowSkinIdsByGrade(grade)).not.toContain('landscape_yaga');
@@ -40,6 +49,15 @@ describe('skinPools window skins', () => {
       expect(getIzbaSkinIdsByGrade(grade)).not.toContain('hut_harmony');
     }
     expect(getSkinGrade('izba', 'hut_harmony')).toBe('epic');
+    expect(getSkinGrade('izba', 'hut_cyberpank')).toBe('epoch');
+  });
+
+  it('should not include removed hut_epic in chest pool', () => {
+    for (const grade of ['common', 'rare', 'epic', 'epoch'] as const) {
+      expect(getIzbaSkinIdsByGrade(grade)).not.toContain('hut_epic');
+    }
+    expect(getSkinGrade('izba', 'hut_epic')).toBeNull();
+    expect(getIzbaSkinIdsByGrade('epic')).toEqual([]);
   });
 
   it('should resolve display grades for profile frames', () => {

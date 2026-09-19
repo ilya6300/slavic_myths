@@ -9,9 +9,9 @@ import type { Grade } from '../domain/grade';
 const HOUSE_SKIN_GRADES: Record<HouseSkinId, Grade> = {
   hut_standart: 'common',
   hut_rate: 'rare',
-  hut_epic: 'epic',
   hut_the_age_of_miracles: 'epoch',
   hut_harmony: 'epic',
+  hut_cyberpank: 'epoch',
 };
 
 const BROWNIE_SKIN_GRADES: Record<BrownieSkinId, Grade> = {
@@ -50,6 +50,11 @@ export function getCatSkinIdsByGrade(grade: Grade): string[] {
     .map((s) => s.id);
 }
 
+/** Epic / epoch коты — только Сундук чудес (не обычный 3 ч). */
+export function getMiracleCatSkinIds(grade: 'epic' | 'epoch'): string[] {
+  return getCatSkinIdsByGrade(grade);
+}
+
 export function getBrownieSkinIdsByGrade(grade: Grade): string[] {
   return (Object.entries(BROWNIE_SKIN_GRADES) as [BrownieSkinId, Grade][])
     .filter(([, g]) => g === grade)
@@ -83,6 +88,7 @@ export function getSkinIdsForCategory(
 ): string[] {
   switch (category) {
     case 'cat':
+      if (grade === 'epic' || grade === 'epoch') return [];
       return getCatSkinIdsByGrade(grade);
     case 'brownie':
       return getBrownieSkinIdsByGrade(grade);

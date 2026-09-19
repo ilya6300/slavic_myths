@@ -119,9 +119,9 @@ body {
   display: block;
 }
 
-/* Окно (~22–40% высоты сцены) смотрит на верхнюю часть центрированной 21:9 — улица внизу кадра */
 .window-aperture[data-window-skin='landscape_cyber_city'] .window-aperture__forest {
-  transform: translateY(-62%);
+  /* Дорога в нижних 40% JPEG; окно смотрит в верх панорамы — поднимаем слой */
+  transform: translateY(-72%);
 }
 
 .window-aperture__fatso {
@@ -873,6 +873,15 @@ body {
   opacity: 0.7;
 }
 
+.profile-modal__acquire-hint {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-align: center;
+  opacity: 0.65;
+  max-width: 14rem;
+}
+
 .profile-tabs {
   display: flex;
   flex-wrap: wrap;
@@ -1112,6 +1121,72 @@ body {
 
 .izba-scene--night .layer-night {
   opacity: 1;
+}
+
+.izba-scene__inner > .layer-izba-fx {
+  position: absolute;
+  inset: 0;
+  width: 300vw;
+  pointer-events: none;
+  z-index: 62;
+}
+
+.izba-scene--effect-thunder .layer-izba-fx,
+.profile-modal__preview-stage--atmosphere-thunder {
+  background: rgba(8, 12, 28, 0.38);
+}
+
+.izba-scene--effect-thunder .layer-izba-fx::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(180, 200, 255, 0.08) 42%,
+    rgba(220, 235, 255, 0.55) 48%,
+    rgba(180, 200, 255, 0.1) 54%,
+    transparent 62%
+  );
+  animation: izba-thunder-flash 7s ease-in-out infinite;
+}
+
+.profile-modal__preview-stage--atmosphere-thunder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(180, 200, 255, 0.12) 45%,
+    rgba(220, 235, 255, 0.4) 50%,
+    transparent 58%
+  );
+}
+
+@keyframes izba-thunder-flash {
+  0%,
+  88%,
+  100% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.15;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .izba-scene--effect-thunder .layer-izba-fx::after {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 /* Затемнение окна — только через .layer-night; без filter на JPEG,
@@ -2467,12 +2542,94 @@ body {
 }
 
 @media (max-width: 700px) {
+  .book-modal {
+    --book-stage-max-w: min(96vw, 720px);
+    --book-stage-h: min(76vh, calc(var(--book-stage-max-w) / var(--book-open-aspect)));
+  }
+
   .book-modal__bookmark-label {
     font-size: 0.55rem;
+  }
+
+  .book-page__name {
+    font-size: clamp(1rem, 3.8vw, 1.35rem);
+  }
+
+  .book-page__description,
+  .book-page__reward,
+  .book-page__reward-label,
+  .book-page__reward-amount {
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  .book-page__reward-heading {
+    font-size: 0.72rem;
+  }
+
+  .book-page__quest-btn-label {
+    font-size: 0.82rem;
+  }
+
+  .book-modal__counter {
+    font-size: 0.72rem;
   }
 }
 
 /* --- Epic 4: Quiz --- */
+
+.quiz-modal.layer-modal {
+  background: transparent;
+  pointer-events: auto;
+}
+
+.quiz-modal__panel {
+  display: flex;
+  flex-direction: column;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.quiz-modal__scene {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 0.75rem;
+  background: #0a0806;
+}
+
+.quiz-modal__body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (max-width: 700px) {
+  .quiz-modal .quiz-question {
+    font-size: 0.9rem;
+  }
+
+  .quiz-modal .quiz-answer {
+    font-size: 0.85rem;
+    min-height: 48px;
+  }
+
+  .quiz-modal .quiz-header h2 {
+    font-size: 1rem;
+  }
+
+  .quiz-modal .quiz-progress {
+    font-size: 0.8rem;
+  }
+}
+
+.quiz.layer-modal {
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
 
 .quiz {
   flex-direction: column;
@@ -2536,6 +2693,14 @@ body {
   z-index: 30;
 }
 
+.quiz-modal .quiz-hud {
+  position: static;
+  top: auto;
+  left: auto;
+  right: auto;
+  margin-bottom: 0.5rem;
+}
+
 .quiz-hud__energy,
 .quiz-hud__obereg {
   display: flex;
@@ -2565,6 +2730,13 @@ body {
   background: linear-gradient(180deg, #6b4a2e, #4a3220);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
   color: #fff8ee;
+  overflow-y: auto;
+}
+
+.quiz-modal .quiz-panel {
+  width: 100%;
+  max-height: none;
+  margin: 0;
 }
 
 .quiz-panel--correct {
@@ -2668,6 +2840,14 @@ body {
   color: #e8a0a0;
 }
 
+.quiz-modal__scene .quiz-spirit-portrait {
+  position: absolute;
+  right: 4%;
+  bottom: 8%;
+  width: 22%;
+  max-width: 96px;
+}
+
 .quiz-spirit-portrait {
   position: absolute;
   right: 4%;
@@ -2692,6 +2872,11 @@ body {
   background: linear-gradient(180deg, #6b4a2e, #4a3220);
   text-align: center;
   color: #fff8ee;
+}
+
+.quiz-modal .quiz-result {
+  width: 100%;
+  margin: 0;
 }
 
 .quiz-result h2 {
@@ -3273,7 +3458,7 @@ body {
 }
 
 .izba-scene[data-room='2'] .window-aperture[data-window-skin='landscape_cyber_city'] .window-aperture__forest {
-  transform: translateY(-62%) translateX(-3vw);
+  transform: translateY(-72%) translateX(-3vw);
 }
 
 .room-trophy-slot--reveal .room-trophy-slot__img {
@@ -3497,7 +3682,7 @@ body {
   }
 
   .izba-scene[data-room='2'] .window-aperture[data-window-skin='landscape_cyber_city'] .window-aperture__forest {
-    transform: translateY(-62%);
+    transform: translateY(-72%);
   }
 }
 
@@ -3543,8 +3728,18 @@ body {
 }
 
 .yard-grass--slot-2 {
-  left: 72vw;
+  left: 58vw;
   bottom: 14vh;
+}
+
+.yard-grass--slot-3 {
+  left: 72vw;
+  bottom: 10vh;
+}
+
+.yard-grass--slot-4 {
+  left: 36vw;
+  bottom: 6vh;
 }
 
 .yard-grass__img {
@@ -3721,6 +3916,8 @@ body {
 
 .chest-modal__hurry .wood-quest-btn__label {
   font-size: clamp(0.72rem, 2.2vw, 0.88rem);
+  white-space: pre-line;
+  line-height: 1.12;
 }
 
 .wood-quest-btn:disabled {
@@ -3781,51 +3978,78 @@ body {
 
 /* --- Ларец новичка --- */
 
-.starter-pack-modal {
-  pointer-events: auto;
+.starter-pack-modal.layer-modal {
+  z-index: 215;
+  isolation: isolate;
 }
 
-.starter-pack-modal__backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+.starter-pack-modal .game-modal__backdrop {
+  background: rgba(4, 3, 2, 0.78);
+  backdrop-filter: blur(3px);
 }
 
 .starter-pack-modal__panel {
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
-  max-width: 400px;
-  width: 92vw;
-  padding: 1.25rem;
-  border-radius: 16px;
-  background: rgba(28, 20, 14, 0.82);
-  backdrop-filter: blur(8px);
-  color: #f5f0e8;
+  max-width: min(420px, 92vw);
   text-align: center;
 }
 
+.starter-pack-modal__title {
+  margin-bottom: 0.35rem;
+}
+
+.starter-pack-modal__lore {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  opacity: 0.9;
+}
+
+.starter-pack-modal__hero {
+  margin: 0.15rem auto 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .starter-pack-modal__casket {
-  max-width: 45%;
-  margin: 0.5rem auto;
+  display: block;
+  max-width: min(52%, 180px);
+  max-height: min(160px, 24vh);
+  margin: 0 auto;
   object-fit: contain;
+}
+
+.hud-rail__offer-img--pilgrim {
+  object-fit: cover;
+  object-position: 50% 18%;
 }
 
 .starter-pack-modal__rewards {
   list-style: none;
   padding: 0;
-  margin: 0.75rem 0;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
+  margin: 0.65rem auto;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  max-width: 300px;
+  width: 100%;
 }
 
 .starter-pack-modal__rewards li {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
-  font-size: 0.85rem;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.starter-pack-modal__reward-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
 }
 
 .starter-pack-modal__rewards img {
@@ -3835,12 +4059,23 @@ body {
 }
 
 .starter-pack-modal__cat-preview {
-  width: 56px !important;
-  height: 56px !important;
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  object-position: 50% 18%;
+}
+
+.starter-pack-modal__reward-label {
+  font-size: 0.8rem;
+  line-height: 1.2;
+  text-align: center;
+  color: #f5f0e8;
 }
 
 .starter-pack-modal__pay {
-  margin-top: 0.75rem;
+  margin-top: 0.65rem;
+  max-width: 280px;
+  margin-inline: auto;
 }
 
 .starter-pack-modal__later {
@@ -3973,4 +4208,292 @@ body {
 
 .kikimora-craft-modal__craft {
   margin-top: 0.5rem;
+}
+
+/* --- Мобильный landscape — модалки (см. instruction/design/mobile_modals_landscape.md) --- */
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .layer-modal {
+    align-items: flex-start;
+    justify-content: center;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding:
+      max(0.35rem, env(safe-area-inset-top))
+      max(0.5rem, env(safe-area-inset-right))
+      max(0.35rem, env(safe-area-inset-bottom))
+      max(0.5rem, env(safe-area-inset-left));
+  }
+
+  .game-modal__panel,
+  .game-modal__panel--wide {
+    max-height: none;
+    min-height: 0;
+    width: min(96vw, 680px);
+    margin-inline: auto;
+    padding: 1.65rem 0.85rem 0.85rem;
+    font-size: 0.88rem;
+    line-height: 1.4;
+  }
+
+  .game-modal__title {
+    margin: 0 0 0.45rem;
+    font-size: 0.98rem;
+    line-height: 1.25;
+  }
+
+  .game-modal__scene {
+    aspect-ratio: 2.1 / 1;
+    max-height: 26vh;
+    margin-bottom: 0.5rem;
+  }
+
+  .chest-modal__timer--large {
+    font-size: 1.1rem;
+  }
+
+  .chest-modal__chest-closed {
+    width: min(28vw, 100px);
+  }
+
+  /* Профиль: одна колонка, без вложенного скролла сетки */
+  .profile-modal__layout {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .profile-modal__preview {
+    min-height: 0;
+    padding: 0.5rem;
+  }
+
+  .profile-modal__preview-stage {
+    height: 108px;
+    min-height: 88px;
+  }
+
+  .profile-modal__preview-name,
+  .profile-modal__bonus-line {
+    font-size: 0.76rem;
+  }
+
+  .profile-modal__main {
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .profile-tabs__btn {
+    font-size: 0.66rem;
+    min-height: 40px;
+    padding: 0.25rem 0.3rem;
+  }
+
+  .profile-grid {
+    min-height: 0;
+    max-height: none;
+    overflow-y: visible;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 0.4rem;
+  }
+
+  .profile-stats__label,
+  .profile-stats__value {
+    font-size: 0.76rem;
+  }
+
+  /* Викторина */
+  .quiz-modal__panel {
+    max-height: none;
+    min-height: 0;
+  }
+
+  .quiz-modal__scene {
+    aspect-ratio: 2.4 / 1;
+    max-height: 22vh;
+    margin-bottom: 0.45rem;
+  }
+
+  .quiz-modal .quiz-hud {
+    margin-bottom: 0.35rem;
+  }
+
+  .quiz-modal .quiz-hud__energy,
+  .quiz-modal .quiz-hud__obereg {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .quiz.layer-modal .quiz-panel {
+    padding: 0.65rem 0.85rem;
+    max-height: min(70vh, 100%);
+  }
+
+  .quiz.layer-modal .quiz-header h2 {
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .quiz.layer-modal .quiz-progress {
+    font-size: 0.72rem;
+  }
+
+  .quiz.layer-modal .quiz-question {
+    margin: 0.5rem 0;
+    font-size: 0.82rem;
+    line-height: 1.38;
+  }
+
+  .quiz.layer-modal .quiz-answers {
+    gap: 8px;
+  }
+
+  .quiz.layer-modal .quiz-answer {
+    min-height: 40px;
+    padding: 0.35rem 0.65rem;
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  .quiz.layer-modal .quiz-result {
+    padding: 0.85rem 1rem;
+  }
+
+  .quiz.layer-modal .quiz-result__reward,
+  .quiz.layer-modal .quiz-result__tale,
+  .quiz.layer-modal .quiz-result__lose {
+    font-size: 0.8rem;
+    line-height: 1.38;
+  }
+
+  .quiz.layer-modal .quiz-result__portrait {
+    width: 72px;
+    max-height: 96px;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Книга */
+  .book-modal {
+    --book-stage-max-w: min(92vw, calc(68vh * var(--book-open-aspect)));
+    --book-stage-h: min(68vh, calc(var(--book-stage-max-w) / var(--book-open-aspect)));
+  }
+
+  .book-page__name {
+    font-size: clamp(0.88rem, 2.6vw, 1.1rem);
+    margin-bottom: 0.4rem;
+  }
+
+  .book-page__description,
+  .book-page__reward {
+    font-size: 0.72rem;
+    line-height: 1.38;
+    margin-bottom: 0.35rem;
+  }
+
+  .book-page__reward-label,
+  .book-page__reward-amount {
+    font-size: 0.7rem;
+  }
+
+  .book-page__reward-heading {
+    margin-bottom: 0.25rem;
+  }
+
+  .book-page__quest-btn-label {
+    font-size: 0.74rem;
+  }
+
+  .book-page--left {
+    padding: 3% 2%;
+    justify-content: flex-start;
+    gap: 0.35rem;
+  }
+
+  .book-illustration {
+    max-height: 58%;
+  }
+
+  .book-modal__counter {
+    font-size: 0.62rem;
+  }
+
+  .book-modal__bookmark-label {
+    font-size: 0.5rem;
+  }
+
+  .book-nav {
+    min-width: 56px;
+    max-width: 56px;
+  }
+
+  /* Дар путника / Кикимора */
+  .starter-pack-modal.layer-modal {
+    align-items: center;
+    justify-content: center;
+    padding: max(0.35rem, env(safe-area-inset-top))
+      max(0.5rem, env(safe-area-inset-right))
+      max(0.35rem, env(safe-area-inset-bottom))
+      max(0.5rem, env(safe-area-inset-left));
+  }
+
+  .starter-pack-modal .game-modal__panel {
+    width: min(92vw, 380px);
+    padding: 1.35rem 0.75rem 0.75rem;
+  }
+
+  .starter-pack-modal__hero {
+    margin-bottom: 0.35rem;
+  }
+
+  .starter-pack-modal__casket {
+    max-width: min(44%, 130px);
+    max-height: min(120px, 18vh);
+  }
+
+  .starter-pack-modal__lore {
+    font-size: 0.78rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .starter-pack-modal__rewards {
+    max-width: 280px;
+    gap: 0.35rem;
+  }
+
+  .starter-pack-modal__reward-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .starter-pack-modal__rewards img,
+  .starter-pack-modal__cat-preview {
+    width: 36px;
+    height: 36px;
+  }
+
+  .starter-pack-modal__reward-label {
+    font-size: 0.72rem;
+  }
+
+  .kikimora-craft-modal__panel {
+    padding: 0.85rem 1rem 1rem;
+  }
+
+  .kikimora-craft-modal__scene {
+    max-height: 24vh;
+    aspect-ratio: 2.1 / 1;
+  }
+
+  .trophy-modal__tale,
+  .trophy-modal__hint,
+  .trophy-modal__grade {
+    font-size: 0.8rem;
+    line-height: 1.38;
+  }
+
+  .rewarded-wait__panel {
+    max-height: none;
+    padding: 0.85rem;
+    font-size: 0.88rem;
+  }
 }

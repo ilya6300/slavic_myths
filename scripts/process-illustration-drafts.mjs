@@ -31,6 +31,8 @@ const MAPPING = [
   ['baba_yaga', 'baba_yaga_illustration_draft.png', 'Baba_Yaga.png'],
   ['koschei_immortal', 'koschei_illustration_draft.png', 'koschei.png'],
   ['chudo_yudo', 'chudo_yudo_illustration_draft.png', 'chudo_yodo.png'],
+  ['yarilo', 'yarilo_illustration_draft.png', 'yarilo.png'],
+  ['perun', 'perun_illustration_draft.png', 'perun.png'],
 ];
 
 function removeNearBlackBackground(data, channels) {

@@ -39,6 +39,7 @@ export const titleLocalizedNames: Record<string, LocalizedText> = {
   kogot_yagi: L('Коготь Яги', 'Yaga\'s Claw', 'Yaga\'nın Pençesi'),
   lapa_velesa: L('Лапа Велеса', 'Veles\'s Paw', 'Veles\'in Pençesi'),
   slavyanskiy_geroy: L('Славянский Герой', 'Slavic Hero', 'Slav Kahramanı'),
+  khranitel_vesny: L('Хранитель весны', 'Spring Keeper', 'Bahar Koruyucusu'),
   razgadchik_smerti: L('Разгадчик Смерти', 'Death\'s Riddler', 'Ölümün Bulmacacısı'),
   kot_skazitel: L('Кот-Сказитель', 'Tale-Teller Cat', 'Masal Anlatıcısı Kedi'),
   khranitel_mifov: L('Хранитель Мифов', 'Myth Keeper', 'Mit Koruyucusu'),

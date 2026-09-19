@@ -3,7 +3,7 @@
  * Канон: instruction/dev/technical_requirements.md §6
  */
 
-export const SAVE_VERSION = 9;
+export const SAVE_VERSION = 12;
 
 export const STARTER_PACK_PRICE_RUB = 199;
 export const STARTER_PACK_ENERGY_BONUS = 100;
@@ -87,4 +87,6 @@ export const BROWNIE_LUCK_BY_SKIN_GRADE: Record<string, number> = {
 
 export const appConfig = {
   isTestMode: import.meta.env.VITE_TEST_MODE === 'true',
+  /** DEV: выход на двор ночью (прод: блок по nightTime). */
+  debugAllowStreetAtNight: import.meta.env.DEV,
 } as const;

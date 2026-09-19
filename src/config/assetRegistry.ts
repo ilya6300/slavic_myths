@@ -17,9 +17,9 @@ const fromAssets = (path: string): string =>
 export const houseSkins = {
   hut_standart: fromAssets('house/hut_standart.png'),
   hut_rate: fromAssets('house/hut_rate.png'),
-  hut_epic: fromAssets('house/hut_epic.png'),
   hut_the_age_of_miracles: fromAssets('house/hut_the_age_of_miracles.png'),
   hut_harmony: fromAssets('house/hut_harmony.png'),
+  hut_cyberpank: fromAssets('house/hut_cyberpank.png'),
 } as const;
 
 export type HouseSkinId = keyof typeof houseSkins;
@@ -160,6 +160,8 @@ export const spiritPortraitPaths = {
   baba_yaga: fromAssets('creatures_in_the_book/baba_yaga.png'),
   koschei_immortal: fromAssets('creatures_in_the_book/koschei_immortal.png'),
   chudo_yudo: fromAssets('creatures_in_the_book/chudo_yudo.png'),
+  yarilo: fromAssets('creatures_in_the_book/yarilo.png'),
+  perun: fromAssets('creatures_in_the_book/perun.png'),
 } as const;
 
 export type SpiritId = keyof typeof spiritPortraitPaths;
@@ -171,6 +173,8 @@ export const spiritIllustrationPaths: Partial<Record<SpiritId, string>> = {
   baba_yaga: fromAssets('illustration_book/Baba_Yaga.png'),
   bannik: fromAssets('illustration_book/bannik.png'),
   chudo_yudo: fromAssets('illustration_book/chudo_yodo.png'),
+  yarilo: fromAssets('illustration_book/yarilo.png'),
+  perun: fromAssets('illustration_book/perun.png'),
   dedushka_toptygin: fromAssets('illustration_book/Grandpa_Toptygin.png'),
   kikimora: fromAssets('illustration_book/kikimora.png'),
   koschei_immortal: fromAssets('illustration_book/koschei.png'),
@@ -271,6 +275,8 @@ export const trophyAssetPaths: Partial<Record<SpiritId, string>> = {
   baba_yaga: fromAssets('trophies/yaga_hut.png'),
   koschei_immortal: fromAssets('trophies/koschei_needle.png'),
   chudo_yudo: fromAssets('trophies/chudo_figurine.png'),
+  yarilo: fromAssets('trophies/yarilo_spring_shield.png'),
+  perun: fromAssets('trophies/perun_oak_shield.png'),
 };
 
 export function getTrophyUrl(spiritId: SpiritId): string {

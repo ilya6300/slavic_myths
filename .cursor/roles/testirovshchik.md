@@ -14,6 +14,7 @@ description: Тестировщик проекта «Книга славянск
 - `.cursor/rules/frontend-principles.mdc`
 - `.cursor/rules/project-architecture.mdc`
 - `.cursor/rules/dev-workflow-files.mdc`
+- `.cursor/rules/agent-workflow.mdc` — маршрут и тип проверки TASK
 - Входы: `instruction/dev/tasks.md`, `instruction/dev/tech.md`, UX/UI-спека дизайнера
 - Канон: `instruction/scenario.md`, `instruction/scenario_draft.md`
 - `.cursor/rules/assignment-completeness.mdc` — каждый критерий TASK и пункт пользователя → кейс или явный visual-check
@@ -21,6 +22,7 @@ description: Тестировщик проекта «Книга славянск
 ## Миссия
 
 1. Взять критерии приёмки задач в статусе к работе.
+   Для малого фикса с `visual_check` / проверкой diff тестировщик не назначается — это исключение проверяет ревьювер.
 2. По `tech.md` понять модули и границы моков.
 3. Написать **красные** тесты (поведение + инварианты).
 4. Убедиться, что без кода разработчика тесты падают по правильной причине.

@@ -31,7 +31,8 @@ describe('migrateSave', () => {
     expect(migrated.starterPackPurchased).toBe(false);
     expect(migrated.yardGrass).toBe(0);
     expect(migrated.yardOberegCraftedDayId).toBeNull();
-    expect(migrated.yardGrassSpawnDayId).toBeNull();
+    expect(migrated.yardGrassFieldSlots).toEqual([]);
+    expect(migrated.yardGrassSpawnCheckedAt).toBeTypeOf('number');
   });
 
   it('does not add landscape_yaga when baba_yaga not defeated', () => {
@@ -73,5 +74,20 @@ describe('migrateSave', () => {
 
     expect(migrated.version).toBe(SAVE_VERSION);
     expect(migrated.zhirdyayDefeatedCount).toBe(0);
+  });
+
+  it('removes deleted hut_epic from owned skins and unequips it', () => {
+    const save = {
+      ...createDefaultSave(),
+      version: 10,
+      skins: { ...createDefaultSave().skins, izba: 'hut_epic' },
+      ownedSkinIds: ['cat_standart', 'hut_standart', 'hut_epic'],
+    };
+
+    const migrated = migrateSave(save);
+
+    expect(migrated.version).toBe(SAVE_VERSION);
+    expect(migrated.ownedSkinIds).not.toContain('hut_epic');
+    expect(migrated.skins.izba).toBe('hut_standart');
   });
 });

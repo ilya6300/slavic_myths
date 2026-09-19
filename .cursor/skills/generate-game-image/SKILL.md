@@ -1,20 +1,12 @@
 ---
 name: generate-game-image
 description: >-
-  ⏸ TEMPORARILY DISABLED — do not invoke. Generates Slavic Myths game images
-  via Cursor GenerateImage with mandatory assets/ style references. Re-enable
-  when owner removes the disable block in this file and game-designer-ui-ux.md.
+  Generates Slavic Myths game images via Cursor GenerateImage with mandatory
+  assets/ style references. Mockups → instruction/design/mockups/; drafts →
+  instruction/design/drafts/; production → assets/ only after owner approval.
 ---
 
 # Генерация изображений «Книга славянских духов»
-
-## ⏸ ВРЕМЕННО ОТКЛЮЧЕНО
-
-**Не вызывать `GenerateImage`.** Не использовать этот skill, пока владелец не снимет заглушку здесь и в `.cursor/roles/game-designer-ui-ux.md`.
-
-Дизайнер: только текстовые промпты в `design_assets_prompts.md` и UX-спеки.
-
----
 
 Skill для **качественной** картинки в стиле проекта. Без референсов из `assets/` генерация **запрещена**.
 
@@ -91,6 +83,31 @@ Skill для **качественной** картинки в стиле про�
 - [ ] Файл лежит в `instruction/design/`, **не** в `src/` и не в `assets/` (кроме production после одобрения)
 - [ ] Для mockup: кратко описаны отличия mockup ↔ UX-спека (таблица Layout vs mockup)
 
+### 4.1. **До** `GenerateImage` (pre-flight, обязательно)
+
+- [ ] Прочитан промпт в `design_assets_prompts.md` / бриф (`instruction/design/*_brief.md`)
+- [ ] Для `illustration_book/*`: чёрная подложка **или** `#FFFFFF` если так в `design_assets_prompts.md` / решение владельца (`perun.png` — белая); внутри фигуры — без «дырявых» прозрачных карманов до постобработки
+- [ ] Для трофеев: изолированный предмет, **без** полки/комнаты; белый фон #FFF
+- [ ] Negative-список и референсы совпадают с `.cursor/roles/game-designer-ui-ux.md`
+
+### 4.2. **После** постобработки (production) — gate + критик
+
+1. Постобработка α (см. таблицу ниже).
+2. **`node scripts/verify-book-illustration.mjs`** для `illustration_book/*.png` — exit 0 обязателен.
+3. При провале — `fill-internal-alpha-holes.mjs` **или** перегенерация (≤3 попытки).
+4. **Вердикт критика** (шаблон ниже) в ответ пользователю / handoff — **до** объявления «готово».
+
+```yaml
+asset_critic_verdict:
+  path: assets/illustration_book/perun.png
+  verify_script: pass | fail
+  blockers: []      # 🔴 просветы, JPEG без α, не тот символ
+  on_review: []     # 🟡
+  approved: true    # только если verify pass и нет 🔴
+```
+
+Критик **не переписывает** ассет — только блокирует/пропускает (`.cursor/roles/kritik-redaktor.md`: визуал vs `assets/`, канон `design_assets_prompts.md`).
+
 ### 5. Итерация при плохом результате
 
 Не более **3** попыток за сессию без эскалации пользователю.
@@ -114,11 +131,17 @@ GenerateImage **не** заменяет:
 | Точный размер (32px icon, 280×72 shelf) | Resize после приёмки композиции |
 | Правка существующего PNG (окно избы, рамки) | Ручное вырезание α, **не** перегенерация |
 
+| Тип ассета | Скрипт |
+|------------|--------|
+| Белая подложка #FFF (трофеи) | `node scripts/process-hud-icon.mjs assets/trophies/....png` |
+| Чёрный фон (иллюстрации книги, гравюры) | `remove-border-black-alpha.mjs` → `fill-internal-alpha-holes.mjs` → **`verify-book-illustration.mjs`** |
+| Белый фон (`perun.png` по решению владельца) | `remove-border-white-alpha.mjs` → `fill-internal-alpha-holes.mjs` → **`verify-book-illustration.mjs white`** |
+
 ## Handoff (для дизайнера / оркестратора)
 
 ```yaml
 image_generated:
-  mode: mockup | draft_asset
+  mode: mockup | draft_asset | production
   path: instruction/design/mockups/...
   style_type: clay_3d | engraving | landscape | ui_wood | book_leather
   references_used:

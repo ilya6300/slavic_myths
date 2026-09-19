@@ -43,15 +43,12 @@ const TARGET_PERCENTS: Record<string, number> = {
   'rare:brownie_skin': 5.5,
   'rare:izba_skin': 5,
   'rare:spirit_key': 1.5,
-  'epic:cat_skin': 6.5,
-  'epic:title_epic': 1.5,
-  'epic:izba_skin': 4,
-  'epic:brownie_skin': 3,
-  'epic:spirit_key': 1,
-  'epoch:cat_skin': 1.6,
-  'epoch:izba_skin': 1.2,
-  'epoch:window_skin': 0.8,
-  'epoch:brownie_skin': 0.9,
+  'epic:title_epic': 4.33,
+  'epic:brownie_skin': 8.67,
+  'epic:spirit_key': 2.89,
+  'epoch:izba_skin': 2.05,
+  'epoch:window_skin': 1.37,
+  'epoch:brownie_skin': 1.54,
 };
 
 function rowKey(
@@ -148,6 +145,14 @@ describe('chestDropChances', () => {
     const fragmentRow = pityPreview.rows.find((row) => row.rewardType === 'fragment');
     expect(fragmentRow?.percent).toBe(100);
   });
+
+  it('should include miracle cat skin rows in consolation preview', () => {
+    const preview = getMiracleChestDropPreview(baseRollState(), 0);
+    const epicCat = preview.rows.find((r) => r.rewardType === 'cat_skin_epic');
+    const epochCat = preview.rows.find((r) => r.rewardType === 'cat_skin_epoch');
+    expect(epicCat?.percent).toBeGreaterThan(0);
+    expect(epochCat?.percent).toBeGreaterThan(0);
+  });
 });
 
 describe('regular chest epoch pity roll', () => {
@@ -166,6 +171,41 @@ describe('regular chest epoch pity roll', () => {
         loot.kind === 'window_skin',
     ).toBe(true);
     expect(nextEpochPityCounter).toBe(0);
+  });
+
+  it('should not use epoch pity when only epoch cat skins remain locked', () => {
+    const ownedNonCatEpoch = [
+      'hut_the_age_of_miracles',
+      'hut_cyberpank',
+      'landscape_omut',
+      'landscape_cyber_city',
+      'the_age_of_miracles_brownie',
+    ];
+    const pity = regularChest.epochPityEvery - 1;
+    const { loot } = rollRegularChestLoot(
+      baseRollState({ ownedSkinIds: ownedNonCatEpoch }),
+      pity,
+      () => 0.99,
+    );
+    expect(loot.kind).not.toBe('cat_skin');
+  });
+
+  it('should never roll epic or epoch cat skin from regular chest', () => {
+    const epicEpochCatIds = [
+      'blue_mage',
+      'epic_hero',
+      'red_gunner',
+      'vulkan',
+      'flying_carpet',
+      'purple_mage',
+      'smook',
+    ];
+    for (let i = 0; i < 200; i += 1) {
+      const { loot } = rollRegularChestLoot(baseRollState(), 0, () => Math.random());
+      if (loot.kind === 'cat_skin' && loot.itemId) {
+        expect(epicEpochCatIds).not.toContain(loot.itemId);
+      }
+    }
   });
 
   it('should reset pity after fragment drop', () => {

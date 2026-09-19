@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { miracleChest } from '../config/lootTables';
+import { getMiracleCatSkinIds } from '../data/skinPools';
 import { createDefaultSave } from './GameSave';
 import { rollMiracleChestLoot } from './miracleChestLoot';
 
@@ -55,5 +56,21 @@ describe('miracleChestLoot', () => {
     );
     expect(gotFragment).toBe(false);
     expect(nextPityCounter).toBe(3);
+  });
+
+  it('should roll epic cat skin from consolation pool', () => {
+    const state = baseState();
+    let call = 0;
+    const rng = () => {
+      call += 1;
+      if (call === 1) return 0.99;
+      if (call === 2) return 0.92;
+      return 0;
+    };
+    const { loot, gotFragment } = rollMiracleChestLoot(state, 2, rng);
+    expect(gotFragment).toBe(false);
+    expect(loot.kind).toBe('cat_skin');
+    expect(loot.grade).toBe('epic');
+    expect(getMiracleCatSkinIds('epic')).toContain(loot.itemId);
   });
 });

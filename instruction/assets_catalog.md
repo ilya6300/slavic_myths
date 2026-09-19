@@ -140,6 +140,8 @@
 | `baba_yaga.png` | Баба-Яга |
 | `koschei_immortal.png` | Кощей |
 | `chudo_yudo.png` | Чудо-Юдо |
+| `yarilo.png` | Ярило |
+| `perun.png` | Перун |
 
 ---
 
@@ -167,6 +169,8 @@
 | `veles` | `veles.png` | Велес | ✅ есть |
 | `vodyanoy` | `waterman.png` | Водяной | ✅ есть |
 | `brownie` | `brownie.png` | Домовой | ✅ есть |
+| `yarilo` | `yarilo.png` | Ярило | ✅ есть |
+| `perun` | `perun.png` | Перун | ✅ есть |
 
 ---
 
@@ -176,21 +180,23 @@
 
 | Файл | Дух | Статус | Примечание (канон трофея) |
 |------|-----|--------|---------------------------|
-| `susedko_chest.png` | Суседко | ⏳ P1 | Крошечный сундук для полки, не игровой сундук на полу |
-| `bannik_broom.png` | Банник | ⏳ P1 | |
-| `kikimora_yarn.png` | Кикимора | ⏳ P1 | |
-| `polevoy_wreath.png` | Полевой | ⏳ P1 | Круглый венок; контраст с вертикальным снопом Овинника |
-| `ovinnik_sheaf.png` | Овинник | ⏳ P1 | Вертикальный сноп; контраст с круглым венком Полевого |
-| `leshiy_staff.png` | Леший | ⏳ P1 |
-| `vodyanoy_shell.png` | Водяной | ⏳ P1 |
-| `toptygin_paw.png` | Топтыгин | ⏳ P1 |
-| `poludnica_sickle.png` | Полудница | ⏳ P1 | Серп с лентой; не венок (венок — у Полевого) |
+| `susedko_chest.png` | Суседко | ✅ | Крошечный сундук для полки, не игровой сундук на полу |
+| `bannik_broom.png` | Банник | ✅ | |
+| `kikimora_yarn.png` | Кикимора | ✅ | |
+| `polevoy_wreath.png` | Полевой | ✅ | Круглый венок; контраст с вертикальным снопом Овинника |
+| `ovinnik_sheaf.png` | Овинник | ✅ | Вертикальный сноп; контраст с круглым венком Полевого |
+| `leshiy_staff.png` | Леший | ✅ |
+| `vodyanoy_shell.png` | Водяной | ✅ |
+| `toptygin_paw.png` | Топтыгин | ✅ |
+| `poludnica_sickle.png` | Полудница | ✅ | Серп с лентой; не венок (венок — у Полевого) |
 | `rusalka_comb.png` | Русалка | ✅ | Гребень из речного перламутра; канон v2 (белая рубаха, берёза) |
 | `lada_harmony_vase.png` | Лада | ✅ | Глиняная гармония-ваза, две ручки, красно-чёрный орнамент |
-| `veles_bust.png` | Велес | ⏳ P1 | Бюст на полке; титул «Лапа Велеса» — в профиле |
-| `yaga_hut.png` | Баба-Яга | ⏳ P1 |
-| `koschei_needle.png` | Кощей | ⏳ P1 |
-| `chudo_figurine.png` | Чудо-Юдо | ⏳ P1 |
+| `veles_bust.png` | Велес | ✅ | Бюст на полке; титул «Лапа Велеса» — в профиле |
+| `yaga_hut.png` | Баба-Яга | ✅ |
+| `koschei_needle.png` | Кощей | ✅ |
+| `chudo_figurine.png` | Чудо-Юдо | ✅ | |
+| `yarilo_spring_shield.png` | Ярило | ✅ | Золотой щит, рельефная гравировка молодого листа (Яровит) |
+| `perun_oak_shield.png` | Перун | ✅ | Боевой топор (id файла исторический) |
 
 **MVP-fallback:** `assets/creatures_in_the_book/[spirit].png` + CSS-рамка, `data-asset-pending="true"`.
 
@@ -200,12 +206,12 @@
 
 | Файл | ID локации | Статус | Fallback |
 |------|------------|--------|----------|
-| `bg_izba.jpeg` | `izba` | ⏳ P1 | `hut_standart.png` blur |
-| `bg_les.jpeg` | `les` | ⏳ P1 | `landscape_standart.jpeg` |
-| `bg_banya.jpeg` | `banya` | ⏳ P1 | `bg_izba` + sepia |
-| `bg_pole.jpeg` | `pole` | ⏳ P1 | `bg_les` + warm filter |
-| `bg_voda.jpeg` | `voda` | ⏳ P1 | `bg_les` + hue-rotate |
-| `bg_temnyy_les.jpeg` | `temnyy_les` | ⏳ P1 | `bg_les` + brightness(0.55) |
+| `bg_izba.jpeg` | `izba` | ✅ | `hut_standart.png` blur |
+| `bg_les.jpeg` | `les` | ✅ | `landscape_standart.jpeg` |
+| `bg_banya.jpeg` | `banya` | ✅ | `bg_izba` + sepia |
+| `bg_pole.jpeg` | `pole` | ✅ | `bg_les` + warm filter |
+| `bg_voda.jpeg` | `voda` | ✅ | `bg_les` + hue-rotate |
+| `bg_temnyy_les.jpeg` | `temnyy_les` | ✅ | `bg_les` + brightness(0.55) |
 | `kikimora_craft_bg.jpeg` | крафт оберега | ✅ есть | **Только** модалка крафта Кикиморы |
 | `trophy_tale_bg.jpeg` | сказ о трофее | ✅ есть | `TrophyModal` |
 
@@ -243,14 +249,14 @@
 |------|------------|--------|
 | `dialog_frame_wood.png` | Рамка диалога кота (nine-slice) | ⏳ P0 |
 | `bubble_tail.png` | Хвостик облачка реплики | ⏳ P2 |
-| `quiz_panel_wood.png` | Панель вопроса (nine-slice) | ⏳ P1 |
-| `quiz_answer_wood.png` | Кнопка ответа (nine-slice) | ⏳ P1 |
+| `quiz_panel_wood.png` | Панель вопроса (nine-slice) | ✅ |
+| `quiz_answer_wood.png` | Кнопка ответа (nine-slice) | ✅ |
 
 ### Трофеи (UI)
 
 | Файл | Назначение | Статус |
 |------|------------|--------|
-| `trophy_silhouette.png` | Пустой слот на полке | ⏳ P1 |
+| `trophy_silhouette.png` | Пустой слот на полке | ✅ |
 
 ### Рамки грейда (профиль, HUD-аватар, сетка)
 

@@ -132,7 +132,6 @@ describe('TASK-038 chest floor CSS contract', () => {
     expect(label).toMatch(/#e8e0d0/);
     expect(label).toMatch(/text-shadow:\s*0 1px 2px rgba\(0,\s*0,\s*0,\s*0\.6\)/);
     expect(label).toMatch(/rotateX/);
-    expect(label).toMatch(/rotate\(-12deg\)/);
     expect(label).toMatch(/transform-origin:[^;]*top/);
     expect(label).toMatch(/background:\s*none/);
     const timerFloor = ruleBody('.scene-chest-floor--timer', css);

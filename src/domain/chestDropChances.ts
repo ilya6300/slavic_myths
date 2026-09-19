@@ -13,7 +13,7 @@ import {
   type MiracleConsolationReward,
   type RegularChestRewardType,
 } from '../config/lootTables';
-import { getSkinIdsForCategory, type SkinCategory } from '../data/skinPools';
+import { getSkinIdsForCategory, getMiracleCatSkinIds, type SkinCategory } from '../data/skinPools';
 import { isDefaultOwnedSkin } from '../data/profileCatalog';
 import { getChestPoolTitles, getMiracleChestTitles } from '../data/titles';
 import { getChestLuckBonusPercent } from './catStats';
@@ -144,8 +144,13 @@ function getMiracleConsolationWeight(
       const available = pool.filter((t) => !state.ownedTitleIds.includes(t.id));
       return available.length ? base : 0;
     }
-    case 'izba_skin_epic': {
-      const pool = getSkinIdsForCategory('izba', 'epic');
+    case 'cat_skin_epic': {
+      const pool = getMiracleCatSkinIds('epic');
+      const available = pool.filter((id) => !isSkinOwned(id, state.ownedSkinIds));
+      return available.length ? base : 0;
+    }
+    case 'cat_skin_epoch': {
+      const pool = getMiracleCatSkinIds('epoch');
       const available = pool.filter((id) => !isSkinOwned(id, state.ownedSkinIds));
       return available.length ? base : 0;
     }

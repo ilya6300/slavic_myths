@@ -34,6 +34,8 @@ import { SettingsPanel } from '../SettingsPanel';
 import { ModalCloseButton } from '../common/ModalCloseButton';
 import { WoodQuestButton } from '../common/WoodQuestButton';
 
+import { resolveAcquireHintForProfile } from '../../data/profileAcquireHints';
+import { izbaEffects, resolveIzbaEffectName } from '../../data/izbaEffects';
 import { getSkinBonusLines } from '../../domain/skinBonuses';
 
 
@@ -51,6 +53,8 @@ const TABS: { id: ProfileTab; labelKey: keyof typeof settingsUiContent }[] = [
   { id: 'brownie', labelKey: 'profileTabBrownie' },
 
   { id: 'titles', labelKey: 'profileTabTitles' },
+
+  { id: 'atmosphere', labelKey: 'profileTabAtmosphere' },
 
   { id: 'settings', labelKey: 'profileTabSettings' },
 
@@ -84,6 +88,13 @@ function getPreviewItemName(
 
   if (!selectedId) return null;
 
+  if (tab === 'atmosphere') {
+    if (selectedId === 'none') {
+      return resolveText(settingsUiContent.profileEffectNone, locale);
+    }
+    return resolveIzbaEffectName(selectedId as import('../../data/izbaEffects').IzbaEffectId, locale);
+  }
+
   if (tab === 'titles') {
 
     const title = getTitleById(selectedId);
@@ -102,6 +113,9 @@ function getPreviewItemName(
 
 
 function getEquippedId(tab: ProfileTab): string | null {
+  if (tab === 'atmosphere') {
+    return gameStore.equippedIzbaEffectId ?? 'none';
+  }
   if (tab === 'titles') return gameStore.titleId;
   if (tab === 'cat') return gameStore.skins.cat;
   if (tab === 'izba') return gameStore.skins.izba;
@@ -146,6 +160,15 @@ export const ProfileModal = observer(function ProfileModal() {
 
     }
 
+    if (tab === 'atmosphere') {
+      if (selectedId === 'none') {
+        gameStore.equipIzbaEffect(null);
+      } else {
+        gameStore.equipIzbaEffect(selectedId as import('../../data/izbaEffects').IzbaEffectId);
+      }
+      return;
+    }
+
     const storeKey = skinStoreKey(tab as ProfileSkinCategory);
 
     gameStore.equipSkin(storeKey, selectedId);
@@ -158,7 +181,10 @@ export const ProfileModal = observer(function ProfileModal() {
 
     selectedId != null &&
 
-    (tab === 'titles'
+    (tab === 'atmosphere'
+      ? selectedId === 'none' ||
+        gameStore.isIzbaEffectOwned(selectedId as import('../../data/izbaEffects').IzbaEffectId)
+      : tab === 'titles'
 
       ? gameStore.isTitleOwned(selectedId)
 
@@ -177,7 +203,10 @@ export const ProfileModal = observer(function ProfileModal() {
         )
       : [];
 
-
+  const acquireHint =
+    selectedId != null && !selectedOwned
+      ? resolveAcquireHintForProfile(tab, selectedId, locale)
+      : null;
 
   return (
 
@@ -234,9 +263,14 @@ export const ProfileModal = observer(function ProfileModal() {
                   />
                 )
               ) : (
-                <p className="profile-modal__locked">
-                  {resolveText(settingsUiContent.profileLocked, locale)}
-                </p>
+                <>
+                  <p className="profile-modal__locked">
+                    {resolveText(settingsUiContent.profileLocked, locale)}
+                  </p>
+                  {acquireHint && (
+                    <p className="profile-modal__acquire-hint">{acquireHint}</p>
+                  )}
+                </>
               )
             )}
 
@@ -284,6 +318,37 @@ export const ProfileModal = observer(function ProfileModal() {
                 <div className="profile-grid__full">
                   <ProfileStatsPanel />
                 </div>
+              ) : tab === 'atmosphere' ? (
+                <>
+                  <button
+                    type="button"
+                    className={`profile-grid__cell profile-grid__cell--atmosphere${selectedId === 'none' ? ' profile-grid__cell--selected' : ''}`}
+                    onClick={() => profileUiStore.selectItem('none')}
+                  >
+                    <span className="profile-grid__title">
+                      {resolveText(settingsUiContent.profileEffectNone, locale)}
+                    </span>
+                  </button>
+                  {izbaEffects.map((effect) => {
+                    const owned = gameStore.isIzbaEffectOwned(effect.id);
+                    const selected = selectedId === effect.id;
+                    return (
+                      <button
+                        key={effect.id}
+                        type="button"
+                        className={`profile-grid__cell profile-grid__cell--atmosphere${selected ? ' profile-grid__cell--selected' : ''}${!owned ? ' profile-grid__cell--locked' : ''}`}
+                        onClick={() => profileUiStore.selectItem(effect.id)}
+                      >
+                        <span className={`profile-grid__title ${TITLE_GRADE_CLASS[effect.grade] ?? ''}`}>
+                          {resolveIzbaEffectName(effect.id, locale)}
+                        </span>
+                        <span className="profile-grid__meta">
+                          {resolveText(gradeLabels[effect.grade], locale)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </>
               ) : tab === 'titles'
 
                 ? getAllProfileTitles().map((title) => {
@@ -354,7 +419,7 @@ export const ProfileModal = observer(function ProfileModal() {
 
                           src={skin.previewSrc}
 
-                          alt=""
+                          alt={resolveSkinName(tab as ProfileSkinCategory, skin.id, locale)}
 
                           draggable={false}
 

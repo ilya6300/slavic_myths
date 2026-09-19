@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 
 import { isNightTime } from '../../domain/nightTime';
 
+import { getIzbaEffectById } from '../../data/izbaEffects';
+import { gameStore } from '../../store/GameStore';
 import { bookUiStore } from '../../store/bookUiStore';
 import { sceneUiStore } from '../../store/sceneUiStore';
 
@@ -32,6 +34,7 @@ import { RewardedWaitOverlay } from '../ads/RewardedWaitOverlay';
 import { KikimoraCraftModal } from '../street/KikimoraCraftModal';
 import { StreetYard } from '../street/StreetYard';
 import { StarterPackModal } from '../starter/StarterPackModal';
+import { IzbaEffectLayer } from './IzbaEffectLayer';
 import { Room1Scene, Room2Scene } from './IzbaSceneLayers';
 
 import { ScenePanNav } from './ScenePanNav';
@@ -76,7 +79,7 @@ export const IzbaScene = observer(function IzbaScene() {
 
     <div
 
-      className={`izba-scene${isNight ? ' izba-scene--night' : ''}${bookUiStore.isOverlayActive ? ' izba-scene--book-overlay' : ''}`}
+      className={`izba-scene${isNight ? ' izba-scene--night' : ''}${bookUiStore.isOverlayActive ? ' izba-scene--book-overlay' : ''}${gameStore.equippedIzbaEffectId ? ` ${getIzbaEffectById(gameStore.equippedIzbaEffectId)?.sceneClassName ?? ''}` : ''}`}
 
       data-room={sceneUiStore.activeRoom}
 
@@ -110,6 +113,8 @@ export const IzbaScene = observer(function IzbaScene() {
           <Room2Scene />
 
           <div className="layer-night" aria-hidden />
+
+          <IzbaEffectLayer />
 
         </div>
 

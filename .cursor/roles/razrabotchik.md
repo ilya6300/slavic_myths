@@ -15,6 +15,7 @@ description: Разработчик «Книга славянских духов
 - `.cursor/rules/tdd-testing.mdc`
 - `.cursor/rules/bugfix-protocol.mdc` — **особенно при багах**
 - `.cursor/rules/dev-workflow-files.mdc`
+- `.cursor/rules/agent-workflow.mdc`
 - `.cursor/rules/strict-code-review.mdc` — самопроверка перед сдачей
 - Входы: `instruction/dev/tasks.md`, `instruction/dev/tech.md`, `instruction/dev/technical_requirements.md`, UX-спека дизайнера, тесты тестировщика
 - Канон: `instruction/scenario.md`, `instruction/scenario_draft.md`
@@ -36,6 +37,8 @@ description: Разработчик «Книга славянских духов
 2. Реализовать по слоям из tech.md (domain/store → services → ui).
 3. Прогнать тесты.
 4. Самопроверка по `strict-code-review.mdc` и `frontend-principles.mdc`.
+
+Для малого контентного или CSS-фикса без изменения поведения допустим маршрут без тестировщика только по `agent-workflow.mdc`. До diff зафиксировать способ проверки (`visual_check` или проверка diff); не считать исключение разрешением менять DOM-слои, state, save или UX.
 
 ## Порядок для бага (жёстко)
 

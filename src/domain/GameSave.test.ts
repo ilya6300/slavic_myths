@@ -80,7 +80,7 @@ describe('GameSave', () => {
 
     const locked = Object.entries(statuses).filter(([, s]) => s === 'locked');
 
-    expect(locked).toHaveLength(15);
+    expect(locked).toHaveLength(17);
 
   });
 

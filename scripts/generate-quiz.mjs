@@ -29,6 +29,8 @@ const SPIRIT_ID = {
   'Кощей Бессмертный': 'koschei_immortal',
   Кощей: 'koschei_immortal',
   'Чудо-Юдо': 'chudo_yudo',
+  Ярило: 'yarilo',
+  Перун: 'perun',
 };
 
 function parseSpiritSections(text) {
@@ -88,8 +90,8 @@ function parseSpiritSections(text) {
 
 const quests = parseSpiritSections(md);
 
-if (quests.length !== 16) {
-  console.warn(`Expected 16 quizzes, got ${quests.length}`);
+if (quests.length !== 18) {
+  console.warn(`Expected 18 quizzes, got ${quests.length}`);
 }
 
 const out = `/**
@@ -142,6 +144,8 @@ export const quizLocationBySpirit: Record<SpiritId, QuizLocationId> = {
   baba_yaga: 'temnyy_les',
   koschei_immortal: 'temnyy_les',
   chudo_yudo: 'voda',
+  yarilo: 'pole',
+  perun: 'les',
 };
 
 const rawQuests: Omit<SpiritQuiz, 'locationId'>[] = ${JSON.stringify(quests, null, 2)};
@@ -192,11 +196,11 @@ export function shuffleQuizQuestions(
 writeFileSync(join(root, 'src/data/quiz.ts'), out, 'utf8');
 const totalQ = quests.reduce((s, q) => s + q.questions.length, 0);
 console.log(`Generated ${quests.length} quizzes, ${totalQ} questions`);
-if (quests.length !== 16) {
-  console.error(`Expected 16 quizzes, got ${quests.length}`);
+if (quests.length !== 18) {
+  console.error(`Expected 18 quizzes, got ${quests.length}`);
   process.exit(1);
 }
-if (totalQ !== 119 && totalQ !== 120) {
-  console.error(`Expected 119–120 questions, got ${totalQ}`);
+if (totalQ < 140 || totalQ > 145) {
+  console.error(`Expected 140–145 questions, got ${totalQ}`);
   process.exit(1);
 }

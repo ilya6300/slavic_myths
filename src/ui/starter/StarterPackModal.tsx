@@ -34,38 +34,57 @@ export const StarterPackModal = observer(function StarterPackModal() {
   };
 
   return (
-    <div className="starter-pack-modal layer-modal" role="dialog" aria-modal="true">
-      <div className="starter-pack-modal__backdrop" aria-hidden onClick={handleClose} />
-      <div className="starter-pack-modal__panel">
+    <div
+      className="game-modal starter-pack-modal layer-modal"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="game-modal__backdrop" aria-hidden onClick={handleClose} />
+      <div className="game-modal__panel starter-pack-modal__panel">
         <ModalCloseButton onClick={handleClose} />
-        <h2 className="starter-pack-modal__title">
+        <h2 className="game-modal__title starter-pack-modal__title">
           {resolveText(settingsUiContent.starterPackTitle, locale)}
         </h2>
         <p className="starter-pack-modal__lore">
           {resolveText(settingsUiContent.starterPackLore, locale)}
         </p>
 
-        <img
-          className="starter-pack-modal__casket"
-          src={furniture.starterCasket}
-          alt=""
-          draggable={false}
-        />
+        <div className="starter-pack-modal__hero">
+          <img
+            className="starter-pack-modal__casket"
+            src={furniture.starterCasket}
+            alt=""
+            draggable={false}
+          />
+        </div>
 
         <ul className="starter-pack-modal__rewards">
           <li>
-            <img src={hudIcons.energy} alt="" />
-            +100
+            <span className="starter-pack-modal__reward-icon">
+              <img src={hudIcons.energy} alt="" draggable={false} />
+            </span>
+            <span className="starter-pack-modal__reward-label">+100</span>
           </li>
           <li>
-            <img src={hudIcons.obereg} alt="" />
-            ×5
+            <span className="starter-pack-modal__reward-icon">
+              <img src={hudIcons.obereg} alt="" draggable={false} />
+            </span>
+            <span className="starter-pack-modal__reward-label">×5</span>
           </li>
           <li>
-            {catSkin && (
-              <img src={catSkin.sit} alt="" className="starter-pack-modal__cat-preview" />
-            )}
-            {catSkin ? resolveSkinName('cat', catSkin.id, locale) : '…'}
+            <span className="starter-pack-modal__reward-icon">
+              {catSkin && (
+                <img
+                  src={catSkin.sit}
+                  alt=""
+                  className="starter-pack-modal__cat-preview"
+                  draggable={false}
+                />
+              )}
+            </span>
+            <span className="starter-pack-modal__reward-label">
+              {catSkin ? resolveSkinName('cat', catSkin.id, locale) : '…'}
+            </span>
           </li>
         </ul>
 

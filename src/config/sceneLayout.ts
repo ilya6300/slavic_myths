@@ -124,7 +124,9 @@ export const trophyWallShelves: TrophyWallShelf[] = [
   { id: 'wall-l-3', leftVw: 30, topVh: 60, spiritIds: ['ovinnik', 'leshiy'] },
   { id: 'wall-r-1', leftVw: 57, topVh: 40, spiritIds: ['vodyanoy', 'dedushka_toptygin', 'poludnica'] },
   { id: 'wall-r-2', leftVw: 57, topVh: 50, spiritIds: ['rusalka', 'lada', 'veles'] },
-  { id: 'wall-r-3', leftVw: 57, topVh: 60, spiritIds: ['baba_yaga', 'koschei_immortal', 'chudo_yudo'] },
+  { id: 'wall-r-3', leftVw: 57, topVh: 60, spiritIds: ['baba_yaga', 'koschei_immortal'] },
+  { id: 'wall-l-4', leftVw: 30, topVh: 70, spiritIds: ['chudo_yudo', 'yarilo'] },
+  { id: 'wall-r-4', leftVw: 57, topVh: 70, spiritIds: ['perun'] },
 ];
 
 export const room2Bench = {
@@ -162,6 +164,8 @@ export const trophySlotLayout: TrophySlotLayout[] = [
   { spiritId: 'baba_yaga', row: 'bot', slotIndex: 2 },
   { spiritId: 'koschei_immortal', row: 'bot', slotIndex: 3 },
   { spiritId: 'chudo_yudo', row: 'bot', slotIndex: 4 },
+  { spiritId: 'yarilo', row: 'bot', slotIndex: 0 },
+  { spiritId: 'perun', row: 'bot', slotIndex: 1 },
 ];
 
 /** Минимальный hit-area интерактива (px). */

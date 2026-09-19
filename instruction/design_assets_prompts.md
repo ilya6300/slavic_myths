@@ -1,8 +1,8 @@
 # Промпты на отсутствующие изображения
 
 > **Версия:** 1.6  
-> **Дата:** 2026-09-10  
-> **Автор:** гейм-дизайнер UI/UX (HUD 2.0: дар путника + компаньон Кикиморы)  
+> **Дата:** 2026-09-13  
+> **Автор:** гейм-дизайнер UI/UX (HUD 2.0: дар путника + компаньон Кикиморы; позы Путника как у Рыжика)  
 > **Правило:** изображения **не генерируем в коде**. До появления файла — только fallback из § «MVP-fallback» или `alt`; **не** рисовать SVG/CSS/сгенерированный арт вместо PNG.  
 > **Генерация черновиков/mockup:** skill `.cursor/skills/generate-game-image/SKILL.md` → `instruction/design/`; в `assets/` — только после приёмки.  
 > **Агенты:** при отсутствии ассета — обновить промпт здесь; пути — в `assets_catalog.md`.
@@ -31,11 +31,41 @@
 
 ---
 
+## P0 — скин «Путник» (`cat_pilgrim`) — позы как у Рыжика
+
+> **Задача владельца (2026-09-13):** вариант 1 сценариста (Путник / Дар путника). Два спрайта: **сидит** и **спит**. Поза как у эталона `cat_standart`, не профиль старого `cat_pilgrim_sid`.  
+> **Черновики:** `instruction/design/drafts/cat_pilgrim_sid_draft.png`, `instruction/design/drafts/cat_pilgrim_sleep_draft.png`. В `assets/pets/rare/cat_pilgrim/` — только после приёмки Ильи.
+
+**Канон позы (не путать со старым путником):**
+
+| Поза | Эталон геометрии | Запрещено |
+|------|------------------|-----------|
+| Сидит (`*_sid`) | `assets/pets/common/cat_standart/cat_standart_sid.png` — анфас, грудь в камеру, лапы впереди, хвост справа | Профиль морды влево, как у старого `cat_pilgrim_sid` |
+| Спит (`*_sleep`) | `assets/pets/common/cat_standart/cat_standart_sleep.png` — плотный круглый калачик, морда анфас слева | Вытянутый боковой калачик «голова на лапах» |
+
+**Костюм (оба кадра):** тот же рыжий табби, что Рыжик; льняная косоворотка слоновой кости с красной вышивкой; маленькая коричневая сумка с латунной пряжкой. Без шляпы, посоха, плаща.
+
+**Целевые пути после приёмки:** `assets/pets/rare/cat_pilgrim/cat_pilgrim_sid.png`, `assets/pets/rare/cat_pilgrim/cat_pilgrim_sleep.png`.
+
+### `assets/pets/rare/cat_pilgrim/cat_pilgrim_sid.png` — Путник сидит
+
+Кот-путник сидит на полу избы, как сидит Рыжик на эталонном спрайте: грудью и мордой прямо в камеру, не в профиль. Тело опирается на задние лапы, передние лапки стоят рядом перед грудью, хвост обёрнут вокруг правого бока. Голова крупная, округлая, большие зелёные глаза смотрят на игрока, розовый нос, белые усы. Шерсть мёдово-рыжая табби с коричневыми полосами, матовая пластилиновая фактура со следами лепки — тот же кот, что `cat_standart`, только одетый в дорогу. На нём короткая льняная рубаха-косоворотка цвета тёплой слоновой кости: стоячий ворот, красный славянский орнамент на манжетах и у горла. Через плечо — узкий коричневый ремень и маленькая кожаная сумка-ларец с латунной пряжкой (дар путника на теле). Стиль: объёмный стилизованный 3D-рендер из пластилина, мягкие толстые формы, читаемый силуэт в HUD и на сцене. Освещение: мягкий студийный свет сверху-сбоку, тёплые тени, без глянца и неона. Фон полностью прозрачный, без подставки, без текста и рамки. Кадр 3:4, персонаж в центре. Референс позы: `assets/pets/common/cat_standart/cat_standart_sid.png`. Референс костюма: `assets/pets/rare/cat_pilgrim/cat_pilgrim_sid.png` (только рубаха и сумка, не поза). Новый файл должен выглядеть так, будто лежал в `assets/pets/rare/` рядом с Рыжиком с самого начала.
+
+Чего не должно быть: вид сбоку и профиль морды; кот смотрит влево; стоячая человеческая поза; шляпа, плащ, посох, меч; ниндзя, киберкот, ковёр-самолёт; вектор, flat, аниме, фотореализм, неон, глянцевый пластик; текст, рамка, подставка, белый непрозрачный квадрат фона; другая порода, серый мейн-кун.
+
+### `assets/pets/rare/cat_pilgrim/cat_pilgrim_sleep.png` — Путник спит
+
+Кот-путник спит плотным круглым калачиком, как спит Рыжик: вид сверху-спереди, геометрия почти круга, не вытянутый овал на боку. Морда анфас в левой части круга, оба закрытых глаза симметрично видны зрителю, розовый нос по центру морды, спокойная мордочка. Спина и бёдра замыкают круг за головой. Хвост с тёмными кольцами обвивает низ круга справа, кончик уходит к морде. Шерсть та же рыжая табби. Льняная рубаха слоновой кости с красной славянской вышивкой облегает спину калачика и не ломает круглый силуэт. Маленькая коричневая сумка прижата справа у бедра, ремешок перекинут через клубок. Стиль: тот же пластилиновый 3D, матовая шерсть, толстые формы, тактильные следы лепки. Мягкий студийный свет, тёплые тени. Фон полностью прозрачный, без подставки и без текста. Кадр ближе к квадрату 1:1, персонаж в центре. Референс позы: `assets/pets/common/cat_standart/cat_standart_sleep.png`. Референс костюма: сидячий путник (рубаха и сумка). Не копировать боковой калачик старого `cat_pilgrim_sleep`.
+
+Чего не должно быть: боковой профиль спящего кота; голова на лапах сбоку; вытянутый овал; сидячая поза; открытые глаза; шляпа, посох, ковёр; вектор, flat, аниме, фотореализм, неон, глянец; текст, рамка, белый непрозрачный фон; другая порода.
+
+---
+
 ## P0 — правка существующих PNG (не генерация с нуля)
 
 ### Стёкла скинов избы — альфа
 
-**Файлы:** `assets/house/hut_standart.png`, `hut_rate.png`, `hut_epic.png`, `hut_the_age_of_miracles.png`  
+**Файлы:** `assets/house/hut_standart.png`, `hut_rate.png`, `hut_the_age_of_miracles.png`  
 **Задача:** в проёме окна сейчас чёрная заливка. Заменить на **α = 0**, сохранив наличник и переплёт (крест). Иначе канон «лес → Жирдяй → изба» не собирается (`izba_scene_layers.md` §1.3).
 
 Не генерировать новую избу. Вырезать канал.
@@ -526,12 +556,36 @@ style reference: assets/creatures_in_the_book/koschei_immortal.png + assets/furn
 
 ```
 small Chudo-Yudo multi-headed water monster figurine trophy, THREE heads on one chunky body each head looking different direction,
-cute-scary stylized folklore NOT hyper horror gore, water guardian final boss collectible,
+cute-scary stylized folklore NOT hyper horror gore, water guardian collectible before the spring chapter,
 palm-sized figurine stylized 3D clay matte tactile slight raw claymation finger marks like fatso enemy,
 front view all three faces partially visible,
 pure flat white background #FFFFFF,
 style reference: assets/creatures_in_the_book/chudo_yudo.png + assets/enemy/fatso.png claymation rawness
 --no vector, flat, line art, hyper realistic horror, single head, black background
+```
+
+#### `assets/trophies/yarilo_spring_shield.png` — Ярило
+
+**Канон:** ладонный **золотой щит** с **рельефной гравировкой** молодого листа (лист **золотой**, не зелёный пластилин); форма щита читается с первого взгляда (обод, umbo, лёгкий изгиб).
+
+```
+palm-sized golden SHIELD trophy, clear round or heater shield silhouette with metal rim and central boss,
+young spring leaf embossed as golden relief engraving (same gold metal, darker tone lines), NO green leaf color,
+ceremonial Yarovit symbol NOT battle weapon, stylized 3D clay matte gold, slight angle showing shield thickness,
+pure white background #FFFFFF, no shelf no character,
+style reference: assets/trophies/lada_harmony_vase.png + assets/furniture/box_closed.png
+--no sun disc only, green leaf, vector flat, shelf, battle scene, watermark
+```
+
+#### `assets/trophies/perun_oak_shield.png` — Перун
+
+**Канон:** трофей — **боевой топор** как на `illustration_book/perun.png`, не дубовый щит. Имя файла `perun_oak_shield` в коде сохранено.
+
+```
+Perun battle axe trophy matching book illustration: heavy double-bit axe with carved blade ornament, thick haft with metal bands, dark metal, vertical shelf display, palm-sized collectible, NOT shield NOT oak board,
+stylized 3D clay matte sculpt, white background #FFFFFF, no character no text,
+style reference: assets/illustration_book/perun.png + assets/furniture/box_closed.png + assets/trophies/leshiy_staff.png
+--no shield, vector, flat, watermark, black background
 ```
 
 ---
@@ -635,6 +689,18 @@ style reference: assets/view/landscape_standart.jpeg brightness 40 percent mood
 --no vector, cartoon, bright sunny, urban, horror gore
 ```
 
+### `assets/quiz/bg_dubovaya_roshcha.jpeg`
+
+**Квест Перуна:** священная дубрава на высокой горе; безопасная гроза видна вдали, без персонажей и разрушений.
+
+```
+sacred ancient oak grove on a high hill, wide 16:9 quest background for Perun,
+massive calm oaks, distant soft lightning behind far clouds, dry grassy ground and open horizon,
+painterly stylized realism, dignified Slavic folklore atmosphere, no characters and no UI,
+style reference: assets/view/landscape_standart.jpeg + assets/house/hut_standart.png
+--no vector, flat, battle, weapons, people, Veles, serpent, injury, horror, fire, text, watermark
+```
+
 ---
 
 ## P1 — Скин избы «Гармония» (квест Лады)
@@ -652,7 +718,7 @@ style reference: assets/view/landscape_standart.jpeg brightness 40 percent mood
 
 **Композиция:** та же расстановка якорей, что у `hut_standart.png` — окно ~38% / кот ~32% / книга ~70% (`room_01_layout.md` §5). Отличие — **настроение и декор**, не сдвиг мебели.
 
-**Смысл:** тёплая изба гармонии — мягкий свет, лад, красно-чёрный славянский орнамент на брусах, **небольшой букет полевых цветов у порога**, ощущение согласия и уюта. **Не** копировать `hut_rate.png` (холоднее/другой декор) и **не** каменно-неоновый `hut_epic.png`.
+**Смысл:** тёплая изба гармонии — мягкий свет, лад, красно-чёрный славянский орнамент на брусах, **небольшой букет полевых цветов у порога**, ощущение согласия и уюта. **Не** копировать `hut_rate.png` (холоднее/другой декор).
 
 **GenerateImage:** `aspect_ratio: "21:9"` · `reference_image_paths`: `assets/house/hut_standart.png`, `assets/trophies/lada_harmony_vase.png` (если черновик есть — иначе `assets/creatures_in_the_book/lada.png`)
 
@@ -674,6 +740,29 @@ style reference: assets/house/hut_standart.png + assets/creatures_in_the_book/la
 
 ---
 
+### `assets/house/hut_the_age_of_miracles.png` — магическая изба (эпоха чудес)
+
+**Формат:** строго тот же кадр и пиксели, что `hut_standart.png` (1408×640). Пустая оболочка, арочное окно того же размера по центру, стёкла чёрная заливка (α не вырезать на этом шаге).  
+**Стиль:** тёмная ночная изба, пластилиновые брёвна; на стенах и полу светящиеся зелёные славянские руны.
+
+```
+Пустая славянская изба, камера и размер окна как hut_standart: панорама, фронтон, малое арочное окно по центру дальней стены, те же передние столбы. Пластилиновый 3D. Тёмное дерево (ночь). Вырезанные руны, светящиеся травяным зелёным, на боковых стенах, у окна и на полу. Стёкла сплошной чёрный #000000. Без мебели, без кота, без текста, без золотой пыли, без дневного медового дерева.
+```
+
+---
+
+### `assets/house/hut_cyberpank.png` — помещение 3000 года
+
+**Приоритет:** P1 · **Экран:** `.layer-izba__img`, вкладка «Изба».  
+**ID:** `hut_cyberpank`, грейд `epoch`. Пасхалка к коту `cyberpank` и виду `landscape_cyber_city`.  
+**Не** бревенчатая изба: металл, неон, год 3000. Пустая оболочка комнаты (мебель — оверлеи). Стекла **не вырезать вручную** на этом шаге.
+
+```
+Пустое помещение 3000 года в стиле киберпанк. Камера, пол и стены — как у assets/house/hut_standart.png (те же линии перспективы). Материалы: металл, неон magenta/cyan, не брёвна. Окно на дальней стене чуть уже, чем у standart; стёкла — сплошная чёрная заливка #000000 как фон под вырез, без города в стекле. Без мебели, без кота, без людей. Альфу стёкол не вырезать на этом шаге.
+```
+
+---
+
 ## P1 — Пейзажи 21:9 (окно + викторина)
 
 **Формат:** строго **21:9** (ultrawide). Генерация: `GenerateImage`, `aspect_ratio: "21:9"`, референс `assets/view/landscape_standart.jpeg` (+ второй якорь по таблице).
@@ -689,7 +778,7 @@ style reference: assets/house/hut_standart.png + assets/creatures_in_the_book/la
 | `landscape_omut.jpeg` | `landscape_omut` | Вкладка «Лес» | **Обычный сундук** (`window_skin`, `common` + `epoch`) |
 | `landscape_cyber_city.jpeg` | `landscape_cyber_city` | Вкладка «Лес» | **Обычный сундук**, редкий: `window_skin` только в пуле `epoch`, низкий вес (≈ вдвое реже остальных epoch-скинов окна) |
 | `landscape_yaga.jpeg` | `landscape_yaga` | Вкладка «Лес» | **Квест Бабы-Яги** (3 фрагмента); избушка **в проёме окна**, не гигант вдали; не путать с `landscape_temnyy_les` |
-| `hut_harmony.png` | `hut_harmony` | Вкладка «Изба» | **Квест Лады** (3 фрагмента); грейд `epic`; **не** `hut_rate` / **не** `hut_epic` |
+| `hut_harmony.png` | `hut_harmony` | Вкладка «Изба» | **Квест Лады** (3 фрагмента); грейд `epic`; **не** `hut_rate` |
 | `quiz/bg_banya.jpeg` | — | Только фон викторины Банника | Квест; **не** в профиле и **не** в сундуке |
 
 > **Код сейчас:** `getWindowSkinIdsByGrade()` возвращает `[]` — сундук не выдаёт скины окна, награда Яги (`window_skin_yaga_hut`) — заглушка. После появления PNG — зарегистрировать id в `viewSkins` / `skinPools` / `skinContent.ts`.
@@ -785,25 +874,27 @@ style reference: assets/house/hut_standart.png + assets/creatures_in_the_book/la
 
 ---
 
-### `assets/view/landscape_cyber_city.jpeg` — киберпанк-город (скин окна, v7)
+### `assets/view/landscape_cyber_city.jpeg` — киберпанк-город (скин окна, v14)
 
 **Приоритет:** P1 · **Дроп:** обычный сундук, `window_skin`, грейд `epoch`.
 
-**Композиция v7:** **только улица** — узкий кибер-переулок 2–3 этажа, крупные неоновые вывески magenta/cyan, мокрый асфальт в перспективе. **Без** леса, поля, небоскрёбов-«игл», vertical streak glitch. **Без** персонажей и кота.
-
-**CSS (окно смотрит на верхнюю часть 21:9):** `.window-aperture[data-window-skin='landscape_cyber_city'] .window-aperture__forest { transform: translateY(-62%); }` — сдвиг к уровню улицы.
-
-**GenerateImage:** `aspect_ratio: "16:9"` → crop **21:9** **2560×1097**, sharpen · **не** использовать `cyberpank_sid` (тянет кота в кадр)
+**Промпт владельца (канон v14):**
 
 ```
-Сюжет: за окном избы — **только** кибerpunk-улица (конtrast сказки и мегаполиса).
+Панорама 16:9, центр кадра. Киберпанк, ночь, дождь, 3000 год.
 
-Композиция: узкий кибerpunk-переулок ночью — **низкая** застройка 2–3 этажа, крупные прямоугольные неоновые вывески magenta и cyan, мокрый асфальт с отражениями в перспективе. **Без** леса, поля, небоскрёбов-игл, vertical glitch, персонажей. Палитра неона — как cyberpank, но **без** кота в кадре.
+ЖЁСТКАЯ ГЕОМЕТРИЯ (проценты от верха кадра, соблюдать точно):
+- 0–60% высоты: дома и башни. Крыши СРЕЗАНЫ верхним краем кадра, башни уходят вверх за рамку. Неба не больше 8%.
+- 60–100% высоты: мокрая площадь-дорога, занимает ВСЮ нижнюю треть плюс ещё 7% (итого 40%). По ней едут и летят машины. Асфальт с неоновыми отражениями.
 
-Стиль: painterly cinematic cyberpunk, читаемые фасады и вывески. Центр — оконный проём; в коде `translateY(-62%)` для этого скина.
+Повторяю: линия горизонта / стык башен и дороги ровно на 60% от верха. Ниже 60% — только дорога и машины, не фасады.
 
-Чего не должно быть: лес; поле; парк; деревья; трава; medieval; рамка окна; логотипы; текст.
+Высокая детализация крупных форм: фары, лужи, вывески, грани башен. НЕ рисовать сетку из тысяч крошечных окон.
+
+Без тумана-каши, без деревьев, без травы, без рамки окна, без людей, без кота.
 ```
+
+Crop 21:9 центр **2560×1097**. CSS: `.window-aperture[data-window-skin='landscape_cyber_city']` → `translateY(-72%)`, чтобы площадь попала в проём.
 
 ---
 
@@ -1255,6 +1346,62 @@ style reference: assets/brownie/common/brownie_standart.png + assets/furniture/b
 
 ---
 
+### `assets/creatures_in_the_book/yarilo.png` — Ярило (портрет викторины)
+
+**Статус:** ✅ production (`instruction/design/drafts/yarilo_creature_draft.png` → `process-yarilo-perun-assets.mjs`).
+
+```
+white engraved folklore book portrait for the Yarilo game chapter, symbolic youthful spring figure beside a white horse,
+fresh grass and one budding branch, small ceremonial shield with a young leaf relief,
+high contrast white line engraving on transparent or solid black background, centered vertical composition, no text,
+style reference: assets/creatures_in_the_book/lada.png + assets/creatures_in_the_book/chudo_yudo.png
+--no color render, 3D clay, vector icon, photorealism, battle, weapon action, severed head, adult ritual, gore, watermark
+```
+
+### `assets/creatures_in_the_book/perun.png` — Перун (портрет викторины)
+
+**Статус:** ⏳ planned (P1). Белая гравюра для викторины и MVP-fallback: дубрава, высота и молния без боя и без образа противника Велеса.
+
+**Production:** ✅ `instruction/design/drafts/perun_creature_draft.png` → `assets/creatures_in_the_book/perun.png` (2026-09-19).
+
+```
+white engraved folklore book portrait of Perun, calm dignified thunder deity in an oak grove on a high hill,
+one peaceful bull, distant lightning behind clouds, a small carved oak shield with silver head and golden moustache motif,
+high contrast white line engraving on transparent or solid black background, centered vertical composition, no text,
+style reference: assets/creatures_in_the_book/veles.png + assets/creatures_in_the_book/chudo_yudo.png
+--no color render, 3D clay, vector icon, photorealism, Veles, serpent fight, battle, injury, threat, horror, gore, watermark
+```
+
+---
+
+### `assets/illustration_book/yarilo.png` — Ярило
+
+**Грейд:** Эпоха чудес · **Статус:** ✅ production (перегенерация 2026-09-19). Солнце и весна — центр кадра; щит **не** на иллюстрации (трофей отдельно: `yarilo_spring_shield`). Не выдавать образ за бесспорное личное имя русского культа; связь с Яровитом через солнце, поля, белого коня.
+
+```
+Yarilo game chapter — solar spring power of Yarovit: large golden sun disk and rays above green spring field,
+youthful symbolic figure with flower wreath, white horse, fresh grass and buds, NO shield NO weapons NO battle,
+volumetric stylized 3D clay miniature, matte hand-sculpted, warm sunlit spring light, centered composition, solid black background, no text,
+style reference: assets/illustration_book/lada.png + assets/illustration_book/chudo_yodo.png + assets/view/landscape_standart.jpeg
+--no shield, domovoy, brownie, stove, vector, flat, anime, neon, photoreal, gore, watermark
+```
+
+### `assets/illustration_book/perun.png` — Перун
+
+**Фон (владелец 2026-09):** `#FFFFFF`, **не** чёрный — пергамент книги даёт тон; α через border-flood белого.
+
+**Постобработка:** `remove-border-white-alpha.mjs` → `fill-internal-alpha-holes.mjs` → `verify-book-illustration.mjs`.
+
+```
+Perun supreme Slavic thunder god, mature powerful warrior age 50-60, thick grey beard and mustache, chainmail or plate armor,
+raising battle axe overhead in heroic pose, heavy storm clouds and distant lightning above, NO oak tree NO forest NO izba domovoy figure,
+volumetric stylized 3D clay miniature epic scale, matte sculpt, dramatic storm light, centered portrait, solid white background #FFFFFF, no text,
+style reference: assets/illustration_book/veles.png + assets/illustration_book/koschei.png
+--no brownie, domovoy, tree, grove, bull diorama, vector, flat, anime, neon, photoreal gore, watermark, black background
+```
+
+---
+
 ## MVP-fallback без генерации
 
 | Нужен | Временно |
@@ -1288,7 +1435,8 @@ style reference: assets/brownie/common/brownie_standart.png + assets/furniture/b
 | `miracle_chest_open.png` | P0 | Изба | ✅ |
 | `trophy_silhouette.png` | P1 | Трофеи | ✅ |
 | `trophies_grid_all_15.png` (draft) | P1 | Трофеи сетка | ✅ |
-| `trophies/*.png` ×15 | P1 | Трофеи | ✅ |
+| `trophies/*.png` ×17 | P1 | Трофеи | 4 ✅ (в т.ч. `yarilo_spring_shield`, `perun_oak_shield`); остальные ⏳ |
+| `illustration_book/*.png` ×18 | P0 | Книга бестиарий | 18 ✅ |
 | `quiz_panel_wood.png` | P1 | Викторина | ✅ |
 | `quiz_answer_wood.png` | P1 | Викторина | ✅ |
 | `quiz/bg_*.jpeg` ×6 | P1 | Викторина | ✅ |
@@ -1308,7 +1456,8 @@ style reference: assets/brownie/common/brownie_standart.png + assets/furniture/b
 | ~~`trophy_room_bg.png`~~ | — | — | ❌ удалён (та же изба) |
 | `bubble_tail.png` | P2 | Диалог | ✅ |
 | `badge_grade_*.png` ×4 | P2 | UI | ✅ |
-| `illustration_book/*.png` ×16 | P0 | Книга бестиарий | ✅ промпты §3D-диорама |
+| `cat_pilgrim_sid.png` | P0 | Дар путника, поза как Рыжик | ⏳ draft `instruction/design/drafts/cat_pilgrim_sid_draft.png` |
+| `cat_pilgrim_sleep.png` | P0 | Дар путника, калачик как Рыжик | ⏳ draft `instruction/design/drafts/cat_pilgrim_sleep_draft.png` |
 | ~~`trophy_room_bg.png`~~ | — | — | ❌ удалён (та же изба) |
 
 ---

@@ -128,5 +128,23 @@ export const ProfilePreview = observer(function ProfilePreview() {
     );
   }
 
+  if (tab === 'atmosphere') {
+    const effectId = selectedId ?? gameStore.equippedIzbaEffectId;
+    const previewClass =
+      effectId && effectId !== 'none'
+        ? ' profile-modal__preview-stage--atmosphere-thunder'
+        : '';
+    return (
+      <div className={`profile-modal__preview-stage profile-modal__preview-stage--izba-fx${previewClass}`}>
+        <img
+          className="profile-modal__preview-solo profile-modal__preview-solo--izba"
+          src={resolveHouseUrl(gameStore.skins.izba)}
+          alt=""
+          draggable={false}
+        />
+      </div>
+    );
+  }
+
   return <div className="profile-modal__preview-stage" />;
 });

@@ -42,6 +42,8 @@ export interface RewardState {
 
   ownedSkinIds: string[];
 
+  ownedIzbaEffectIds: string[];
+
   skins: GameSkins;
 
   trophiesUnlocked: string[];
@@ -71,6 +73,12 @@ function addOwnedTitle(ids: string[], titleId: string): string[] {
 function addOwnedSkin(ids: string[], skinId: string): string[] {
 
   return ids.includes(skinId) ? ids : [...ids, skinId];
+
+}
+
+function addOwnedIzbaEffect(ids: string[], effectId: string): string[] {
+
+  return ids.includes(effectId) ? ids : [...ids, effectId];
 
 }
 
@@ -242,6 +250,20 @@ export function applySpiritReward(
 
 
 
+    case 'atmosphere_only': {
+
+      const effectId = reward.effectId!;
+
+      return {
+
+        ownedIzbaEffectIds: addOwnedIzbaEffect(state.ownedIzbaEffectIds, effectId),
+
+      };
+
+    }
+
+
+
     default:
 
       return {};
@@ -269,6 +291,8 @@ export function createRewardStateFromStore(store: {
   ownedTitleIds: string[];
 
   ownedSkinIds: string[];
+
+  ownedIzbaEffectIds: string[];
 
   skins: GameSkins;
 
@@ -299,6 +323,8 @@ export function createRewardStateFromStore(store: {
     ownedTitleIds: [...store.ownedTitleIds],
 
     ownedSkinIds: [...store.ownedSkinIds],
+
+    ownedIzbaEffectIds: [...store.ownedIzbaEffectIds],
 
     skins: { ...store.skins },
 
@@ -335,6 +361,8 @@ export function getDefaultRewardState(): RewardState {
     ownedTitleIds: ['novenkiy'],
 
     ownedSkinIds: [],
+
+    ownedIzbaEffectIds: [],
 
     skins: {
 

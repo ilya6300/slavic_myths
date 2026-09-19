@@ -87,12 +87,6 @@ export const ChestCooldownModal = observer(function ChestCooldownModal() {
           label={resolveText(settingsUiContent.chestHurryLuck, locale)}
           onClick={handleHurry}
         />
-
-        <WoodQuestButton
-          className="chest-modal__take"
-          label={resolveText(settingsUiContent.chestLootTake, locale)}
-          onClick={handleClose}
-        />
       </div>
     </div>
   );

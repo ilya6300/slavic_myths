@@ -128,7 +128,7 @@ export const ChestLootModal = observer(function ChestLootModal() {
 
   const grade = resolveLootGrade(loot);
   const frameSrc = gradeFrames[grade];
-  const showHurry = !isMiracle && remainingMs > 0;
+  const showCooldownHint = !isMiracle && remainingMs > 0;
   const chestOpenSrc = isMiracle ? furniture.miracleChestOpen : furniture.boxOpen;
   const takeLabel = resolveText(
     isMiracle ? settingsUiContent.miracleLootTake : settingsUiContent.chestLootTake,
@@ -137,10 +137,6 @@ export const ChestLootModal = observer(function ChestLootModal() {
 
   const handleTake = () => {
     gameStore.dismissChestLoot();
-  };
-
-  const handleHurry = () => {
-    gameStore.skipChestCooldownWithRewarded();
   };
 
   return (
@@ -185,7 +181,7 @@ export const ChestLootModal = observer(function ChestLootModal() {
 
         <p className="chest-modal__loot-text">{resolveLootLabel(loot, locale)}</p>
 
-        {showHurry && (
+        {showCooldownHint && (
           <p className="chest-modal__timer">
             {resolveText(settingsUiContent.chestCooldown, locale)}:{' '}
             {formatCooldownMs(remainingMs)}
@@ -204,14 +200,6 @@ export const ChestLootModal = observer(function ChestLootModal() {
             />
           )}
         </div>
-
-        {showHurry && (
-          <WoodQuestButton
-            className="chest-modal__hurry"
-            label={resolveText(settingsUiContent.chestHurryLuck, locale)}
-            onClick={handleHurry}
-          />
-        )}
 
         <WoodQuestButton
           className="chest-modal__take"

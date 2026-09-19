@@ -44,7 +44,11 @@ export class SceneUiStore {
 
   setRoom(room: IzbaRoom): void {
     if (this.panBlocked) return;
+    const wasStreet = this.activeRoom === 'street';
     this.activeRoom = room;
+    if (room === 'street' && !wasStreet) {
+      boundGameStore?.handleStreetRoomEntered();
+    }
   }
 
   toggleRoom(): void {

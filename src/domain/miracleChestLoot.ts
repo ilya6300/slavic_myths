@@ -28,10 +28,7 @@ import {
 
 import { canReceiveSpareChestKey } from './spareChestKey';
 
-import { getSkinIdsForCategory } from '../data/skinPools';
-
-import { isDefaultOwnedSkin } from '../data/profileCatalog';
-
+import { getMiracleCatSkinIds } from '../data/skinPools';
 import { getChestPoolTitles, getMiracleChestTitles } from '../data/titles';
 
 import {
@@ -112,50 +109,24 @@ function allFragmentSpiritsUnlocked(state: ChestRollState): boolean {
 
 
 
-function isSkinOwned(skinId: string, owned: string[]): boolean {
-
-  return owned.includes(skinId) || isDefaultOwnedSkin(skinId);
-
-}
-
-
-
-function pickUnownedSkin<T extends string>(
-
-  pool: T[],
-
-  owned: string[],
-
-  rng: () => number,
-
-): T | null {
-
-  const available = pool.filter((id) => !isSkinOwned(id, owned));
-
-  if (!available.length) return null;
-
-  return available[Math.floor(rng() * available.length)]!;
-
-}
-
-
-
 function pickUnownedTitle(
-
   pool: string[],
-
   owned: string[],
-
   rng: () => number,
-
 ): string | null {
-
   const available = pool.filter((id) => !owned.includes(id));
-
   if (!available.length) return null;
-
   return available[Math.floor(rng() * available.length)]!;
+}
 
+function pickUnownedSkin(
+  pool: string[],
+  owned: string[],
+  rng: () => number,
+): string | null {
+  const available = pool.filter((id) => !owned.includes(id));
+  if (!available.length) return null;
+  return available[Math.floor(rng() * available.length)]!;
 }
 
 
@@ -239,49 +210,27 @@ function rollConsolationReward(
     }
 
     case 'title_epoch': {
-
       const pool = getMiracleChestTitles();
-
       const titleId = pickUnownedTitle(
-
         pool.map((t) => t.id),
-
         state.ownedTitleIds,
-
         rng,
-
       );
-
       if (!titleId) return null;
-
       return { kind: 'title', itemId: titleId, grade: 'epoch' };
-
     }
-
-    case 'izba_skin_epic': {
-
-      const pool = getSkinIdsForCategory('izba', 'epic');
-
+    case 'cat_skin_epic': {
+      const pool = getMiracleCatSkinIds('epic');
       const skinId = pickUnownedSkin(pool, state.ownedSkinIds, rng);
-
-      if (!skinId) {
-        if (
-          canReceiveSpareChestKey(
-            state.firstChestOpened ?? false,
-            state.chestReadyAt ?? null,
-            state.spareChestKeys ?? 0,
-            Date.now(),
-          )
-        ) {
-          return { kind: 'chest_key' };
-        }
-        return null;
-      }
-
-      return { kind: 'izba_skin', itemId: skinId, grade: 'epic' };
-
+      if (!skinId) return null;
+      return { kind: 'cat_skin', itemId: skinId, grade: 'epic' };
     }
-
+    case 'cat_skin_epoch': {
+      const pool = getMiracleCatSkinIds('epoch');
+      const skinId = pickUnownedSkin(pool, state.ownedSkinIds, rng);
+      if (!skinId) return null;
+      return { kind: 'cat_skin', itemId: skinId, grade: 'epoch' };
+    }
     default:
 
       return { kind: 'obereg' };

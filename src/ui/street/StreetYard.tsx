@@ -8,6 +8,8 @@ const GRASS_SLOTS = [
   { slot: 0, className: 'yard-grass--slot-0' },
   { slot: 1, className: 'yard-grass--slot-1' },
   { slot: 2, className: 'yard-grass--slot-2' },
+  { slot: 3, className: 'yard-grass--slot-3' },
+  { slot: 4, className: 'yard-grass--slot-4' },
 ] as const;
 
 function resolveViewUrl(skinId: string): string {

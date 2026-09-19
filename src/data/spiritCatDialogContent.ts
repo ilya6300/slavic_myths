@@ -52,7 +52,7 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Buhar kokuyor. Bannik düzen ve saygı sever — kahramanlık oynama.',
     ),
     loseLine: L(
-      'Не угодили мы банному духу. Теперь паримся… оттого, что толком не попарились!',
+      'Не угодили. Теперь паримся… что не попарились...',
       'We didn\'t please him. Now we steam… without steaming.',
       'Hoşnut etmedik. Şimdi buharlanıyoruz… buharlanmadan.',
     ),
@@ -64,14 +64,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   kikimora: {
     questHook: L(
-      'Слышишь шорох в тёмном углу за прялкой? Кикимора следит за хозяйством по-своему — не разбрасывай шерсть.',
-      'Threads in a knot, socks gone. She hints: broom in your paws.',
-      'İpler düğüm, çoraplar yok. İpucu: süpürge pençene.',
+      'За прялкой снова сухое стрекотание. Я свои клубки спрятал. Твои всё ещё на лавке.',
+      'Dry clicking at the spinning wheel again. I hid my yarn. Yours is still on the bench.',
+      'Çıkrıkta yine kuru tıkırtı. Ben yumaklarımı sakladım. Seninkiler hâlâ bankta.',
     ),
     loseLine: L(
-      'Шмыгнула за печку, только клубок покатился! Ловкая какая. Давай передахнём немного, ты пока наведёшь порядок и мы попробуем снова.',
-      'She raced to the swamp. Dishes? Shards over there. Mice alive — good enough.',
-      'Bataklığa uçtu. Tabaklar? Parçalar orada. Fareler sağ — yeter.',
+      'У меня для тебя две новости — плохая и хорошая. Плохая: Кикимора спутала пряжу и утащила носки. Хорошая: и пряжа, и носки были не мои.',
+      'Two pieces of news — bad and good. Bad: Kikimora tangled the yarn and stole the socks. Good: neither the yarn nor the socks were mine.',
+      'İki haberim var — kötü ve iyi. Kötü: Kikimora ipliği dolaştırdı ve çorapları kaçırdı. İyi: ne iplik ne de çoraplar benimdi.',
     ),
     lockedHint: L(
       'Сначала Банник. Кикимора любит чистые лапы.',
@@ -81,14 +81,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   poludnik: {
     questHook: L(
-      'Зной над нивой дрожит. Полевой следит за каждым колосом — уважай межу и не мни посевы.',
-      'Laughter beyond the field. Don\'t trample — ask.',
-      'Tarlanın ötesinde kıkırdama. Çiğneme — sor.',
+      'Зной над полосой дрожит. Это его час — я уже в тени, полоса подождёт.',
+      'Heat shimmers over the strip. This is his hour — I\'m already in the shade; the strip can wait.',
+      'Şerit üzerinde sıcaklık titriyor. Bu onun saati — ben çoktan gölgedeyim, şerit bekler.',
     ),
     loseLine: L(
-      'Закружил нас ветерок в густой ржи, сбились с тропки! Отряхнём колосья с шерсти и попробуем снова.',
-      'Across the fields, the cat runs from the Field Spirit!',
-      'Tarlaya tarlaya, kedi tarla ruhundan kaçıyor!',
+      'Припекло в самый полдень, а тень я с утра спрятал под лавкой — себе. Отряхнём колосья с шерсти и зайдём снова, когда у тебя тоже найдётся холодок.',
+      'Noon scorched us, and I hid the shade under the bench this morning — for myself. Shake the ears off the fur and try again when you have a cool spot too.',
+      'Öğle bizi kavurdu, gölgeyi sabah lavanın altına sakladım — kendime. Başakları tüylerden silkip, senin de serin bir yerin olunca yine deneyelim.',
     ),
     lockedHint: L(
       'Сначала Кикимора. Полевой без порядка в избе не выйдет.',
@@ -137,9 +137,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Karanlık göl. Saygı sever — sıçratma değil.',
     ),
     loseLine: L(
-      'Брызнул Водяной прохладной волной, намочил мой пушистый хвост! Сам сухой остался, а мне сушиться на печке. Попробуем снова.',
-      'To the bottom? Figuratively. Wet me — literally.',
-      'Dibe mi? Mecazi. Islak ben — gerçek.',
+      'Водяной пригрозил, а я "вышел сухой из воды". Знаешь почему? Я просто туда не полез.',
+      'He threatened — and I came out dry. Know why? I just never went in.',
+      'Tehdit etti — ben kuru çıktım. Neden mi? Hiç girmedim.',
     ),
     lockedHint: L(
       'Сначала Леший. Водяной без леса не зовёт.',
@@ -149,14 +149,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   dedushka_toptygin: {
     questHook: L(
-      'В малиннике раздаётся тяжёлая спокойная поступь. Дедушка Топтыгин ценит мирный лесной покой — ступай без озорства.',
-      'Heavy footsteps. Honey and silence. Don\'t tease.',
-      'Ağır adımlar. Bal ve sessizlik. Kışkırtma.',
+      'Чаща держит один неподвижный центр. К малине не суйся — Хозяин сам гостей не ищет.',
+      'The thicket holds one still centre. Don\'t go to the raspberries — the Host does not look for guests.',
+      'Sık orman durağan bir merkez tutar. Ahududuya gitme — Ev Sahibi konuk aramaz.',
     ),
     loseLine: L(
       'Хрустнул сучок под лапой — и дедушка недовольно ушёл вглубь малинника. Надо бы вести себя потише. Давай попробуем снова.',
-      'Was that a bear? When does he hibernate? Maybe we wait?',
-      'Bu ayı mıydı? Ne zaman kış uykusuna yatar? Bekleyelim mi?',
+      'A twig snapped under a paw — and grandfather went deeper into the raspberries. Let\'s try again, quieter.',
+      'Dal kırıldı — dede ahududu içine çekildi. Daha sessiz deneyelim.',
     ),
     lockedHint: L(
       'Ключ из сундука. Топтыгин сам не придёт.',
@@ -166,14 +166,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   poludnica: {
     questHook: L(
-      'Солнце в самом зените, воздух звенит от зноя. Полудница учит беречь силы — уходи в тень.',
-      'Noon burns. She teaches: don\'t torture yourself in the heat.',
-      'Öğle kavuruyor. Öğretir: sıcakta kendini yorma.',
+      'Полдень стоит столбом. Нива в этот час хочет тени — я уже под дубом.',
+      'Noon stands like a pillar. The field wants shade at this hour — I\'m already under the oak.',
+      'Öğle bir sütun gibi duruyor. Tarla bu saatte gölge ister — ben meşenin altındayım.',
     ),
     loseLine: L(
-      'Ой, голову припекло на солнце, в глазах золотые круги пошли! Отдохнём в холодке под берёзой и попробуем снова.',
-      'She spun our heads. Tails tucked — why so hot? Wait, where\'s Poludnitsa?',
-      'Kafamızı döndürdü. Kuyrukları kıvırdık — neden bu kadar sıcak? Poludnitsa nerede?',
+      'Зной накрыл полосу, серп сам выпал из лап. Сядем в холодок под берёзой и зайдём снова, когда зенит спадёт.',
+      'The heat covered the strip, the sickle slipped from my paws. Let\'s sit in the birch shade and come back when noon eases.',
+      'Sıcak şeridi kapladı, orak patilerden düştü. Huş gölgesinde oturup öğle geçince dönelim.',
     ),
     lockedHint: L(
       'Ключ из сундука. Редкий. Полудница не любит спешку.',
@@ -183,9 +183,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   rusalka: {
     questHook: L(
-      'У речной заводи шелестит ива. Русалка поёт на ветвях — любуйся с бережка и в омут не лезь.',
-      'By the river backwater the willow rustles. Rusalka sings on the branches — admire from the shore and don\'t dive in.',
-      'Nehir koyunda söğüt hışırdar. Rusalka dallarda şarkı söyler — kıyıdan bak ve göle atlama.',
+      'На берёзе белая рубаха и венок. Смотри с сухого берега — в осоку я не полез.',
+      'A white shirt and a wreath on the birch. Watch from the dry bank — I\'m not going into the reeds.',
+      'Huşta beyaz gömlek ve taç. Kuru kıyıdan bak — sazlığa girmem.',
     ),
     loseLine: L(
       'Засмотрелся я на белую рубаху среди берёзовых веток, оступился на мокром камушке и бултых в осоку! Обсохну малость и вернусь.',
@@ -200,9 +200,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   lada: {
     questHook: L(
-      'В избе становится тепло и светло на душе. Лада несёт согласие и лад — береги мир в доме.',
-      'Feel how warm and cozy it got? Lada is about harmony, not a pile of coins.',
-      'Ne kadar sıcak ve rahat oldu hissediyor musun? Lada uyum içindir, jet yığını değil.',
+      'В горнице снова тихо после спора. Лад — это мир своих, не кумир с холма.',
+      'The room is quiet again after the quarrel. Lad is peace among one\'s own, not an idol on a hill.',
+      'Oda kavgadan sonra yine sessiz. Lad kendi aranda barıştır, tepedeki put değil.',
     ),
     loseLine: L(
       'Разволновался я, задел хвостом глиняную кружку — упала и разбилась. В суете лада не поймаешь. Успокоимся и попробуем снова.',
@@ -217,14 +217,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   veles: {
     questHook: L(
-      'Бор притих, на мшистых тропах чудится рогатый знак. Велес ведает земной мудростью и скотьим миром.',
-      'The forest went quiet. Veles likes wit — not empty noise.',
-      'Orman sustu. Veles zekâ sever — boş gürültü değil.',
+      'На жниве оставляют бородку, на пристани клянутся Волосом. Велес держит стадо и торг.',
+      'They leave a beard of ears on the field and swear by Volos at the wharf. Veles holds the herd and the trade.',
+      'Hasatta sakal bırakırlar, iskelede Volos\'a yemin ederler. Veles sürü ve ticareti tutar.',
     ),
     loseLine: L(
       'Ух, закружились лесные тени, сосны покачали верхушками — не дослушали мы мудрый завет. Наберёмся терпения и спросим вновь.',
-      'Back to the hut. The beasts are laughing at us already.',
-      'Kulübeye. Hayvanlar çoktan gülüyor.',
+      'Forest shadows spun, pines nodded — we did not hear the counsel through. Let\'s gather patience and ask again.',
+      'Orman gölgeleri döndü — öğüdü sonuna kadar dinlemedik. Sabredip yine soralım.',
     ),
     lockedHint: L(
       '6 осколков. Велес терпелив. Ты — нет.',
@@ -234,14 +234,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   baba_yaga: {
     questHook: L(
-      'На границе чащи стоит избушка на курьих ножках. Знаешь верное слово — откроется путь, а полезешь напролом — останешься ни с чем.',
-      'Hut on chicken legs. Say it right — and don\'t climb in the mortar.',
-      'Tavuk ayaklı kulübe. Doğru söyle — ve havanın içine girme.',
+      'У края чащи столбы пахнут дымом. Это порог, не курица: сначала гостя кормят, потом спрашивают путь.',
+      'At the edge of the thicket the posts smell of smoke. This is a threshold, not a hen: they feed the guest first, then ask the way.',
+      'Sık ormanın kenarında direkler duman kokar. Bu eşik, tavuk değil: önce konuğu doyururlar, sonra yolu sorarlar.',
     ),
     loseLine: L(
-      'Ох, заскрипела избушка, повернулась к лесу передом, а нас крыльцом отмахнула! Надо слово верное вспомнить. Давай ещё разок постучимся.',
-      'At least she didn\'t eat us. We\'ll visit when she\'s less hungry.',
-      'En azından yemedi. İştahı azalınca geliriz.',
+      'Избушка не повернула лица: я сунул нос в ставню, не назвавшись. Подождём у столбов и скажем, кто пришёл.',
+      'The hut did not turn its face: I poked the shutter without naming myself. Let\'s wait by the posts and say who came.',
+      'Kulübe yüzünü çevirmedi: kepenge adımı söylemeden burnumu soktum. Direklerde bekleyip kim geldiğini söyleyelim.',
     ),
     lockedHint: L(
       '3 осколка. Яга уже ступу греет.',
@@ -251,9 +251,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   koschei_immortal: {
     questHook: L(
-      'В хрустальном тереме за семью печатями хранится тайна силы. Кощей уважает холодный ум — не поддавайся жадности.',
-      'Death is hidden. He likes cunning — not greed.',
-      'Ölüm saklı. Kurnazlık sever — açgözlülük değil.',
+      'В тереме блестят сундуки, а жизнь лежит не в плече. К чаше за печь я его не путаю.',
+      'Chests gleam in the terem, but life does not sit in the shoulder. I do not confuse him with a cup behind the stove.',
+      'Teremde sandıklar parlar, ama yaşam omuzda yatmaz. Onu ocağın ardındaki kâseyle karıştırmam.',
     ),
     loseLine: L(
       'Потянулись за лишним сундуком — и замок защёлкнулся! Кощей усмехнулся в сухие усы. Переведём дух и пойдём дорогой разума.',
@@ -268,19 +268,53 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   chudo_yudo: {
     questHook: L(
-      'У Калинова моста через огненную реку высится многоголовый исполин. Это древний страж рубежа — держи ответ без страха.',
-      'Many heads — many questions. A guardian, not just a monster.',
-      'Çok kafa — çok soru. Bu bir bekçi, sadece canavar değil.',
+      'У большой воды две головы и солнечное кольцо. Дар бросают целиком — на мост с загадками я не лез.',
+      'By the great water: two heads and a sun-ring. They throw the gift whole — I did not climb the bridge with riddles.',
+      'Büyük suda iki kafa ve güneş halkası. Armağanı bütün atarlar — bilmeceli köprüye çıkmadım.',
     ),
     loseLine: L(
-      'Качнуло Чудо-Юдо мост, взметнулась речная волна — и мы отступили на бережок! Ничего, дух переведём, слова обдумаем и вернёмся.',
-      'A miracle we weren\'t swallowed by miracle.',
-      'Mucize bizi mucize yutmadı.',
+      'Волна взяла бережок, монета ещё в лапе. Бросим долю целиком и сядем на сухом, пока глубь сама успокоится.',
+      'A wave took the bank, the coin still in my paw. Let\'s throw the share whole and sit on dry ground until the deep settles.',
+      'Dalga kıyıyı aldı, madeni para hâlâ patide. Payı bütün atıp derinlik durulana dek kuruda oturalım.',
     ),
     lockedHint: L(
-      '6 осколков. Финал. Чудо-Юдо ждёт героя.',
-      '6 shards. The finale. Chudo-Yudo awaits a hero.',
-      '6 parça. Final. Çudo-Yudo kahraman bekliyor.',
+      '8 осколков. После него — Ярило и Перун.',
+      '8 shards. After him — Yarilo and Perun.',
+      '8 parça. Ondan sonra — Yarilo ve Perun.',
+    ),
+  },
+  yarilo: {
+    questHook: L(
+      'На весеннем лугу белый конь проходит краем поля, а молодые листья шумят у камня.',
+      'On the spring meadow a white horse walks the field edge while young leaves rustle by a stone.',
+      'Bahar çayırında beyaz at tarla kenarından yürür, taşın yanında genç yapraklar hışırdar.',
+    ),
+    loseLine: L(
+      'Весна промчалась по лугу, а я всё считал травинки. Давай соберём мысли, пока мой хвост не объявил себя новым посевом.',
+      'Spring raced across the meadow while I counted blades of grass. Let\'s gather our thoughts before my tail declares itself a new sowing.',
+      'Bahar çayırdan geçti, ben ot saplarını saydım. Kuyruk yeni ekim ilan etmeden toparlanalım.',
+    ),
+    lockedHint: L(
+      '8 осколков. Весна ждёт на поле.',
+      '8 shards. Spring waits in the field.',
+      '8 parça. Bahar tarlada bekliyor.',
+    ),
+  },
+  perun: {
+    questHook: L(
+      'На высокой горе над избой шумит дубрава, а вдали над облаками мягко сверкает молния.',
+      'On the high hill above the hut the oak grove rustles, and lightning flashes softly beyond the clouds.',
+      'Kulübenin üstündeki yüksek tepede meşe koruluğu hışırdar, bulutların ötesinde yumuşak şimşek çakar.',
+    ),
+    loseLine: L(
+      'Гром уже ушёл за дубы, а я всё слушал, как звенит миска. Соберёмся и вернёмся: даже мой хвост знает, где высокая гора.',
+      'The thunder already moved behind the oaks while I listened to my bowl ring. We\'ll return — even my tail knows where the high hill is.',
+      'Gök gürültüsü çoktan meşelerin ardına gitti, ben kase sesini dinledim. Döneriz — kuyruk bile yüksek tepeyi bilir.',
+    ),
+    lockedHint: L(
+      '10 осколков. Финал книги — Перун.',
+      '10 shards. The book\'s finale — Perun.',
+      '10 parça. Kitabın finali — Perun.',
     ),
   },
 };

@@ -1,4 +1,5 @@
 import type { GameSave } from '../domain/GameSave';
+import { createDefaultSpiritStatuses } from '../domain/GameSave';
 
 import {
 
@@ -12,7 +13,7 @@ import {
 
 } from '../config/assetRegistry';
 
-import { SAVE_VERSION } from '../config/gameConstants';
+import { SAVE_VERSION, STARTER_PACK_CAT_SKIN_ID } from '../config/gameConstants';
 
 
 
@@ -31,11 +32,10 @@ const DEFAULT_OWNED_SKINS = [
 
 
 type LegacySave = GameSave & {
-
   smetanaCount?: number;
-
   spareChestKeys?: number;
-
+  /** v3 и ниже — список пройденных духов до spiritStatuses */
+  completedSpirits?: string[];
 };
 
 
@@ -178,6 +178,37 @@ export function migrateSave(raw: GameSave): GameSave {
     save.yardOberegCraftedDayId = save.yardOberegCraftedDayId ?? null;
     save.yardGrassSpawnDayId = save.yardGrassSpawnDayId ?? null;
     save.version = 9;
+  }
+
+  if (save.version < 10) {
+    save.yardGrassFieldSlots = save.yardGrassFieldSlots ?? [];
+    save.yardGrassSpawnCheckedAt =
+      save.yardGrassSpawnCheckedAt ?? save.savedAt ?? Date.now();
+    save.version = 10;
+  }
+
+  if (save.version < 11) {
+    const removedHut = 'hut_epic';
+    save.ownedSkinIds = (save.ownedSkinIds ?? []).filter((id) => id !== removedHut);
+    if (save.skins?.izba === removedHut) {
+      save.skins = { ...save.skins, izba: DEFAULT_HOUSE_SKIN };
+    }
+    save.version = 11;
+  }
+
+  if (save.version < 12) {
+    const defaults = createDefaultSpiritStatuses();
+    save.spiritStatuses = { ...defaults, ...(save.spiritStatuses ?? {}) };
+    save.ownedIzbaEffectIds = save.ownedIzbaEffectIds ?? [];
+    save.equippedIzbaEffectId = save.equippedIzbaEffectId ?? null;
+    save.version = 12;
+  }
+
+  if (
+    save.starterPackPurchased &&
+    !(save.ownedSkinIds ?? []).includes(STARTER_PACK_CAT_SKIN_ID)
+  ) {
+    save.ownedSkinIds = [...(save.ownedSkinIds ?? []), STARTER_PACK_CAT_SKIN_ID];
   }
 
   save.version = SAVE_VERSION;

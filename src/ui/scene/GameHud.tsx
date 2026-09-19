@@ -1,17 +1,19 @@
 import { observer } from 'mobx-react-lite';
 
-import { furniture, getCatSkinById, gradeFrames, hudIcons } from '../../config/assetRegistry';
+import {
+  furniture,
+  getCatSkinById,
+  gradeFrames,
+  hudIcons,
+} from '../../config/assetRegistry';
+import { STARTER_PACK_CAT_SKIN_ID } from '../../config/gameConstants';
 
 import { resolveTitleName } from '../../data/titleContent';
 import { getTitleById } from '../../data/titles';
 import { settingsUiContent } from '../../data/dialogContent';
 
 import { canInteract } from '../../domain/onboardingGuards';
-import { getCalendarDayId } from '../../domain/calendarDay';
-import {
-  hasCraftedOberegToday,
-  YARD_GRASS_CAP,
-} from '../../domain/yardCraft';
+import { YARD_GRASS_PER_CRAFT } from '../../domain/yardCraft';
 
 import type { Grade } from '../../domain/grade';
 
@@ -52,23 +54,16 @@ export const GameHud = observer(function GameHud() {
   };
 
   const showStarterOffer = gameStore.isStarterPackOfferVisible();
+  const starterPackCatSkin = getCatSkinById(STARTER_PACK_CAT_SKIN_ID);
   const showKikimoraRail =
     gameStore.isKikimoraCraftAvailable() && sceneUiStore.activeRoom !== 'street';
 
-  const todayId = getCalendarDayId();
-  const craftedToday = hasCraftedOberegToday(
-    gameStore.yardOberegCraftedDayId,
-    todayId,
-  );
-  const kikimoraReady =
-    gameStore.yardGrass >= YARD_GRASS_CAP && !craftedToday;
+  const kikimoraReady = gameStore.yardGrass >= YARD_GRASS_PER_CRAFT;
   const kikimoraLabel = kikimoraReady
     ? resolveText(settingsUiContent.kikimoraRailWeave, locale)
     : resolveText(settingsUiContent.kikimoraRailName, locale);
 
   const showGrassChip = gameStore.onboardingCompleted;
-  const grassFull = gameStore.yardGrass >= YARD_GRASS_CAP;
-
   return (
     <header className="layer-hud">
       <div className="hud-top">
@@ -117,11 +112,11 @@ export const GameHud = observer(function GameHud() {
 
           {showGrassChip && (
             <span
-              className={`hud-stat hud-grass${grassFull ? ' hud-grass--full' : ''}${sceneUiStore.grassChipShake ? ' hud-grass--shake' : ''}${sceneUiStore.grassChipFlash ? ' hud-grass--flash' : ''}`}
+              className={`hud-stat hud-grass${sceneUiStore.grassChipShake ? ' hud-grass--shake' : ''}${sceneUiStore.grassChipFlash ? ' hud-grass--flash' : ''}`}
               title={resolveText(settingsUiContent.hudGrassTooltip, locale)}
             >
               <img className="hud-stat__img" src={hudIcons.grass} alt="" />
-              {gameStore.yardGrass}/{YARD_GRASS_CAP}
+              {gameStore.yardGrass}
             </span>
           )}
         </div>
@@ -136,8 +131,8 @@ export const GameHud = observer(function GameHud() {
               onClick={() => starterPackUiStore.open()}
             >
               <img
-                className="hud-rail__offer-img"
-                src={furniture.starterCasket}
+                className="hud-rail__offer-img hud-rail__offer-img--pilgrim"
+                src={starterPackCatSkin?.sit ?? furniture.starterCasket}
                 alt=""
                 draggable={false}
               />

@@ -34,10 +34,12 @@ function miracleRewardLabel(
       return resolveText(settingsUiContent.chestRewardSpiritKey, locale);
     case 'title_epic':
       return `${resolveText(settingsUiContent.chestRewardTitle, locale)} (${resolveText(gradeLabels.epic, locale)})`;
-    case 'izba_skin_epic':
-      return `${resolveText(settingsUiContent.chestRewardIzbaSkin, locale)} (${resolveText(gradeLabels.epic, locale)})`;
     case 'title_epoch':
       return `${resolveText(settingsUiContent.chestRewardTitle, locale)} (${resolveText(gradeLabels.epoch, locale)})`;
+    case 'cat_skin_epic':
+      return `${resolveText(settingsUiContent.chestRewardCatSkin, locale)} (${resolveText(gradeLabels.epic, locale)})`;
+    case 'cat_skin_epoch':
+      return `${resolveText(settingsUiContent.chestRewardCatSkin, locale)} (${resolveText(gradeLabels.epoch, locale)})`;
     default:
       return reward;
   }
@@ -92,8 +94,9 @@ export function formatChestDropRowLabel(
     rewardType === 'obereg_x2' ||
     rewardType === 'energy_full' ||
     rewardType === 'title_epoch' ||
-    rewardType === 'izba_skin_epic' ||
-    rewardType === 'title_epic'
+    rewardType === 'title_epic' ||
+    rewardType === 'cat_skin_epic' ||
+    rewardType === 'cat_skin_epoch'
   ) {
     return miracleRewardLabel(rewardType as MiracleConsolationReward, locale);
   }

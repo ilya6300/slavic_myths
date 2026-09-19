@@ -72,8 +72,9 @@ export type MiracleConsolationReward =
   | 'chest_key'
   | 'spirit_key'
   | 'title_epic'
-  | 'izba_skin_epic'
-  | 'title_epoch';
+  | 'title_epoch'
+  | 'cat_skin_epic'
+  | 'cat_skin_epoch';
 
 /**
  * Утешительный пул Сундука чудес (если не выпал фрагмент).
@@ -85,9 +86,10 @@ export const miracleConsolationWeights: Record<MiracleConsolationReward, number>
   chest_key: 700,
   spirit_key: 900,
   title_epic: 600,
-  izba_skin_epic: 500,
   /** Самый редкий среди утешительных */
   title_epoch: 100,
+  cat_skin_epic: 650,
+  cat_skin_epoch: 160,
 };
 
 /** Духи, на которых может выпасть ключ из утешительного пула. */
@@ -104,7 +106,9 @@ export const fragmentRequirements: Record<string, number> = {
   baba_yaga: 3,
   veles: 6,
   koschei_immortal: 5,
-  chudo_yudo: 6,
+  chudo_yudo: 8,
+  yarilo: 8,
+  perun: 10,
 };
 
 export const fragmentBonusSources = {
@@ -229,14 +233,11 @@ export const regularChestTypeWeightsByGrade: Record<
     spirit_key: 150,
   },
   epic: {
-    cat_skin: 650,
     title_epic: 150,
-    izba_skin: 400,
     brownie_skin: 300,
     spirit_key: 100,
   },
   epoch: {
-    cat_skin: 160,
     izba_skin: 120,
     window_skin: 80,
     brownie_skin: 90,

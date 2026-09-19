@@ -1,3 +1,4 @@
+import { appConfig } from '../config/gameConstants';
 import { isNightTime } from './nightTime';
 
 export type StreetBlockReason = 'onboarding' | 'zhirdyay' | 'night';
@@ -9,7 +10,7 @@ export function canEnterStreet(input: {
 }): boolean {
   if (!input.onboardingCompleted) return false;
   if (input.zhirdyayActive) return false;
-  if (input.isNight) return false;
+  if (input.isNight && !appConfig.debugAllowStreetAtNight) return false;
   return true;
 }
 
@@ -22,6 +23,6 @@ export function getStreetBlockReason(input: {
   if (!input.onboardingCompleted) return 'onboarding';
   if (input.zhirdyayActive) return 'zhirdyay';
   const night = input.isNight ?? isNightTime(input.now);
-  if (night) return 'night';
+  if (night && !appConfig.debugAllowStreetAtNight) return 'night';
   return null;
 }

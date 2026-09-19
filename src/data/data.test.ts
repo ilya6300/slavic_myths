@@ -3,8 +3,8 @@ import { SPIRIT_ORDER, spirits } from './spirits';
 import { titles, DEFAULT_TITLE_ID } from './titles';
 
 describe('spirits data', () => {
-  it('should contain 16 spirits in canon order', () => {
-    expect(spirits).toHaveLength(16);
+  it('should contain 18 spirits in canon order', () => {
+    expect(spirits).toHaveLength(18);
     expect(spirits.map((s) => s.id)).toEqual(SPIRIT_ORDER);
   });
 

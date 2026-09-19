@@ -31,6 +31,17 @@ function applyDevHutHarmonyPreview(): void {
   gameStore.skins = { ...gameStore.skins, izba: skinId };
 }
 
+/** DEV: скин кибер-помещения в owned и на сцене для проверки. */
+function applyDevUnlockHutCyberpank(): void {
+  if (!import.meta.env.DEV) return;
+
+  const skinId = 'hut_cyberpank';
+  if (!gameStore.ownedSkinIds.includes(skinId)) {
+    gameStore.ownedSkinIds = [...gameStore.ownedSkinIds, skinId];
+  }
+  gameStore.skins = { ...gameStore.skins, izba: skinId };
+}
+
 async function loadCloudSave(): Promise<GameSave | null> {
   try {
     const player = await getPlatformSdk().getPlayer();
@@ -64,6 +75,11 @@ function bindPersistFlushHandlers(): void {
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
       void saveService.flushPersist();
+      return;
+    }
+    if (document.visibilityState === 'visible') {
+      gameStore.applyEnergyRegen();
+      gameStore.maybeSpawnYardGrass();
     }
   });
 }
@@ -81,6 +97,7 @@ export async function bootstrapGame(): Promise<void> {
 
   applyDevUnlockAllWindowSkins();
   applyDevHutHarmonyPreview();
+  applyDevUnlockHutCyberpank();
 
   bindCloudPersist();
   await settingsUiStore.refreshAuth();

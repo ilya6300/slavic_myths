@@ -7,8 +7,7 @@ import {
   hudIcons,
   quizSceneBackgrounds,
 } from '../../config/assetRegistry';
-import { hasCraftedOberegToday, YARD_GRASS_CAP } from '../../domain/yardCraft';
-import { getCalendarDayId } from '../../domain/calendarDay';
+import { YARD_GRASS_PER_CRAFT } from '../../domain/yardCraft';
 import { settingsUiContent } from '../../data/dialogContent';
 import { resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
@@ -22,13 +21,8 @@ export const KikimoraCraftModal = observer(function KikimoraCraftModal() {
 
   if (!kikimoraCraftUiStore.isOpen) return null;
 
-  const todayId = getCalendarDayId();
-  const limitReached = hasCraftedOberegToday(
-    gameStore.yardOberegCraftedDayId,
-    todayId,
-  );
   const canCraft =
-    gameStore.yardGrass >= 3 && !limitReached && !crafting;
+    gameStore.yardGrass >= YARD_GRASS_PER_CRAFT && !crafting;
 
   const handleCraft = () => {
     if (!canCraft) return;
@@ -46,7 +40,11 @@ export const KikimoraCraftModal = observer(function KikimoraCraftModal() {
 
   return (
     <div className="kikimora-craft-modal layer-modal" role="dialog" aria-modal="true">
-      <div className="kikimora-craft-modal__backdrop" aria-hidden onClick={handleClose} />
+      <div
+        className="kikimora-craft-modal__backdrop"
+        aria-hidden
+        onClick={handleClose}
+      />
       <div className="kikimora-craft-modal__panel">
         <ModalCloseButton onClick={handleClose} />
         <h2 className="kikimora-craft-modal__title">
@@ -77,18 +75,18 @@ export const KikimoraCraftModal = observer(function KikimoraCraftModal() {
         </div>
 
         <div className="kikimora-craft-modal__slots" aria-label="Grass slots">
-          {Array.from({ length: YARD_GRASS_CAP }, (_, i) => (
+          {Array.from({ length: YARD_GRASS_PER_CRAFT }, (_, i) => (
             <span
               key={i}
-              className={`kikimora-craft-modal__slot${i < gameStore.yardGrass ? ' kikimora-craft-modal__slot--filled' : ''}`}
+              className={`kikimora-craft-modal__slot${i < Math.min(gameStore.yardGrass, YARD_GRASS_PER_CRAFT) ? ' kikimora-craft-modal__slot--filled' : ''}`}
             >
-              {i < gameStore.yardGrass ? (
+              {i < Math.min(gameStore.yardGrass, YARD_GRASS_PER_CRAFT) ? (
                 <img src={furniture.yardGrass} alt="" draggable={false} />
               ) : null}
             </span>
           ))}
           <span className="kikimora-craft-modal__count">
-            {gameStore.yardGrass} / {YARD_GRASS_CAP}
+            {gameStore.yardGrass}
           </span>
         </div>
 
@@ -96,28 +94,22 @@ export const KikimoraCraftModal = observer(function KikimoraCraftModal() {
           {resolveText(settingsUiContent.kikimoraCraftHint, locale)}
         </p>
 
-        {limitReached ? (
-          <p className="kikimora-craft-modal__limit">
-            {resolveText(settingsUiContent.kikimoraCraftLimit, locale)}
-          </p>
-        ) : (
-          <button
-            type="button"
-            className="kikimora-craft-modal__craft wood-quest-btn"
-            disabled={!canCraft}
-            onClick={handleCraft}
-          >
-            <img
-              className="wood-quest-btn__bg"
-              src={bookUi.questBtn}
-              alt=""
-              draggable={false}
-            />
-            <span className="wood-quest-btn__label">
-              {resolveText(settingsUiContent.kikimoraCraftBtn, locale)}
-            </span>
-          </button>
-        )}
+        <button
+          type="button"
+          className="kikimora-craft-modal__craft wood-quest-btn"
+          disabled={!canCraft}
+          onClick={handleCraft}
+        >
+          <img
+            className="wood-quest-btn__bg"
+            src={bookUi.questBtn}
+            alt=""
+            draggable={false}
+          />
+          <span className="wood-quest-btn__label">
+            {resolveText(settingsUiContent.kikimoraCraftBtn, locale)}
+          </span>
+        </button>
       </div>
     </div>
   );

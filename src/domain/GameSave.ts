@@ -51,6 +51,8 @@ export interface GameSave {
   skins: GameSkins;
   ownedSkinIds: string[];
   ownedTitleIds: string[];
+  ownedIzbaEffectIds: string[];
+  equippedIzbaEffectId: string | null;
   trophiesUnlocked: string[];
 
   chestReadyAt: number | null;
@@ -100,12 +102,16 @@ export interface GameSave {
   /** Ларец новичка (IAP) куплен один раз */
   starterPackPurchased?: boolean;
 
-  /** Трава с двора (cap 3) */
+  /** Трава с двора (инвентарь, без лимита) */
   yardGrass?: number;
   /** Календарный день последнего крафта оберега с двора */
   yardOberegCraftedDayId?: string | null;
-  /** День последнего спавна травы на улице */
+  /** @deprecated v9 — мигрируется в yardGrassSpawnCheckedAt */
   yardGrassSpawnDayId?: string | null;
+  /** Пучки травы на дворе (индексы слотов 0–4) */
+  yardGrassFieldSlots?: number[];
+  /** Время последней проверки 3-часового спавна травы (ms) */
+  yardGrassSpawnCheckedAt?: number | null;
 }
 
 /** Локальная «ночь» для сброса Жирдяя: дата рассвета 06:00 */
@@ -135,6 +141,8 @@ export function createDefaultSpiritStatuses(): Record<string, SpiritStatus> {
     baba_yaga: 'locked',
     koschei_immortal: 'locked',
     chudo_yudo: 'locked',
+    yarilo: 'locked',
+    perun: 'locked',
   };
 }
 
@@ -171,6 +179,8 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
       DEFAULT_VIEW_SKIN,
     ],
     ownedTitleIds: ['novenkiy'],
+    ownedIzbaEffectIds: [],
+    equippedIzbaEffectId: null,
     trophiesUnlocked: [],
 
     chestReadyAt: null,
@@ -212,7 +222,8 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     starterPackPurchased: false,
     yardGrass: 0,
     yardOberegCraftedDayId: null,
-    yardGrassSpawnDayId: null,
+    yardGrassFieldSlots: [],
+    yardGrassSpawnCheckedAt: null,
   };
 }
 

@@ -20,8 +20,8 @@ describe('spiritIllustrationUrl', () => {
     expect(url).not.toContain('brownie_standart');
   });
 
-  it('should cover all 16 spirits in illustration paths', () => {
-    expect(SPIRIT_ORDER).toHaveLength(16);
+  it('should cover all 18 spirits in illustration paths', () => {
+    expect(SPIRIT_ORDER).toHaveLength(18);
     for (const spiritId of SPIRIT_ORDER as SpiritId[]) {
       expect(spiritIllustrationPaths[spiritId]).toBeDefined();
     }
