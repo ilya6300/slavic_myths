@@ -204,6 +204,22 @@ export function migrateSave(raw: GameSave): GameSave {
     save.version = 12;
   }
 
+  if (save.version < 13) {
+    save.candles = save.candles ?? 0;
+    save.truthCrumbs = save.truthCrumbs ?? 0;
+    save.ownedPetIds = save.ownedPetIds ?? [];
+    save.equippedPetId = save.equippedPetId ?? null;
+    save.yagaShopPurchasedIds = save.yagaShopPurchasedIds ?? [];
+    save.candleGrantedSpiritIds = save.candleGrantedSpiritIds ?? [];
+    save.dailyQuestDayId = save.dailyQuestDayId ?? null;
+    save.dailyQuestTaleSpiritId = save.dailyQuestTaleSpiritId ?? null;
+    save.dailyQuestClickProgress = save.dailyQuestClickProgress ?? 0;
+    save.dailyQuestTaleCorrect = save.dailyQuestTaleCorrect ?? false;
+    save.dailyQuestRewardClaimedDayId =
+      save.dailyQuestRewardClaimedDayId ?? save.dailyFindClaimedDayId ?? null;
+    save.version = 13;
+  }
+
   if (
     save.starterPackPurchased &&
     !(save.ownedSkinIds ?? []).includes(STARTER_PACK_CAT_SKIN_ID)

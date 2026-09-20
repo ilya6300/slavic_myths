@@ -1,6 +1,6 @@
 # Модалки — мобильный landscape (UX/UI)
 
-> Gate mockup: **spec_only** (генерация отключена). Канон CSS: `src/ui/index.css` блок «Мобильный landscape — модалки».
+> Gate mockup: **open** (генерация разрешена владельцем 2026-09-20). Канон CSS: `src/ui/index.css` блок «Мобильный landscape — модалки».
 
 ## Решение игрока
 

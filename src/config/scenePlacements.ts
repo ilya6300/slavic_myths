@@ -31,6 +31,10 @@ export const bookPlacement = {
   className: 'scene-book',
 } as const;
 
+export const mirrorPlacement = {
+  className: 'scene-mirror',
+} as const;
+
 /** Якорь FX монет — синхрон с `.scene-cat` в index.css */
 export const catPlacement = {
   className: 'scene-cat',

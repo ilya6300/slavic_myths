@@ -25,6 +25,7 @@ import { useRetentionBootstrap } from '../retention/useRetentionBootstrap';
 import { useLocale } from '../../i18n/LocaleContext';
 
 import { BrownieLayer } from './BrownieLayer';
+import { PetLayer } from './PetLayer';
 import { CatLayer, CoinFxLayer } from './CatAndFxLayers';
 import { SusedkoStealLayer } from './SusedkoStealLayer';
 
@@ -38,6 +39,10 @@ import { IzbaEffectLayer } from './IzbaEffectLayer';
 import { Room1Scene, Room2Scene } from './IzbaSceneLayers';
 
 import { ScenePanNav } from './ScenePanNav';
+import { DailyQuestPanel } from '../daily/DailyQuestPanel';
+import { DailyQuestTaleModal } from '../daily/DailyQuestTaleModal';
+import { DivinationModal } from '../divination/DivinationModal';
+import { YagaShopModal } from '../yagaShop/YagaShopModal';
 
 import { useIdleSleepTicker, useScenePanSwipe } from './useSceneInteraction';
 
@@ -86,8 +91,7 @@ export const IzbaScene = observer(function IzbaScene() {
     >
 
       <GameHud />
-
-
+      <DailyQuestPanel />
 
       <div
 
@@ -106,6 +110,7 @@ export const IzbaScene = observer(function IzbaScene() {
           <Room1Scene>
             <BrownieLayer />
             <SusedkoStealLayer />
+            <PetLayer />
             <CatLayer />
             <CoinFxLayer />
           </Room1Scene>
@@ -129,6 +134,9 @@ export const IzbaScene = observer(function IzbaScene() {
       <CatDialog />
       <BookOverlay />
       <QuizModal />
+      <DailyQuestTaleModal />
+      <DivinationModal />
+      <YagaShopModal />
       <ChestLootModal />
       <ChestCooldownModal />
       <EnergyRewardModal />

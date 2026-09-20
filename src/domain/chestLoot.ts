@@ -51,6 +51,7 @@ import { addRewardEnergy } from './rewardEnergy';
 
 import { fragmentRequirements, miracleSpiritKeyTargets } from '../config/lootTables';
 import { applyChestKeyReward } from './spareChestKey';
+import { pickFragmentDropTarget } from './fragmentDrop';
 
 
 
@@ -263,31 +264,7 @@ function pickUnownedTitle(
 
 
 function pickFragmentTarget(state: ChestRollState): SpiritId | null {
-
-  const selected = state.selectedFragmentSpiritId as SpiritId | null;
-
-  if (
-
-    selected &&
-
-    FRAGMENT_SPIRIT_IDS.includes(selected) &&
-
-    state.spiritStatuses[selected] === 'locked'
-
-  ) {
-
-    return selected;
-
-  }
-
-  for (const id of FRAGMENT_SPIRIT_IDS) {
-
-    if (state.spiritStatuses[id] === 'locked') return id;
-
-  }
-
-  return null;
-
+  return pickFragmentDropTarget(state.spiritStatuses, state.fragmentCounts);
 }
 
 

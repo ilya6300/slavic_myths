@@ -1,7 +1,10 @@
-import { viewSkins, type ViewSkinId } from '../config/assetRegistry';
+import type { SpiritId } from '../config/assetRegistry';
 import { appConfig, CLOUD_SAVE_KEY } from '../config/gameConstants';
-import type { GameSave } from '../domain/GameSave';
+import { fragmentRequirements } from '../config/lootTables';
+import { spirits } from '../data/spirits';
+import type { GameSave, SpiritStatus } from '../domain/GameSave';
 import { migrateSave } from '../domain/saveMigration';
+import { applyFragmentUnlocks } from '../domain/spiritQueue';
 import { initPlatform, getPlatformSdk, isAuthorized } from '../platform/platformService';
 import { pickBestSave } from '../services/pickBestSave';
 import { readLocalSave } from '../services/localSave';
@@ -9,37 +12,55 @@ import { saveService } from '../services/saveService';
 import { gameStore } from '../store/GameStore';
 import { settingsUiStore } from '../store/settingsUiStore';
 
-/** DEV: все виды из окна в owned — переключение в профиле «Лес». Экипировку не меняем. */
-function applyDevUnlockAllWindowSkins(): void {
-  if (!import.meta.env.DEV) return;
+/** Бывший DEV seed: max(prev, 2) на каждого фрагментного духа — чистим из localStorage. */
+const LEGACY_DEV_FRAGMENT_SEED_EACH = 2;
 
-  const owned = new Set(gameStore.ownedSkinIds);
-  for (const id of Object.keys(viewSkins) as ViewSkinId[]) {
-    owned.add(id);
+/**
+ * Снимает с пола DEV-сиды, уже записанные в сейв (bootstrap больше не сидит).
+ * В проде не вызывается.
+ */
+export function stripLegacyDevFragmentSeedFromCounts(
+  counts: Record<string, number>,
+): { counts: Record<string, number>; changed: boolean } {
+  const ids = Object.keys(fragmentRequirements);
+  if (ids.length === 0) {
+    return { counts: { ...counts }, changed: false };
   }
-  gameStore.ownedSkinIds = [...owned];
+
+  const next = { ...counts };
+  let changed = false;
+  for (const id of ids) {
+    if (next[id] === LEGACY_DEV_FRAGMENT_SEED_EACH) {
+      delete next[id];
+      changed = true;
+    }
+  }
+  return { counts: next, changed };
 }
 
-/** DEV: сразу экипировать избу «Гармония»; награда Лады не затрагивается. */
-function applyDevHutHarmonyPreview(): void {
-  if (!import.meta.env.DEV) return;
+function applyDevStripLegacyFragmentSeed(): boolean {
+  if (!import.meta.env.DEV) return false;
 
-  const skinId = 'hut_harmony';
-  if (!gameStore.ownedSkinIds.includes(skinId)) {
-    gameStore.ownedSkinIds = [...gameStore.ownedSkinIds, skinId];
+  const { counts, changed } = stripLegacyDevFragmentSeedFromCounts(
+    gameStore.fragmentCounts,
+  );
+  if (!changed) return false;
+
+  gameStore.fragmentCounts = counts;
+  gameStore.selectedFragmentSpiritId = null;
+
+  let statuses = { ...gameStore.spiritStatuses };
+  for (const spirit of spirits) {
+    if (spirit.unlock.kind !== 'fragments') continue;
+    if (statuses[spirit.id] === 'defeated') continue;
+    statuses[spirit.id] = 'locked';
   }
-  gameStore.skins = { ...gameStore.skins, izba: skinId };
-}
+  gameStore.spiritStatuses = applyFragmentUnlocks(
+    statuses,
+    counts,
+  ) as Record<SpiritId, SpiritStatus>;
 
-/** DEV: скин кибер-помещения в owned и на сцене для проверки. */
-function applyDevUnlockHutCyberpank(): void {
-  if (!import.meta.env.DEV) return;
-
-  const skinId = 'hut_cyberpank';
-  if (!gameStore.ownedSkinIds.includes(skinId)) {
-    gameStore.ownedSkinIds = [...gameStore.ownedSkinIds, skinId];
-  }
-  gameStore.skins = { ...gameStore.skins, izba: skinId };
+  return true;
 }
 
 async function loadCloudSave(): Promise<GameSave | null> {
@@ -95,11 +116,12 @@ export async function bootstrapGame(): Promise<void> {
     gameStore.hydrate(best);
   }
 
-  applyDevUnlockAllWindowSkins();
-  applyDevHutHarmonyPreview();
-  applyDevUnlockHutCyberpank();
+  const strippedDevFragments = applyDevStripLegacyFragmentSeed();
 
   bindCloudPersist();
+  if (strippedDevFragments) {
+    saveService.schedulePersist();
+  }
   await settingsUiStore.refreshAuth();
   bindPersistFlushHandlers();
 }

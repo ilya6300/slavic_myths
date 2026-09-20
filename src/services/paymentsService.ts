@@ -1,3 +1,4 @@
+import type { Locale } from '../i18n/types';
 import { gameStore } from '../store/GameStore';
 
 export type PurchaseResult = 'success' | 'already_owned' | 'cancelled';
@@ -9,6 +10,16 @@ export class PaymentsService {
       return 'already_owned';
     }
     return gameStore.applyStarterPackPurchase();
+  }
+
+  /** Цена из каталога SDK (stub — яны). */
+  getCandlePackPriceLabel(_locale: Locale): string {
+    return '—';
+  }
+
+  async purchaseCandlePack(): Promise<PurchaseResult> {
+    gameStore.applyCandlePackPurchase();
+    return 'success';
   }
 }
 

@@ -1,6 +1,15 @@
 import { makeAutoObservable } from 'mobx';
 
-export type ProfileTab = 'stats' | 'cat' | 'izba' | 'window' | 'brownie' | 'titles' | 'atmosphere' | 'settings';
+export type ProfileTab =
+  | 'stats'
+  | 'cat'
+  | 'izba'
+  | 'window'
+  | 'brownie'
+  | 'titles'
+  | 'pets'
+  | 'atmosphere'
+  | 'settings';
 
 export class ProfileUiStore {
   isOpen = false;

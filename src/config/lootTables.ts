@@ -102,8 +102,8 @@ export const miracleSpiritKeyTargets = [
 // --- Фрагменты Эпохи чудес ---
 
 export const fragmentRequirements: Record<string, number> = {
-  lada: 3,
   baba_yaga: 3,
+  lada: 3,
   veles: 6,
   koschei_immortal: 5,
   chudo_yudo: 8,

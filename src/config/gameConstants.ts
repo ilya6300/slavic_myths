@@ -3,7 +3,7 @@
  * Канон: instruction/dev/technical_requirements.md §6
  */
 
-export const SAVE_VERSION = 12;
+export const SAVE_VERSION = 13;
 
 export const STARTER_PACK_PRICE_RUB = 199;
 export const STARTER_PACK_ENERGY_BONUS = 100;
@@ -27,6 +27,13 @@ export const REWARDED_ENERGY_BONUS = 50;
 export const ENERGY_REGEN_PER_MINUTE = 1.2;
 /** Награда daily-find монетки на сцене (plan §3.1). */
 export const DAILY_FIND_ENERGY = 10;
+
+/** Ежедневка: клики по коту за день (draft §2). */
+export const DAILY_QUEST_CLICK_GOAL = 100;
+
+/** Гадание: вещие крупицы за угадывание / промах (draft §1). */
+export const DIVINATION_CRUMBS_CORRECT = 10;
+export const DIVINATION_CRUMBS_WRONG = 3;
 export const ONBOARDING_ENERGY_FLOOR = 20;
 
 /** Монеты удачи */

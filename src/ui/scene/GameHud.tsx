@@ -13,6 +13,7 @@ import { getTitleById } from '../../data/titles';
 import { settingsUiContent } from '../../data/dialogContent';
 
 import { canInteract } from '../../domain/onboardingGuards';
+import { isDivinationUnlocked } from '../../domain/divinationSession';
 import { YARD_GRASS_PER_CRAFT } from '../../domain/yardCraft';
 
 import type { Grade } from '../../domain/grade';
@@ -25,6 +26,7 @@ import { kikimoraCraftUiStore } from '../../store/kikimoraCraftUiStore';
 import { profileUiStore } from '../../store/profileUiStore';
 import { sceneUiStore } from '../../store/sceneUiStore';
 import { starterPackUiStore } from '../../store/starterPackUiStore';
+import { yagaShopUiStore } from '../../store/yagaShopUiStore';
 
 const TITLE_GRADE_CLASS: Record<Grade, string> = {
   common: 'hud-title--common',
@@ -57,6 +59,8 @@ export const GameHud = observer(function GameHud() {
   const starterPackCatSkin = getCatSkinById(STARTER_PACK_CAT_SKIN_ID);
   const showKikimoraRail =
     gameStore.isKikimoraCraftAvailable() && sceneUiStore.activeRoom !== 'street';
+  const showYagaShopRail =
+    gameStore.isYagaShopUnlocked() && sceneUiStore.activeRoom !== 'street';
 
   const kikimoraReady = gameStore.yardGrass >= YARD_GRASS_PER_CRAFT;
   const kikimoraLabel = kikimoraReady
@@ -64,6 +68,11 @@ export const GameHud = observer(function GameHud() {
     : resolveText(settingsUiContent.kikimoraRailName, locale);
 
   const showGrassChip = gameStore.onboardingCompleted;
+  const showCandleChip =
+    gameStore.onboardingCompleted &&
+    (isDivinationUnlocked(gameStore.spiritStatuses) || gameStore.candles > 0);
+  const showCrumbChip =
+    gameStore.onboardingCompleted && gameStore.truthCrumbs > 0;
   return (
     <header className="layer-hud">
       <div className="hud-top">
@@ -119,10 +128,24 @@ export const GameHud = observer(function GameHud() {
               {gameStore.yardGrass}
             </span>
           )}
+
+          {showCandleChip && (
+            <span className="hud-stat hud-candle" title="Candles">
+              <img className="hud-stat__img" src={hudIcons.candle} alt="" />
+              {gameStore.candles}
+            </span>
+          )}
+
+          {showCrumbChip && (
+            <span className="hud-stat hud-crumb" title="Truth crumbs">
+              <img className="hud-stat__img" src={hudIcons.truthCrumb} alt="" />
+              {gameStore.truthCrumbs}
+            </span>
+          )}
         </div>
       </div>
 
-      {(showStarterOffer || showKikimoraRail) && (
+      {(showStarterOffer || showKikimoraRail || showYagaShopRail) && (
         <aside className="hud-rail" aria-label={resolveText(settingsUiContent.hudRailLabel, locale)}>
           {showStarterOffer && (
             <button
@@ -156,6 +179,28 @@ export const GameHud = observer(function GameHud() {
                 draggable={false}
               />
               <span className="hud-rail__kikimora-label">{kikimoraLabel}</span>
+            </button>
+          )}
+
+          {showYagaShopRail && (
+            <button
+              type="button"
+              className="hud-rail__yaga-shop"
+              onClick={() => {
+                yagaShopUiStore.open();
+                sceneUiStore.panBlocked = true;
+              }}
+              aria-label={resolveText(settingsUiContent.yagaShopTitle, locale)}
+            >
+              <img
+                className="hud-rail__yaga-shop-img"
+                src={hudIcons.truthCrumb}
+                alt=""
+                draggable={false}
+              />
+              <span className="hud-rail__yaga-shop-label">
+                {resolveText(settingsUiContent.yagaShopRail, locale)}
+              </span>
             </button>
           )}
         </aside>

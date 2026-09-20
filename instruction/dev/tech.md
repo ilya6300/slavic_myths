@@ -1294,3 +1294,30 @@ A11y бара: `role="progressbar"`, `aria-valuemin={0}`, `aria-valuemax={requir
 | Вне scope: PNG, HUD-чип, модалки, баланс 700 | не открывать |
 
 ---
+
+## Epic 16 — Мета-системы (draft global update)
+
+> Детали: `instruction/dev/epic16_meta_systems.md`; план: `global-draft-update_f0876d6e.plan.md`.
+
+### Save v13
+
+Новые поля в `GameSave`: `candles`, `truthCrumbs`, `candleGrantedSpiritIds`, `dailyQuest*`, `ownedPetIds`, `equippedPetId`, `yagaShopPurchasedIds`. Миграция v12→v13 в `saveMigration.ts`; `dailyFindClaimedDayId` → `dailyQuestRewardClaimedDayId`.
+
+### Фрагменты
+
+Единый дроп: `src/domain/fragmentDrop.ts` + `src/config/fragmentSpiritOrder.ts`. Очередь не читает `selectedFragmentSpiritId` (только подсветка книги). Потребители (ежедневка, сундук) переходят на `pickFragmentDropTarget` в TASK-051.
+
+### Домен
+
+| Модуль | Роль |
+|--------|------|
+| `dailyQuest.ts` | 2 задачи, календарный день, сказ, скрытие UI после 43/43 |
+| `candles.ts` | Свечи, крупицы гадания, первая победа |
+| `divinationContent.ts` | Локализованные строки порога/стекла |
+| `pets.ts`, `yagaShop.ts` | Каталоги лавки |
+
+### Store
+
+`claimQuizVictory` начисляет +1 свечу через `grantFirstVictoryCandle`. Покупки/IAP/UI — TASK-052–053.
+
+---

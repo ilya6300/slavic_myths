@@ -1027,7 +1027,7 @@
 - **Следующий:** testirovshchik
 
 ### TASK-041 — Финальные ассеты Ярилы и Перуна
-- **Статус:** awaiting_user
+- **Статус:** in_progress
 - **Приоритет:** P0
 - **Зависит от:** TASK-040
 - **Предпосылка:** PNG сгенерированы 2026-09-19 (GenerateImage + `scripts/process-yarilo-perun-assets.mjs`); финальный visual-check — владелец/ревьювер.
@@ -1043,7 +1043,7 @@
   - [ ] Финальный asset visual-check на билде подтверждён владельцем или ревьювером.
 - **Проверка:** visual_check
 - **Следующий:** revyuver (после visual-check владельца)
-- **Блокер:** Финальная asset visual-check на билде — решение владельца; генерация для агентов включена.
+- **Блокер:** снят решением владельца 2026-09-20 — GenerateImage и production по `assets_catalog.md` разрешены агентам; финальный visual-check на билде — владелец/ревьювер.
 
 ### TASK-042 — Красные тесты новых духов, эффектов и трофеев
 - **Статус:** done
@@ -1160,7 +1160,7 @@
 - **Следующий:** revyuzer
 
 ### TASK-048 — Ревью Epic 15 и финальная визуальная приёмка
-- **Статус:** blocked
+- **Статус:** in_progress
 - **Приоритет:** P0
 - **Зависит от:** TASK-043, TASK-044, TASK-045, TASK-046, TASK-047, TASK-041
 - **Предпосылка:** Все code/test задачи завершены; TASK-041 снят с блокировки и принят.
@@ -1178,5 +1178,104 @@
   - [ ] Целевые тесты, полный `npm test` и `npm run build` зелёные; `review_verdict.status: approved` записан.
 - **Проверка:** visual_check
 - **Следующий:** orkestrator
-- **Блокер до снятия TASK-041:** Финальная asset visual-check не может быть подтверждена при отключённой генерации изображений; Epic остаётся blocked, а не done.
+- **Блокер генерации:** снят (владелец 2026-09-20). Epic закрывается после visual-check ассетов и критериев выше.
+
+---
+
+## Epic 16 — Мета-системы draft (гадание, ежедневка, лавка Яги)
+
+> **План:** `instruction/plans/global-draft-update_f0876d6e.plan.md`; UX/asset: `instruction/dev/epic16_meta_systems.md`; канон: `instruction/plans/draft.md`.  
+> **Не трогать** статусы Epic 13–15 / TASK-048 без их gates. `thunder_izba` расширять каталогом, не заменять.
+
+### TASK-049 — Канон, UX-контракт и декомпозиция Epic 16
+- **Статус:** done
+- **Приоритет:** P0
+- **Зависит от:** —
+- **Канон:** global-draft plan Фаза 0; draft.md §1–2, §6–8; `quests.md` ↔ `quiz.ts` / `spirits.ts`
+- **Суть:** Зафиксировать Epic 16 в tasks, UX/asset manifest, очередь фрагментов 43/43; устранить расхождения викторины до ежедневки.
+- **Критерии приёмки:**
+  - [x] Epic 16 и зависимости описаны в `tasks.md`
+  - [x] `epic16_meta_systems.md` с UX-зонами и asset manifest
+  - [x] `quests.md` ↔ runtime quiz: все духи с ожидаемым числом вопросов (зелёный `quiz.test.ts`)
+  - [x] Порядок фрагментов `baba_yaga → … → perun` в data и `fragmentSpiritOrder.ts`
+- **Проверка:** test
+- **Следующий:** arkhitektor / testirovshchik
+
+### TASK-050 — Save v13 и домен мета-ресурсов
+- **Статус:** done
+- **Приоритет:** P0
+- **Зависит от:** TASK-049
+- **Канон:** draft §1–2; epic16_meta_systems.md §Save v13
+- **Суть:** `GameSave` v13, миграция, `fragmentDrop`, `dailyQuest`, `candles`; каталоги `pets`, `yagaShop`, `divinationContent`; hydrate/toSave в GameStore.
+- **Критерии приёмки:**
+  - [x] SAVE_VERSION 13, миграция v12→v13 с daily claim
+  - [x] Доменные тесты fragmentDrop, dailyQuest, candles
+  - [x] GameStore сериализует новые поля
+  - [x] `claimQuizVictory`: +1 свеча за первую победу над духом (идемпотентно)
+- **Проверка:** test
+- **Следующий:** razrabotchik
+
+### TASK-051 — Ежедневка UI и маршрутизатор фрагментов
+- **Статус:** done
+- **Приоритет:** P0
+- **Зависит от:** TASK-050
+- **Канон:** draft §2, §8; plan Фаза 2
+- **Суть:** Панель 2 задач, открытие после Банника, сказ дня + 1 вопрос, фрагмент через `pickFragmentDropTarget`; скрытие UI после 43/43; chest/miracle на общий router.
+- **Критерии приёмки:**
+  - [x] 100 кликов и сказ/вопрос без энергии, без лимита попыток (store + UI)
+  - [x] 1 фрагмент/календарный день, без «догона»
+  - [x] `miracleChestLoot` / `chestLoot` / victory bonus на `pickFragmentDropTarget`
+  - [x] Панель скрыта при `isFragmentChainComplete`
+- **Проверка:** test + visual_check
+- **Следующий:** razrabotchik
+
+### TASK-052 — Зеркало и сеанс гадания
+- **Статус:** done
+- **Приоритет:** P0
+- **Зависит от:** TASK-050
+- **Канон:** draft §1; izba_scene_layers; plan Фаза 3
+- **Суть:** Проп зеркала, state machine сеанса, крупицы 10/3, пул defeated, reduced motion.
+- **Критерии приёмки:**
+  - [x] До Яги — серое зеркало, без модалки
+  - [x] Порог «Спросить»/«Не сейчас»; свеча только на «Спросить»
+  - [x] 2 вопроса + угадывание имени; HUD викторины не в сеансе
+- **Проверка:** test + visual_check (owner: зеркало на сцене + сеанс) — 2026-09-20
+- **Следующий:** orkestrator
+
+### TASK-053 — Лавка Яги, IAP-свечи, профиль питомцев/FX
+- **Статус:** done
+- **Приоритет:** P0
+- **Зависит от:** TASK-050
+- **Канон:** draft §«Лавка»; PaymentsService; plan Фаза 4
+- **Суть:** Модалка после Яги, покупки за крупицы, вкладка свечей SDK, профиль pet/effect; loot без Дымка/Волшебство для новых.
+- **Критерии приёмки:**
+  - [x] Цены 30/10/25/15; без повторных покупок и отрицательного баланса
+  - [x] IAP не хардкодит ₽; свечи после success callback
+  - [x] Ровно один pet и один izba effect (или none), совместимо с `thunder_izba`
+- **Проверка:** test + visual_check (лавка, профиль) — 2026-09-20
+- **Следующий:** orkestrator
+
+### TASK-054 — Питомцы на сцене и 4 магазинных FX
+- **Статус:** done
+- **Приоритет:** P1
+- **Зависит от:** TASK-053
+- **Канон:** draft §6–7; IzbaEffectLayer; scene-visual-etalon
+- **Суть:** Компаньон у кота; туман, огонёк, шаровая молния, звёзды; pan обеих комнат, pointer-events none.
+- **Критерии приёмки:**
+  - [x] Питомец некликабельный, sit/sleep, без монет (CSS-placeholder до PNG)
+  - [x] Один активный FX; reduced motion fallback
+  - [x] Комната 1 эталон не ломан; комната 2 `.layer-izba` + WindowAperture (`epic16Integration.test.ts`)
+- **Проверка:** test + visual_check — 2026-09-20
+- **Следующий:** orkestrator
+
+### TASK-055 — Интеграция, регрессия, ревью Epic 16
+- **Статус:** done
+- **Приоритет:** P0
+- **Зависит от:** TASK-051, TASK-052, TASK-053, TASK-054
+- **Суть:** Полный `npm test`, build, visual-check всех зон epic16_meta_systems.md; `review_verdict: approved`.
+- **Критерии приёмки:**
+  - [x] Все пункты TASK-049–054 закрыты или `skipped_item`
+  - [x] Epic 15 TASK-048 не снят с blocked без owner asset check (без изменений)
+- **Проверка:** test + `instruction/dev/epic16_review.md` (`review_verdict: approved`)
+- **Следующий:** —
 

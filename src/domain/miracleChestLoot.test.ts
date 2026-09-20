@@ -32,7 +32,7 @@ describe('miracleChestLoot', () => {
     );
     expect(gotFragment).toBe(true);
     expect(loot.kind).toBe('fragment');
-    expect(loot.itemId).toBe('lada');
+    expect(loot.itemId).toBe('baba_yaga');
     expect(nextPityCounter).toBe(0);
   });
 

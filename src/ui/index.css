@@ -163,6 +163,7 @@ body {
 
 .izba-room .layer-furniture {
   z-index: 40;
+  overflow: visible;
 }
 
 .izba-room .layer-furniture--room2 {
@@ -1187,6 +1188,179 @@ body {
     animation: none;
     opacity: 0;
   }
+}
+
+.izba-scene--effect-fog .layer-izba-fx {
+  background: linear-gradient(
+    to top,
+    rgba(195, 205, 215, 0.42) 0%,
+    rgba(195, 205, 215, 0.12) 28%,
+    transparent 55%
+  );
+}
+
+.izba-scene--effect-firefly .layer-izba-fx::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 22% 38%, rgba(255, 220, 140, 0.55) 0%, transparent 0.35%),
+    radial-gradient(circle at 28% 42%, rgba(255, 200, 100, 0.35) 0%, transparent 0.25%),
+    radial-gradient(circle at 72% 55%, rgba(255, 210, 120, 0.45) 0%, transparent 0.3%),
+    radial-gradient(circle at 18% 62%, rgba(255, 230, 160, 0.4) 0%, transparent 0.28%);
+  animation: izba-firefly-pulse 5s ease-in-out infinite;
+}
+
+.izba-scene--effect-ball-lightning .layer-izba-fx::after {
+  content: '';
+  position: absolute;
+  left: 38%;
+  bottom: 28%;
+  width: 6vw;
+  height: 6vw;
+  max-width: 4.5rem;
+  max-height: 4.5rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(200, 230, 255, 0.75) 0%,
+    rgba(120, 160, 220, 0.35) 45%,
+    transparent 70%
+  );
+  animation: izba-ball-lightning-glow 4s ease-in-out infinite;
+}
+
+.izba-scene--effect-stars .layer-izba-fx::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 40%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 34% 8%, rgba(255, 255, 255, 0.75), transparent),
+    radial-gradient(1.5px 1.5px at 58% 14%, rgba(255, 248, 220, 0.85), transparent),
+    radial-gradient(1px 1px at 78% 22%, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 22% 28%, rgba(255, 255, 255, 0.65), transparent),
+    radial-gradient(1px 1px at 88% 10%, rgba(255, 255, 255, 0.8), transparent);
+  opacity: 0.85;
+}
+
+@keyframes izba-firefly-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes izba-ball-lightning-glow {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .izba-scene--effect-firefly .layer-izba-fx::before,
+  .izba-scene--effect-ball-lightning .layer-izba-fx::after {
+    animation: none;
+    opacity: 0.65;
+  }
+}
+
+/* --- Питомец у кота (placeholder до production PNG) --- */
+
+.scene-pet {
+  position: absolute;
+  left: 27vw;
+  bottom: 9vh;
+  width: 5.5vw;
+  max-width: 3.2rem;
+  height: 5.5vw;
+  max-height: 3.2rem;
+  pointer-events: none;
+  z-index: 48;
+  border-radius: 40% 40% 35% 35%;
+  opacity: 0.92;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+}
+
+.scene-pet--sleep {
+  transform: scale(0.88) translateY(0.4vh);
+  opacity: 0.75;
+}
+
+.scene-pet--griffin {
+  background: linear-gradient(145deg, #c9a227 0%, #8b6914 55%, #5c4510 100%);
+}
+
+.scene-pet--humpback {
+  background: linear-gradient(145deg, #a86b3a 0%, #6b3f22 60%, #4a2a18 100%);
+  border-radius: 45% 45% 40% 40%;
+}
+
+.scene-pet--firebird {
+  background: radial-gradient(circle at 40% 35%, #ffe566 0%, #ff8c32 45%, #c44b12 100%);
+  box-shadow: 0 0 12px rgba(255, 160, 60, 0.55);
+}
+
+.scene-pet--sprite {
+  background: none;
+  box-shadow: none;
+  width: auto;
+  max-width: 6vw;
+  height: auto;
+  max-height: 8vh;
+}
+
+.scene-pet__img {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
+}
+
+.profile-modal__preview-stage--pets {
+  position: relative;
+}
+
+.profile-modal__preview-pet {
+  position: absolute;
+  left: 18%;
+  bottom: 22%;
+  width: 22%;
+  height: 22%;
+  pointer-events: none;
+}
+
+.profile-grid__pet-silhouette {
+  display: block;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0 auto 0.35rem;
+  border-radius: 40%;
+}
+
+.profile-grid__pet-silhouette.scene-pet--griffin {
+  background: linear-gradient(145deg, #c9a227, #5c4510);
+}
+
+.profile-grid__pet-silhouette.scene-pet--humpback {
+  background: linear-gradient(145deg, #a86b3a, #4a2a18);
+}
+
+.profile-grid__pet-silhouette.scene-pet--firebird {
+  background: radial-gradient(circle at 40% 35%, #ffe566, #c44b12);
 }
 
 /* Затемнение окна — только через .layer-night; без filter на JPEG,
@@ -2378,22 +2552,6 @@ body {
   color: #8b6914;
 }
 
-.book-page__fragment-select {
-  align-self: center;
-  padding: 0.35rem 0.65rem;
-  border-radius: 8px;
-  border: 1px solid #8b6914;
-  background: rgba(245, 230, 200, 0.65);
-  color: #3d2a1a;
-  font-size: 0.78rem;
-  cursor: pointer;
-}
-
-.book-page__fragment-select--active {
-  border-color: #8b6914;
-  box-shadow: 0 0 8px rgba(139, 105, 20, 0.35);
-}
-
 .book-page__locked--hint {
   margin-top: 0.35rem;
   font-size: 0.78rem;
@@ -2401,6 +2559,59 @@ body {
 
 .book-page--silhouette .book-illustration {
   filter: grayscale(1);
+}
+
+/* Пазл: внешний бокс = тот же flex-слот, что одиночный .book-illustration */
+.book-illustration-puzzle {
+  position: relative;
+  flex: 1;
+  width: 120%;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.book-illustration-puzzle__svg-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Stack сжимается по отрисованному base; veils и clip-path — тот же прямоугольник */
+.book-illustration-puzzle__stack {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  line-height: 0;
+}
+
+.book-illustration-puzzle__base {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.book-illustration-puzzle__veil-piece {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.book-illustration-puzzle__veil-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  filter: grayscale(1) brightness(0.92);
 }
 
 .book-illustration {
@@ -2513,7 +2724,8 @@ body {
     font-size: 0.82rem;
   }
 
-  .book-illustration {
+  .book-illustration,
+  .book-illustration-puzzle {
     max-height: 62%;
   }
 
@@ -3378,6 +3590,407 @@ body {
   50% {
     transform: translateX(-50%) scale(1.08);
   }
+}
+
+.daily-quest-panel {
+  position: absolute;
+  left: 1.2vw;
+  top: 12vh;
+  z-index: 12;
+  width: 14vw;
+  min-width: 148px;
+  max-width: 200px;
+  padding: 0.6vw 0.75vw;
+  border-radius: 0.5vw;
+  background: rgba(40, 28, 18, 0.82);
+  color: #f4e8d4;
+  font-size: clamp(11px, 0.85vw, 14px);
+  pointer-events: auto;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.daily-quest-panel__title {
+  margin: 0 0 0.4em;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+.daily-quest-panel__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.daily-quest-panel__item {
+  margin-bottom: 0.45em;
+  opacity: 0.92;
+}
+
+.daily-quest-panel__item--done {
+  opacity: 1;
+}
+
+.daily-quest-panel__item--done .daily-quest-panel__label {
+  text-decoration: line-through;
+  text-decoration-color: rgba(180, 220, 160, 0.7);
+}
+
+.daily-quest-panel__label {
+  display: block;
+  font-weight: 500;
+}
+
+.daily-quest-panel__meta {
+  font-size: 0.9em;
+  opacity: 0.85;
+}
+
+.daily-quest-panel__link {
+  margin-top: 0.15em;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #e8c878;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+}
+
+.daily-quest-panel__claim {
+  width: 100%;
+  margin-top: 0.5em;
+  padding: 0.35em 0.5em;
+  border: 1px solid rgba(200, 160, 90, 0.5);
+  border-radius: 0.35em;
+  background: rgba(80, 52, 28, 0.9);
+  color: #f4e8d4;
+  cursor: pointer;
+  font: inherit;
+}
+
+.daily-quest-panel__claim:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.daily-quest-panel__claim--done {
+  border: none;
+  background: transparent;
+  cursor: default;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.daily-quest-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 6, 4, 0.72);
+}
+
+.daily-quest-modal__panel {
+  position: relative;
+  width: min(92vw, 520px);
+  max-height: 88vh;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem 1.5rem;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #3d2a1a 0%, #2a1c12 100%);
+  color: #f4e8d4;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+.daily-quest-modal__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
+.daily-quest-modal__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+
+.daily-quest-modal__intro {
+  margin: 0 0 0.5rem;
+  opacity: 0.9;
+}
+
+.daily-quest-modal__tale {
+  margin: 0 0 1rem;
+  line-height: 1.45;
+  font-style: italic;
+}
+
+.daily-quest-modal__prompt {
+  margin: 0 0 0.75rem;
+  font-weight: 500;
+}
+
+.daily-quest-modal__answers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.daily-quest-modal__answer {
+  width: 100%;
+  text-align: left;
+}
+
+.scene-mirror {
+  left: 86vw;
+  bottom: 1.5vh;
+  transform: perspective(55vw) translateX(-50%) rotateY(-50deg);
+  /* transform-origin: 100% 100%; */
+  transform-style: preserve-3d;
+  overflow: visible;
+  z-index: 2;
+}
+
+.scene-mirror .scene-sprite__img {
+  max-height: 28vh;
+  width: auto;
+  display: block;
+}
+
+.scene-mirror__glass-hint {
+  filter: drop-shadow(2px 4px 6px black);
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  width: max-content;
+  max-width: 9vw;
+  margin: 0;
+  padding: 0 0.15em;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-family: Georgia, 'Palatino Linotype', 'Times New Roman', serif;
+  font-size: clamp(0.82rem, 2.1vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  color: rgb(214 209 205 / 94%);
+  text-shadow: 0 0 10px rgba(255, 250, 240, 0.95), 0 0 20px rgba(235, 220, 200, 0.85), 0 0 34px rgba(200, 185, 165, 0.55), 0 1px 0 rgba(255, 255, 255, 0.35);
+  pointer-events: none;
+  z-index: 3;
+  animation: scene-mirror-hint-smoke 5s ease-in-out infinite;
+}
+
+@keyframes scene-mirror-hint-smoke {
+  0%,
+  100% {
+    text-shadow:
+      0 0 10px rgba(255, 250, 240, 0.9),
+      0 0 20px rgba(235, 220, 200, 0.75),
+      0 0 32px rgba(200, 185, 165, 0.45),
+      0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% {
+    text-shadow:
+      0 0 14px rgba(255, 252, 245, 0.98),
+      0 0 26px rgba(240, 228, 210, 0.88),
+      0 0 40px rgba(210, 195, 175, 0.6),
+      0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-mirror__glass-hint {
+    animation: none;
+  }
+}
+
+.scene-mirror--locked .scene-sprite__img {
+  filter: drop-shadow(2px 4px 6px black);
+}
+
+.scene-mirror--active.scene-sprite--interactive:hover .scene-sprite__img {
+  filter: drop-shadow(0 0 10px rgba(220, 180, 120, 0.45));
+}
+
+.divination-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 4, 2, 0.78);
+}
+
+.divination-overlay__frame {
+  position: relative;
+  width: min(42vh, 90vw);
+  max-height: 92vh;
+}
+
+.divination-overlay__mirror {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+
+.divination-overlay__smoke {
+  position: absolute;
+  inset: 8% 10% 18%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(200, 190, 170, 0.75) 0%,
+    rgba(120, 110, 100, 0.35) 55%,
+    transparent 75%
+  );
+  opacity: 0;
+  animation: divination-smoke 1.2s ease-in-out forwards;
+  pointer-events: none;
+}
+
+@keyframes divination-smoke {
+  0% {
+    opacity: 0;
+  }
+
+  35% {
+    opacity: 0.92;
+  }
+
+  100% {
+    opacity: 0.55;
+  }
+}
+
+.divination-overlay__portrait {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  transform: translate(-50%, -50%);
+  width: 46%;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));
+}
+
+.divination-overlay__glass {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  top: 22%;
+  bottom: 24%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.5rem;
+  overflow-y: auto;
+  pointer-events: auto;
+}
+
+.divination-overlay__line {
+  margin: 0;
+  color: #f0e6d8;
+  font-size: clamp(12px, 1.6vw, 15px);
+  line-height: 1.4;
+  text-align: center;
+}
+
+.divination-overlay__actions,
+.divination-overlay__questions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.divination-overlay__close {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  z-index: 2;
+}
+
+.divination-overlay__continue {
+  align-self: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .divination-overlay__smoke {
+    animation: none;
+    opacity: 0.45;
+  }
+}
+
+.yaga-shop-modal__tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.yaga-shop-modal__tab {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid rgba(80, 55, 30, 0.5);
+  background: rgba(40, 28, 18, 0.55);
+  color: inherit;
+  cursor: pointer;
+}
+
+.yaga-shop-modal__tab--active {
+  background: rgba(90, 60, 35, 0.75);
+}
+
+.yaga-shop-modal__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.yaga-shop-modal__row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.yaga-shop-modal__price img {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: middle;
+  margin-right: 0.2em;
+}
+
+.yaga-shop-modal__buy {
+  min-width: 5rem;
+}
+
+.yaga-shop-modal__iap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.hud-rail__yaga-shop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+}
+
+.hud-rail__yaga-shop-img {
+  width: 3.2vw;
+  max-width: 2.5rem;
 }
 
 .window-aperture__ambient-hit {

@@ -45,6 +45,11 @@ export const titleLocalizedNames: Record<string, LocalizedText> = {
   khranitel_mifov: L('Хранитель Мифов', 'Myth Keeper', 'Mit Koruyucusu'),
   zolotoy_strazh_rusi: L('Золотой Страж Руси', 'Golden Guardian of Rus', 'Rus\'un Altın Muhafızı'),
   kot_rassvet: L('Кот-Рассвет', 'Dawn Cat', 'Şafak Kedisi'),
+  title_visionary_cat: L('Вещий кот', 'Visionary Cat', 'Gören Kedi'),
+  title_spirit_talker: L('Говорящий с духами', 'Spirit Talker', 'Ruhlarla Konuşan'),
+  title_mirror_side: L('Зазеркальный', 'Mirror-side', 'Ayna Ötesi'),
+  title_oracle: L('Оракул', 'Oracle', 'Kahin'),
+  title_clairvoyant: L('Ясновидящий', 'Clairvoyant', 'Durugörü'),
   khozyain_slavyanskikh_tayn: L(
     'Хозяин Славянских Тайн',
     'Keeper of Slavic Secrets',

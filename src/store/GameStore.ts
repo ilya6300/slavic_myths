@@ -58,6 +58,37 @@ import {
 } from '../domain/wonderChest';
 import { shouldShowCloudBanner } from '../domain/retention';
 import { isDailyFindAvailable as isDailyFindAvailableDomain } from '../domain/dailyFind';
+import { grantFirstVictoryCandle } from '../domain/candles';
+import {
+  canClaimDailyFragmentReward,
+  isDailyQuestUnlocked,
+  shouldShowDailyQuestPanel as shouldShowDailyQuestPanelDomain,
+  syncDailyQuestForCalendarDay,
+  isDailyClickTaskComplete,
+} from '../domain/dailyQuest';
+import {
+  applyFragmentDrop,
+  pickFragmentDropTarget,
+} from '../domain/fragmentDrop';
+import { DAILY_QUEST_CLICK_GOAL } from '../config/gameConstants';
+import { dailyQuestUiStore } from './dailyQuestUiStore';
+import { divinationUiStore } from './divinationUiStore';
+import { isDivinationUnlocked } from '../domain/divinationSession';
+import {
+  addCandles,
+  addTruthCrumbs,
+  canSpendCandle,
+  divinationCrumbsReward,
+  spendCandle,
+} from '../domain/candles';
+import { findYagaShopItem } from '../data/yagaShop';
+import {
+  isYagaShopUnlocked as isYagaShopUnlockedDomain,
+  spendTruthCrumbsForShop,
+  validateYagaShopPurchase,
+  type YagaShopPurchaseResult,
+} from '../domain/yagaShopPurchase';
+import type { DivinationQuestionIndex } from '../data/divinationTruth';
 import { getCalendarDayId } from '../domain/calendarDay';
 import {
   pickIzbaItemLine,
@@ -136,6 +167,8 @@ export class GameStore {
   lastEnergyAt = Date.now();
   luckCoins = 0;
   talismans = 3;
+  candles = 0;
+  truthCrumbs = 0;
   titleId: string | null = 'novenkiy';
 
   spiritStatuses: Record<string, SpiritStatus> = {};
@@ -146,6 +179,10 @@ export class GameStore {
   ownedTitleIds: string[] = [];
   ownedIzbaEffectIds: string[] = [];
   equippedIzbaEffectId: string | null = null;
+  ownedPetIds: string[] = [];
+  equippedPetId: string | null = null;
+  yagaShopPurchasedIds: string[] = [];
+  candleGrantedSpiritIds: string[] = [];
   trophiesUnlocked: string[] = [];
 
   chestReadyAt: number | null = null;
@@ -159,6 +196,11 @@ export class GameStore {
   cloudBannerDismissed = false;
   illustrationRevealed: string[] = [];
   dailyFindClaimedDayId: string | null = null;
+  dailyQuestDayId: string | null = null;
+  dailyQuestTaleSpiritId: string | null = null;
+  dailyQuestClickProgress = 0;
+  dailyQuestTaleCorrect = false;
+  dailyQuestRewardClaimedDayId: string | null = null;
   folktaleIntroShown = false;
 
   izbaItemDialogState: { lastTag: IzbaItemId | null; lastLineIndex: number } = {
@@ -341,6 +383,8 @@ export class GameStore {
     this.lastEnergyAt = save.lastEnergyAt;
     this.luckCoins = save.luckCoins;
     this.talismans = save.talismans;
+    this.candles = save.candles ?? 0;
+    this.truthCrumbs = save.truthCrumbs ?? 0;
     this.titleId = save.titleId;
 
     this.spiritStatuses = { ...save.spiritStatuses };
@@ -354,6 +398,10 @@ export class GameStore {
     this.ownedTitleIds = [...save.ownedTitleIds];
     this.ownedIzbaEffectIds = [...(save.ownedIzbaEffectIds ?? [])];
     this.equippedIzbaEffectId = save.equippedIzbaEffectId ?? null;
+    this.ownedPetIds = [...(save.ownedPetIds ?? [])];
+    this.equippedPetId = save.equippedPetId ?? null;
+    this.yagaShopPurchasedIds = [...(save.yagaShopPurchasedIds ?? [])];
+    this.candleGrantedSpiritIds = [...(save.candleGrantedSpiritIds ?? [])];
     this.trophiesUnlocked = [...save.trophiesUnlocked];
 
     this.chestReadyAt = save.chestReadyAt;
@@ -367,6 +415,12 @@ export class GameStore {
     this.cloudBannerDismissed = save.cloudBannerDismissed ?? false;
     this.illustrationRevealed = [...(save.illustrationRevealed ?? [])];
     this.dailyFindClaimedDayId = save.dailyFindClaimedDayId ?? null;
+    this.dailyQuestDayId = save.dailyQuestDayId ?? null;
+    this.dailyQuestTaleSpiritId = save.dailyQuestTaleSpiritId ?? null;
+    this.dailyQuestClickProgress = save.dailyQuestClickProgress ?? 0;
+    this.dailyQuestTaleCorrect = save.dailyQuestTaleCorrect ?? false;
+    this.dailyQuestRewardClaimedDayId =
+      save.dailyQuestRewardClaimedDayId ?? save.dailyFindClaimedDayId ?? null;
     this.folktaleIntroShown = save.folktaleIntroShown ?? false;
     this.izbaItemDialogState = { lastTag: null, lastLineIndex: 0 };
 
@@ -406,6 +460,7 @@ export class GameStore {
     this.syncWonderChestWeek();
     sceneUiStore.syncTiredSleepFromEnergy();
     this.maybeSpawnYardGrass();
+    this.ensureDailyQuestDaySynced();
   }
 
   toSave(): GameSave {
@@ -423,6 +478,8 @@ export class GameStore {
       lastEnergyAt: this.lastEnergyAt,
       luckCoins: this.luckCoins,
       talismans: this.talismans,
+      candles: this.candles,
+      truthCrumbs: this.truthCrumbs,
       titleId: this.titleId,
 
       spiritStatuses: { ...this.spiritStatuses },
@@ -433,6 +490,10 @@ export class GameStore {
       ownedTitleIds: [...this.ownedTitleIds],
       ownedIzbaEffectIds: [...this.ownedIzbaEffectIds],
       equippedIzbaEffectId: this.equippedIzbaEffectId,
+      ownedPetIds: [...this.ownedPetIds],
+      equippedPetId: this.equippedPetId,
+      yagaShopPurchasedIds: [...this.yagaShopPurchasedIds],
+      candleGrantedSpiritIds: [...this.candleGrantedSpiritIds],
       trophiesUnlocked: [...this.trophiesUnlocked],
 
       chestReadyAt: this.chestReadyAt,
@@ -446,6 +507,11 @@ export class GameStore {
       cloudBannerDismissed: this.cloudBannerDismissed,
       illustrationRevealed: [...this.illustrationRevealed],
       dailyFindClaimedDayId: this.dailyFindClaimedDayId,
+      dailyQuestDayId: this.dailyQuestDayId,
+      dailyQuestTaleSpiritId: this.dailyQuestTaleSpiritId,
+      dailyQuestClickProgress: this.dailyQuestClickProgress,
+      dailyQuestTaleCorrect: this.dailyQuestTaleCorrect,
+      dailyQuestRewardClaimedDayId: this.dailyQuestRewardClaimedDayId,
       folktaleIntroShown: this.folktaleIntroShown,
 
       susedkoStealActive: this.susedkoStealActive,
@@ -541,6 +607,7 @@ export class GameStore {
     }
 
     this.catClickCount += 1;
+    this.recordDailyQuestClick();
 
     if (
       shouldIncrementWonderClickProgress(
@@ -581,6 +648,235 @@ export class GameStore {
     }
     saveService.schedulePersist();
     return true;
+  }
+
+  shouldShowDailyQuestPanel(): boolean {
+    return shouldShowDailyQuestPanelDomain(
+      this.spiritStatuses,
+      this.fragmentCounts,
+    );
+  }
+
+  isDailyQuestRewardClaimedToday(now: Date = new Date()): boolean {
+    return this.dailyQuestRewardClaimedDayId === getCalendarDayId(now);
+  }
+
+  canClaimDailyQuestFragment(now: Date = new Date()): boolean {
+    this.ensureDailyQuestDaySynced(now);
+    const dayId = getCalendarDayId(now);
+    return canClaimDailyFragmentReward({
+      dayId,
+      taleSpiritId: this.dailyQuestTaleSpiritId as SpiritId | null,
+      clickProgress: this.dailyQuestClickProgress,
+      taleQuizCorrect: this.dailyQuestTaleCorrect,
+      rewardClaimed: this.dailyQuestRewardClaimedDayId === dayId,
+    });
+  }
+
+  claimDailyQuestFragment(now: Date = new Date()): boolean {
+    if (!this.canClaimDailyQuestFragment(now)) return false;
+    const target = pickFragmentDropTarget(
+      this.spiritStatuses,
+      this.fragmentCounts,
+    );
+    if (!target) return false;
+    this.fragmentCounts = applyFragmentDrop(target, this.fragmentCounts);
+    this.spiritStatuses = applyFragmentUnlocks(
+      this.spiritStatuses,
+      this.fragmentCounts,
+    );
+    this.dailyQuestRewardClaimedDayId = getCalendarDayId(now);
+    saveService.schedulePersist();
+    return true;
+  }
+
+  submitDailyQuestTaleAnswer(answerIndex: number): void {
+    const question = dailyQuestUiStore.question;
+    if (!question || !dailyQuestUiStore.isOpen) return;
+    if (answerIndex === question.correctIndex) {
+      this.dailyQuestTaleCorrect = true;
+      dailyQuestUiStore.close();
+      saveService.schedulePersist();
+      return;
+    }
+    dailyQuestUiStore.loadQuestion(dailyQuestUiStore.sourceQuestionIndex);
+  }
+
+  ensureDailyQuestDaySynced(
+    now: Date = new Date(),
+    rng: () => number = Math.random,
+  ): void {
+    if (!isDailyQuestUnlocked(this.spiritStatuses)) return;
+    const dayId = getCalendarDayId(now);
+    const current =
+      this.dailyQuestDayId === dayId
+        ? {
+            dayId,
+            taleSpiritId: this.dailyQuestTaleSpiritId as SpiritId | null,
+            clickProgress: this.dailyQuestClickProgress,
+            taleQuizCorrect: this.dailyQuestTaleCorrect,
+            rewardClaimed: this.dailyQuestRewardClaimedDayId === dayId,
+          }
+        : this.dailyQuestDayId
+          ? {
+              dayId: this.dailyQuestDayId,
+              taleSpiritId: this.dailyQuestTaleSpiritId as SpiritId | null,
+              clickProgress: this.dailyQuestClickProgress,
+              taleQuizCorrect: this.dailyQuestTaleCorrect,
+              rewardClaimed:
+                this.dailyQuestRewardClaimedDayId === this.dailyQuestDayId,
+            }
+          : null;
+    const synced = syncDailyQuestForCalendarDay(
+      current,
+      this.spiritStatuses,
+      now,
+      rng,
+    );
+    if (synced.dayId !== this.dailyQuestDayId) {
+      this.dailyQuestDayId = synced.dayId;
+      this.dailyQuestTaleSpiritId = synced.taleSpiritId;
+      this.dailyQuestClickProgress = synced.clickProgress;
+      this.dailyQuestTaleCorrect = synced.taleQuizCorrect;
+    }
+  }
+
+  clickMirror(): void {
+    if (!this.onboardingCompleted) return;
+    if (this.handleZhirdyayBlockedInteraction()) return;
+    sceneUiStore.registerActivity();
+    if (!isDivinationUnlocked(this.spiritStatuses)) {
+      const line = pickCatLine('divination_closed', this.language);
+      if (line) this.lastCatBubble = { kind: 'footnote', text: line };
+      return;
+    }
+    if (!canSpendCandle(this.candles)) {
+      const line = pickCatLine('divination_no_candle', this.language);
+      if (line) this.lastCatBubble = { kind: 'footnote', text: line };
+      return;
+    }
+    divinationUiStore.openThreshold();
+    sceneUiStore.panBlocked = true;
+  }
+
+  confirmDivinationAsk(): void {
+    if (divinationUiStore.phase !== 'threshold') return;
+    if (!canSpendCandle(this.candles)) return;
+    this.candles = spendCandle(this.candles);
+    const started = divinationUiStore.beginSessionAfterCandle(
+      this.spiritStatuses,
+      this.language,
+    );
+    if (!started) {
+      this.candles += 1;
+      this.closeDivination();
+      return;
+    }
+    saveService.schedulePersist();
+  }
+
+  closeDivination(): void {
+    divinationUiStore.closeAll();
+    sceneUiStore.panBlocked = false;
+  }
+
+  pickDivinationQuestion(questionIndex: DivinationQuestionIndex): void {
+    divinationUiStore.pickQuestion(
+      questionIndex,
+      this.language,
+      this.spiritStatuses,
+    );
+  }
+
+  submitDivinationGuess(guessId: SpiritId): void {
+    divinationUiStore.submitGuess(guessId, this.language, (correct) => {
+      const delta = divinationCrumbsReward(correct);
+      this.truthCrumbs = addTruthCrumbs(this.truthCrumbs, delta);
+      return delta;
+    });
+    saveService.schedulePersist();
+  }
+
+  finishDivinationSession(): void {
+    divinationUiStore.finishResult();
+    sceneUiStore.panBlocked = false;
+    saveService.schedulePersist();
+  }
+
+  isYagaShopUnlocked(): boolean {
+    return isYagaShopUnlockedDomain(this.spiritStatuses);
+  }
+
+  isYagaShopItemOwned(shopItemId: string): boolean {
+    return this.yagaShopPurchasedIds.includes(shopItemId);
+  }
+
+  purchaseYagaShopItem(shopItemId: string): YagaShopPurchaseResult {
+    const item = findYagaShopItem(shopItemId);
+    if (!item) return 'shop_locked';
+    const check = validateYagaShopPurchase(
+      this.spiritStatuses,
+      this.truthCrumbs,
+      this.yagaShopPurchasedIds,
+      item,
+    );
+    if (check !== 'success') return check;
+
+    this.truthCrumbs = spendTruthCrumbsForShop(
+      this.truthCrumbs,
+      item.priceCrumbs,
+    );
+    this.yagaShopPurchasedIds = [...this.yagaShopPurchasedIds, item.id];
+
+    switch (item.kind) {
+      case 'cat_skin':
+        if (!this.ownedSkinIds.includes(item.refId)) {
+          this.ownedSkinIds = [...this.ownedSkinIds, item.refId];
+        }
+        break;
+      case 'title':
+        if (!this.ownedTitleIds.includes(item.refId)) {
+          this.ownedTitleIds = [...this.ownedTitleIds, item.refId];
+        }
+        break;
+      case 'pet':
+        if (!this.ownedPetIds.includes(item.refId)) {
+          this.ownedPetIds = [...this.ownedPetIds, item.refId];
+        }
+        break;
+      case 'izba_effect':
+        if (!this.ownedIzbaEffectIds.includes(item.refId)) {
+          this.ownedIzbaEffectIds = [...this.ownedIzbaEffectIds, item.refId];
+        }
+        break;
+    }
+
+    saveService.schedulePersist();
+    return 'success';
+  }
+
+  applyCandlePackPurchase(): 'success' {
+    this.candles = addCandles(this.candles, 1);
+    saveService.schedulePersist();
+    return 'success';
+  }
+
+  equipPet(petId: string | null): boolean {
+    if (petId != null && !this.ownedPetIds.includes(petId)) return false;
+    this.equippedPetId = petId;
+    saveService.schedulePersist();
+    return true;
+  }
+
+  private recordDailyQuestClick(): void {
+    this.ensureDailyQuestDaySynced();
+    if (!isDailyQuestUnlocked(this.spiritStatuses)) return;
+    if (this.isDailyQuestRewardClaimedToday()) return;
+    if (isDailyClickTaskComplete(this.dailyQuestClickProgress)) return;
+    this.dailyQuestClickProgress = Math.min(
+      DAILY_QUEST_CLICK_GOAL,
+      this.dailyQuestClickProgress + 1,
+    );
   }
 
   clickIzbaItem(itemId: IzbaItemId): void {
@@ -740,6 +1036,15 @@ export class GameStore {
 
     this.grantFragmentVictoryBonus(spiritId);
 
+    const candleGrant = grantFirstVictoryCandle(
+      spiritId,
+      this.candleGrantedSpiritIds,
+    );
+    if (candleGrant.candlesDelta > 0) {
+      this.candles += candleGrant.candlesDelta;
+      this.candleGrantedSpiritIds = candleGrant.nextGranted;
+    }
+
     const rewardState = createRewardStateFromStore(this);
     const patch = applySpiritReward(spirit.reward, rewardState);
     this.applyRewardPatch(patch);
@@ -750,6 +1055,9 @@ export class GameStore {
     }
 
     this.handleOnboardingAfterVictory(spiritId);
+    if (spiritId === 'bannik') {
+      this.ensureDailyQuestDaySynced();
+    }
     quizUiStore.close();
     saveService.schedulePersist();
   }
@@ -986,7 +1294,8 @@ export class GameStore {
     if (this.fragmentVictoryBonusGranted.includes(spiritId)) return;
 
     const target =
-      (this.selectedFragmentSpiritId as SpiritId | null) ?? spiritId;
+      pickFragmentDropTarget(this.spiritStatuses, this.fragmentCounts) ??
+      spiritId;
     const prev = this.fragmentCounts[target] ?? 0;
     this.fragmentCounts = { ...this.fragmentCounts, [target]: prev + 1 };
     this.fragmentVictoryBonusGranted = [
@@ -1220,6 +1529,10 @@ export class GameStore {
     this.titleId = titleId;
     saveService.schedulePersist();
     return true;
+  }
+
+  isPetOwned(petId: string): boolean {
+    return this.ownedPetIds.includes(petId);
   }
 
   isIzbaEffectOwned(effectId: IzbaEffectId): boolean {

@@ -11,6 +11,7 @@ import { GameStore } from '../store/GameStore';
 import { energyUiStore } from '../store/energyUiStore';
 import { sceneUiStore } from '../store/sceneUiStore';
 import { quizUiStore } from '../store/quizUiStore';
+import { divinationUiStore } from './divinationUiStore';
 
 function makeStore(partial?: Partial<ReturnType<typeof createDefaultSave>>): GameStore {
   const store = new GameStore();
@@ -22,6 +23,8 @@ describe('GameStore', () => {
   afterEach(() => {
     vi.useRealTimers();
     energyUiStore.close();
+    divinationUiStore.closeAll();
+    sceneUiStore.panBlocked = false;
     sceneUiStore.tiredClickCount = 0;
     sceneUiStore.catSleepReason = null;
     sceneUiStore.catSleeping = false;
@@ -356,7 +359,7 @@ describe('GameStore', () => {
       store.advanceQuizAfterCorrect();
     }
     store.claimQuizVictory();
-    expect(store.fragmentCounts.lada).toBe(1);
+    expect(store.fragmentCounts.baba_yaga).toBe(1);
     expect(store.fragmentVictoryBonusGranted).toContain('leshiy');
   });
 
@@ -426,5 +429,65 @@ describe('GameStore', () => {
     expect(store.ownedSkinIds).toContain('landscape_yaga');
     expect(store.skins.window).toBe(windowBefore);
     expect(store.trophiesUnlocked).toContain('baba_yaga');
+  });
+
+  it('clickMirror before Yaga shows cat line without opening threshold', () => {
+    const store = makeStore({
+      onboardingCompleted: true,
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        baba_yaga: 'available',
+      },
+      candles: 2,
+    });
+    store.clickMirror();
+    expect(divinationUiStore.phase).toBe('idle');
+    expect(store.lastCatBubble?.text).toBeTruthy();
+  });
+
+  it('confirmDivinationAsk spends one candle and starts session', () => {
+    const store = makeStore({
+      onboardingCompleted: true,
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        baba_yaga: 'defeated',
+        brownie: 'defeated',
+      },
+      candles: 1,
+    });
+    store.clickMirror();
+    expect(divinationUiStore.phase).toBe('threshold');
+    store.confirmDivinationAsk();
+    expect(store.candles).toBe(0);
+    expect(divinationUiStore.phase).toBe('smoke');
+  });
+
+  it('equipPet allows only owned pets', () => {
+    const store = makeStore({
+      ownedPetIds: ['pet_griffin'],
+      equippedPetId: null,
+    });
+    expect(store.equipPet('pet_griffin')).toBe(true);
+    expect(store.equippedPetId).toBe('pet_griffin');
+    expect(store.equipPet('pet_firebird')).toBe(false);
+    expect(store.equipPet(null)).toBe(true);
+    expect(store.equippedPetId).toBeNull();
+  });
+
+  it('purchaseYagaShopItem grants title and deducts crumbs', () => {
+    const store = makeStore({
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        baba_yaga: 'defeated',
+      },
+      truthCrumbs: 15,
+    });
+    const result = store.purchaseYagaShopItem('shop_title_visionary_cat');
+    expect(result).toBe('success');
+    expect(store.truthCrumbs).toBe(5);
+    expect(store.ownedTitleIds).toContain('title_visionary_cat');
+    expect(store.purchaseYagaShopItem('shop_title_visionary_cat')).toBe(
+      'already_owned',
+    );
   });
 });

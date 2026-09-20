@@ -29,6 +29,7 @@ import {
   getFolktalePages,
   hasFolktale,
 } from '../../data/folktales';
+import { BookFragmentPuzzleIllustration } from './BookFragmentPuzzleIllustration';
 import { spiritIllustrationUrl } from './spiritIllustrationUrl';
 import { useBookPageFlip } from './useBookPageFlip';
 
@@ -193,6 +194,21 @@ export const BookOverlay = observer(function BookOverlay() {
 
   const showFlightLayer =
     flightVisible && (phase === 'flying' || phase === 'closing');
+
+  const fragmentTotal =
+    spirit.unlock.kind === 'fragments'
+      ? (spirit.unlock.fragmentCount ?? 0)
+      : 0;
+  const fragmentHave = gameStore.fragmentCounts[spiritId] ?? 0;
+  const useFragmentPuzzle =
+    isFragmentSpirit(spiritId) &&
+    status === 'locked' &&
+    fragmentTotal > 0 &&
+    fragmentHave < fragmentTotal;
+  const useFullColorFragment =
+    isFragmentSpirit(spiritId) && status === 'available';
+  const usePageSilhouette =
+    status !== 'defeated' && !useFragmentPuzzle && !useFullColorFragment;
 
   const illustrationClassName = [
     'book-illustration',
@@ -412,26 +428,6 @@ export const BookOverlay = observer(function BookOverlay() {
                     },
                   )}
                 </p>
-                <button
-                  type="button"
-                  className={`book-page__fragment-select${
-                    gameStore.selectedFragmentSpiritId === spiritId
-                      ? ' book-page__fragment-select--active'
-                      : ''
-                  }`}
-                  onClick={() => gameStore.selectFragmentSpirit(spiritId)}
-                  disabled={blocked}
-                >
-                  {gameStore.selectedFragmentSpiritId === spiritId
-                    ? resolveText(
-                        settingsUiContent.bookFragmentSelected,
-                        locale,
-                      )
-                    : resolveText(
-                        settingsUiContent.bookSelectFragment,
-                        locale,
-                      )}
-                </button>
               </div>
             )}
 
@@ -454,15 +450,23 @@ export const BookOverlay = observer(function BookOverlay() {
           </div>
 
           <div
-            className={`book-page book-page--right${status !== 'defeated' ? ' book-page--silhouette' : ''}${rightFlipClass ? ` ${rightFlipClass}` : ''}`}
+            className={`book-page book-page--right${usePageSilhouette ? ' book-page--silhouette' : ''}${rightFlipClass ? ` ${rightFlipClass}` : ''}`}
           >
-            <img
-              className={illustrationClassName}
-              src={spiritIllustrationUrl(spiritId)}
-              alt=""
-              draggable={false}
-              onAnimationEnd={handleRevealEnd}
-            />
+            {useFragmentPuzzle ? (
+              <BookFragmentPuzzleIllustration
+                spiritId={spiritId}
+                revealedCount={fragmentHave}
+                totalCount={fragmentTotal}
+              />
+            ) : (
+              <img
+                className={illustrationClassName}
+                src={spiritIllustrationUrl(spiritId)}
+                alt=""
+                draggable={false}
+                onAnimationEnd={handleRevealEnd}
+              />
+            )}
             <span
               className={`book-page__grade book-page__grade--${spirit.grade}`}
             >

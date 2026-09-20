@@ -35,7 +35,8 @@ describe('skinPools window skins', () => {
     expect(getSkinIdsForCategory('cat', 'epic')).toEqual([]);
     expect(getSkinIdsForCategory('cat', 'epoch')).toEqual([]);
     expect(getMiracleCatSkinIds('epic')).toContain('epic_hero');
-    expect(getMiracleCatSkinIds('epoch')).toContain('purple_mage');
+    expect(getMiracleCatSkinIds('epoch')).not.toContain('purple_mage');
+    expect(getMiracleCatSkinIds('epoch')).not.toContain('smook');
   });
 
   it('should not include quest-only landscape_yaga in chest pool', () => {

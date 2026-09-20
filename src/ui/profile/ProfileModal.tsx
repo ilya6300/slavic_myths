@@ -36,6 +36,7 @@ import { WoodQuestButton } from '../common/WoodQuestButton';
 
 import { resolveAcquireHintForProfile } from '../../data/profileAcquireHints';
 import { izbaEffects, resolveIzbaEffectName } from '../../data/izbaEffects';
+import { pets, getPetById } from '../../data/pets';
 import { getSkinBonusLines } from '../../domain/skinBonuses';
 
 
@@ -53,6 +54,8 @@ const TABS: { id: ProfileTab; labelKey: keyof typeof settingsUiContent }[] = [
   { id: 'brownie', labelKey: 'profileTabBrownie' },
 
   { id: 'titles', labelKey: 'profileTabTitles' },
+
+  { id: 'pets', labelKey: 'profileTabPets' },
 
   { id: 'atmosphere', labelKey: 'profileTabAtmosphere' },
 
@@ -95,6 +98,14 @@ function getPreviewItemName(
     return resolveIzbaEffectName(selectedId as import('../../data/izbaEffects').IzbaEffectId, locale);
   }
 
+  if (tab === 'pets') {
+    if (selectedId === 'none') {
+      return resolveText(settingsUiContent.profilePetNone, locale);
+    }
+    const pet = getPetById(selectedId);
+    return pet ? resolveText(pet.name, locale) : null;
+  }
+
   if (tab === 'titles') {
 
     const title = getTitleById(selectedId);
@@ -113,6 +124,9 @@ function getPreviewItemName(
 
 
 function getEquippedId(tab: ProfileTab): string | null {
+  if (tab === 'pets') {
+    return gameStore.equippedPetId ?? 'none';
+  }
   if (tab === 'atmosphere') {
     return gameStore.equippedIzbaEffectId ?? 'none';
   }
@@ -169,6 +183,11 @@ export const ProfileModal = observer(function ProfileModal() {
       return;
     }
 
+    if (tab === 'pets') {
+      gameStore.equipPet(selectedId === 'none' ? null : selectedId);
+      return;
+    }
+
     const storeKey = skinStoreKey(tab as ProfileSkinCategory);
 
     gameStore.equipSkin(storeKey, selectedId);
@@ -184,7 +203,9 @@ export const ProfileModal = observer(function ProfileModal() {
     (tab === 'atmosphere'
       ? selectedId === 'none' ||
         gameStore.isIzbaEffectOwned(selectedId as import('../../data/izbaEffects').IzbaEffectId)
-      : tab === 'titles'
+      : tab === 'pets'
+        ? selectedId === 'none' || gameStore.isPetOwned(selectedId)
+        : tab === 'titles'
 
       ? gameStore.isTitleOwned(selectedId)
 
@@ -318,6 +339,35 @@ export const ProfileModal = observer(function ProfileModal() {
                 <div className="profile-grid__full">
                   <ProfileStatsPanel />
                 </div>
+              ) : tab === 'pets' ? (
+                <>
+                  <button
+                    type="button"
+                    className={`profile-grid__cell profile-grid__cell--pet${selectedId === 'none' ? ' profile-grid__cell--selected' : ''}`}
+                    onClick={() => profileUiStore.selectItem('none')}
+                  >
+                    <span className="profile-grid__title">
+                      {resolveText(settingsUiContent.profilePetNone, locale)}
+                    </span>
+                  </button>
+                  {pets.map((pet) => {
+                    const owned = gameStore.isPetOwned(pet.id);
+                    const selected = selectedId === pet.id;
+                    return (
+                      <button
+                        key={pet.id}
+                        type="button"
+                        className={`profile-grid__cell profile-grid__cell--pet${selected ? ' profile-grid__cell--selected' : ''}${!owned ? ' profile-grid__cell--locked' : ''}`}
+                        onClick={() => profileUiStore.selectItem(pet.id)}
+                      >
+                        <span className={`profile-grid__pet-silhouette ${pet.sceneClassName}`} aria-hidden />
+                        <span className="profile-grid__title hud-title--epoch">
+                          {resolveText(pet.name, locale)}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </>
               ) : tab === 'atmosphere' ? (
                 <>
                   <button

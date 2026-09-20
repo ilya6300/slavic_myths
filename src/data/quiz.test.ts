@@ -101,7 +101,7 @@ describe('quiz data', () => {
     expect(byId.dedushka_toptygin.questions).toHaveLength(6);
     expect(byId.poludnica.questions).toHaveLength(8);
     expect(byId.rusalka.questions).toHaveLength(8);
-    expect(byId.lada.questions).toHaveLength(7);
+    expect(byId.lada.questions).toHaveLength(8);
     expect(byId.veles.questions).toHaveLength(12);
     expect(byId.baba_yaga.questions).toHaveLength(12);
     expect(byId.koschei_immortal.questions).toHaveLength(12);
@@ -114,7 +114,8 @@ describe('quiz data', () => {
     );
     expect(byId.poludnica.questions[1].options[0]).toContain('всё поле целиком');
     expect(byId.rusalka.questions[0].options[0]).toContain('без рыбьего хвоста');
-    expect(byId.lada.questions[0].options[0]).toContain('мир и порядок в семье');
+    expect(byId.rusalka.catHook).toContain('на сухом бугре');
+    expect(byId.lada.questions[0].options[0]).toContain('Мир и порядок в семье');
     expect(byId.veles.questions[0].options[0]).toContain('стадо, и богатство');
     expect(byId.baba_yaga.questions[1].options[0]).toContain('окуренные дымом');
     expect(byId.koschei_immortal.questions[1].options[0]).toContain(

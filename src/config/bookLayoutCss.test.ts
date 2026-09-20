@@ -83,4 +83,14 @@ describe('TASK-019 book layout CSS contract', () => {
     expect(bookCss).toMatch(/book-illustration-reveal/);
     expect(bookCss).toMatch(/book-illustration--revealing/);
   });
+
+  it('should define fragment puzzle illustration layers and veil grayscale', () => {
+    expect(bookCss).toMatch(/\.book-illustration-puzzle\b/);
+    expect(bookCss).toMatch(/\.book-illustration-puzzle__stack\b/);
+    expect(bookCss).toMatch(/\.book-illustration-puzzle__veil-img\b/);
+    const veil = ruleBody('.book-illustration-puzzle__veil-img', bookCss);
+    expect(veil).toMatch(/filter:\s*grayscale\(1\)/);
+    const silhouette = ruleBody('.book-page--silhouette .book-illustration', bookCss);
+    expect(silhouette).toMatch(/filter:\s*grayscale\(1\)/);
+  });
 });

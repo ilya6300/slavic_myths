@@ -387,25 +387,25 @@ export const catDialogBanksContent = {
 
   fragment_drop: [
     L(
-      'Осколок Эпохи. Кощей уже нервничает.',
-      'A shard of the Age. Koschei is nervous already.',
+      'Фрагмент Эпохи. Кощей уже нервничает.',
+      'A fragment of the Age. Koschei is nervous already.',
       'Çağdan bir parça. Koşçey şimdiden gergin.',
     ),
   ],
 
   miracle_consolation: [
     L(
-      'Не осколок. Зато изба сегодня добрее.',
-      'Not a shard. But the hut is kinder today.',
+      'Не фрагмент. Зато изба сегодня добрее.',
+      'Not a fragment. But the hut is kinder today.',
       'Parça değil. Ama kulübe bugün daha iyi.',
     ),
   ],
 
   fragment_hint: [
     L(
-      'Ещё осколок — и Кощей откроется. Если снова смерть не спрячет.',
-      'One more shard — and Koschei unlocks. If he doesn\'t hide his death again.',
-      'Bir parça daha — Koşçey açılır. Ölümünü yine saklamazsa.',
+      'Ещё фрагмент — и страница Кощея откроется.',
+      'One more fragment — and Koschei\'s page will open.',
+      'Bir parça daha — Koşçey\'in sayfası açılır.',
     ),
   ],
 
@@ -422,6 +422,22 @@ export const catDialogBanksContent = {
       'Предки у печки так рассказывали. Я только про веник добавил.',
       'Ancestors told it by the stove. I only added the broom.',
       'Atalar sobada böyle anlatırdı. Ben sadece fırçayı ekledim.',
+    ),
+  ],
+
+  divination_closed: [
+    L(
+      'Гадание закрыто. Сначала договорись с Бабой-Ягой.',
+      'Divination is closed. Deal with Baba Yaga first.',
+      'Falcılık kapalı. Önce Baba Yaga ile anlaş.',
+    ),
+  ],
+
+  divination_no_candle: [
+    L(
+      'Свеча кончилась. Побеждай духов, загляни в лавку Яги или к дару путника.',
+      'No candles left. Defeat spirits, visit Yaga\'s shop, or the traveler\'s gift.',
+      'Mum bitti. Ruhları yen, Yaga dükkânına veya yolcunun armağanına bak.',
     ),
   ],
 } as const;
@@ -589,12 +605,6 @@ export const settingsUiContent = {
     'Collected {current} / {total}',
     'Toplandı {current} / {total}',
   ),
-  bookSelectFragment: L(
-    'Собирать осколки для этого духа',
-    'Collect shards for this spirit',
-    'Bu ruh için parça topla',
-  ),
-  bookFragmentSelected: L('Цель осколков', 'Shard target', 'Parça hedefi'),
   hudMiracleProgress: L(
     'До чуда: {progress} / {total}',
     'Until miracle: {progress} / {total}',
@@ -629,7 +639,9 @@ export const settingsUiContent = {
   profileTabWindow: L('Улица', 'Street', 'Sokak'),
   profileTabBrownie: L('Домовой', 'Domovoy', 'Domovoy'),
   profileTabTitles: L('Титулы', 'Titles', 'Unvanlar'),
+  profileTabPets: L('Питомцы', 'Companions', 'Yoldaşlar'),
   profileTabAtmosphere: L('Атмосфера', 'Atmosphere', 'Atmosfer'),
+  profilePetNone: L('Без питомца', 'No companion', 'Yoldaş yok'),
   profileEffectNone: L('Без эффекта', 'No effect', 'Efekt yok'),
   profileTabSettings: L('Настройки', 'Settings', 'Ayarlar'),
   energyRewardTitle: L('Нет энергии', 'Out of energy', 'Enerji bitti'),
@@ -701,6 +713,23 @@ export const settingsUiContent = {
   ),
   starterPackLater: L('Не сейчас', 'Not now', 'Şimdi değil'),
   starterPackOwned: L('Дар уже твой', 'The gift is already yours', 'Armağan zaten senin'),
+  yagaShopTitle: L('Лавка Яги', "Yaga's shop", 'Yaga\'nın dükkânı'),
+  yagaShopTabCrumbs: L('Крупицы', 'Truth crumbs', 'Kırıntılar'),
+  yagaShopTabCandles: L('Свечи', 'Candles', 'Mumlar'),
+  yagaShopRail: L('Лавка', 'Shop', 'Dükkân'),
+  yagaShopBuy: L('Купить', 'Buy', 'Satın al'),
+  yagaShopOwned: L('Куплено', 'Owned', 'Sahip'),
+  yagaShopCandleLore: L(
+    'Свеча для зеркала. Цена — в каталоге платформы.',
+    'A candle for the mirror. Price comes from the platform catalog.',
+    'Ayna için mum. Fiyat platform kataloğundan gelir.',
+  ),
+  yagaShopCandleCta: L('Купить свечу', 'Buy a candle', 'Mum satın al'),
+  yagaShopCandlePriceFromSdk: L(
+    'Цена: {price}',
+    'Price: {price}',
+    'Fiyat: {price}',
+  ),
   hudRailLabel: L('События', 'Events', 'Olaylar'),
   hudGrassTooltip: L(
     'Три пучка — Кикимора сплетёт оберег',

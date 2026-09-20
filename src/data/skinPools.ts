@@ -41,8 +41,17 @@ const WINDOW_SKIN_DISPLAY_GRADE: Record<ViewSkinId, Grade> = {
 
 export type SkinCategory = 'cat' | 'brownie' | 'izba' | 'window';
 
-/** Только IAP / квест — не в сундуке */
-const CAT_SKIN_CHEST_EXCLUDED = new Set(['cat_pilgrim']);
+/** Только IAP / квест / лавка Яги — не в сундуке */
+const CAT_SKIN_CHEST_EXCLUDED = new Set([
+  'cat_pilgrim',
+  'smook',
+  'purple_mage',
+  'midnight_sun',
+  'fluffy_veles',
+  'stormy_perun',
+  'wondrous_div',
+  'svarozhich',
+]);
 
 export function getCatSkinIdsByGrade(grade: Grade): string[] {
   return catSkins

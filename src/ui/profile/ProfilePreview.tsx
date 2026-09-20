@@ -12,6 +12,8 @@ import { resolveTitleName } from '../../data/titleContent';
 import { getTitleById } from '../../data/titles';
 import { isNightTime } from '../../domain/nightTime';
 import { useLocale } from '../../i18n/LocaleContext';
+import { getPetById } from '../../data/pets';
+import { resolveText } from '../../i18n/resolve';
 import { gameStore } from '../../store/GameStore';
 import { profileUiStore } from '../../store/profileUiStore';
 
@@ -124,6 +126,28 @@ export const ProfilePreview = observer(function ProfilePreview() {
           alt=""
           draggable={false}
         />
+      </div>
+    );
+  }
+
+  if (tab === 'pets') {
+    const petId = selectedId ?? gameStore.equippedPetId;
+    const pet = petId ? getPetById(petId) : null;
+    return (
+      <div className="profile-modal__preview-stage profile-modal__preview-stage--pets">
+        <img
+          className="profile-modal__preview-solo profile-modal__preview-solo--cat"
+          src={getCatSkinById(gameStore.skins.cat)?.sit ?? ''}
+          alt=""
+          draggable={false}
+        />
+        {pet && (
+          <div
+            className={`profile-modal__preview-pet ${pet.sceneClassName}`}
+            aria-hidden
+            title={resolveText(pet.name, locale)}
+          />
+        )}
       </div>
     );
   }

@@ -42,6 +42,7 @@ import {
   type ChestRollState,
 
 } from './chestLoot';
+import { pickFragmentDropTarget } from './fragmentDrop';
 
 import type { GameSkins } from './GameSave';
 
@@ -68,31 +69,7 @@ const MAX_REROLL_ATTEMPTS = 24;
 
 
 function pickFragmentTarget(state: ChestRollState): SpiritId | null {
-
-  const selected = state.selectedFragmentSpiritId as SpiritId | null;
-
-  if (
-
-    selected &&
-
-    FRAGMENT_SPIRIT_IDS.includes(selected) &&
-
-    state.spiritStatuses[selected] === 'locked'
-
-  ) {
-
-    return selected;
-
-  }
-
-  for (const id of FRAGMENT_SPIRIT_IDS) {
-
-    if (state.spiritStatuses[id] === 'locked') return id;
-
-  }
-
-  return null;
-
+  return pickFragmentDropTarget(state.spiritStatuses, state.fragmentCounts);
 }
 
 

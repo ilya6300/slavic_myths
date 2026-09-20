@@ -7,6 +7,7 @@ import { getQuizDotClassName } from '../../domain/quizProgressDots';
 import { resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
+import { divinationUiStore } from '../../store/divinationUiStore';
 import { quizUiStore } from '../../store/quizUiStore';
 import {
   houseSkins,
@@ -35,6 +36,8 @@ function resolveHouseUrl(skinId: string): string {
 
 export const QuizModal = observer(function QuizModal() {
   const { locale } = useLocale();
+
+  if (divinationUiStore.phase !== 'idle') return null;
 
   const spiritId = quizUiStore.activeSpiritId;
   const spirit = spiritId ? getSpiritById(spiritId) : null;

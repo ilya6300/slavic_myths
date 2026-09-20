@@ -7,7 +7,6 @@ import { catPlacement } from '../../config/scenePlacements';
 import { gameStore } from '../../store/GameStore';
 import { catDialogStore } from '../../store/catDialogStore';
 import { sceneUiStore } from '../../store/sceneUiStore';
-import { DailyFindCoin } from './DailyFindCoin';
 import { SceneSprite } from './SceneSprite';
 
 function coinFxStyle(leftVw: number, bottomVw: number): CSSProperties {
@@ -82,7 +81,6 @@ export const CatLayer = observer(function CatLayer() {
           <span>z</span>
         </div>
       )}
-      <DailyFindCoin />
     </div>
   );
 });

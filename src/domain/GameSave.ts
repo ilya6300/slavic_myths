@@ -43,6 +43,10 @@ export interface GameSave {
   lastEnergyAt: number;
   luckCoins: number;
   talismans: number;
+  /** Свечи для гадания (без лимита накопления). */
+  candles: number;
+  /** Вещие крупицы — валюта лавки Яги. */
+  truthCrumbs: number;
   titleId: string | null;
 
   spiritStatuses: Record<string, SpiritStatus>;
@@ -53,6 +57,12 @@ export interface GameSave {
   ownedTitleIds: string[];
   ownedIzbaEffectIds: string[];
   equippedIzbaEffectId: string | null;
+  ownedPetIds: string[];
+  equippedPetId: string | null;
+  /** Идемпотентные покупки в лавке Яги (item id). */
+  yagaShopPurchasedIds: string[];
+  /** Духи, за первую победу по которым уже выдана свеча. */
+  candleGrantedSpiritIds: string[];
   trophiesUnlocked: string[];
 
   chestReadyAt: number | null;
@@ -87,8 +97,16 @@ export interface GameSave {
   /** Духи, для которых ink-reveal иллюстрации уже проигран (scenario §5.2) */
   illustrationRevealed: string[];
 
-  /** Календарный день, когда собран daily-find (plan §3.1). */
+  /** @deprecated v13 — мигрируется в dailyQuestRewardClaimedDayId */
   dailyFindClaimedDayId: string | null;
+
+  /** Календарный день ежедневки (сброс прогресса). */
+  dailyQuestDayId: string | null;
+  dailyQuestTaleSpiritId: string | null;
+  dailyQuestClickProgress: number;
+  dailyQuestTaleCorrect: boolean;
+  /** День, когда уже выдан фрагмент за полную ежедневку. */
+  dailyQuestRewardClaimedDayId: string | null;
 
   /** Сноска при первом открытии сказки в книге. */
   folktaleIntroShown: boolean;
@@ -161,6 +179,8 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     lastEnergyAt: now,
     luckCoins: 0,
     talismans: START_TALISMANS,
+    candles: 0,
+    truthCrumbs: 0,
     titleId: 'novenkiy',
 
     spiritStatuses: createDefaultSpiritStatuses(),
@@ -181,6 +201,10 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     ownedTitleIds: ['novenkiy'],
     ownedIzbaEffectIds: [],
     equippedIzbaEffectId: null,
+    ownedPetIds: [],
+    equippedPetId: null,
+    yagaShopPurchasedIds: [],
+    candleGrantedSpiritIds: [],
     trophiesUnlocked: [],
 
     chestReadyAt: null,
@@ -212,6 +236,11 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     illustrationRevealed: [],
 
     dailyFindClaimedDayId: null,
+    dailyQuestDayId: null,
+    dailyQuestTaleSpiritId: null,
+    dailyQuestClickProgress: 0,
+    dailyQuestTaleCorrect: false,
+    dailyQuestRewardClaimedDayId: null,
     folktaleIntroShown: false,
 
     energyRegenBonusPercent: 0,

@@ -90,4 +90,17 @@ describe('migrateSave', () => {
     expect(migrated.ownedSkinIds).not.toContain('hut_epic');
     expect(migrated.skins.izba).toBe('hut_standart');
   });
+
+  it('migrates v12 to v13 with meta fields and daily quest claim', () => {
+    const migrated = migrateSave({
+      ...createDefaultSave(),
+      version: 12,
+      dailyFindClaimedDayId: '2026-09-19',
+    });
+    expect(migrated.version).toBe(SAVE_VERSION);
+    expect(migrated.candles).toBe(0);
+    expect(migrated.truthCrumbs).toBe(0);
+    expect(migrated.ownedPetIds).toEqual([]);
+    expect(migrated.dailyQuestRewardClaimedDayId).toBe('2026-09-19');
+  });
 });

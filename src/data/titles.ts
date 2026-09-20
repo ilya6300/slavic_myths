@@ -4,7 +4,13 @@
 
 import type { Grade } from '../domain/grade';
 
-export type TitleSource = 'start' | 'quest' | 'chest' | 'event' | 'miracle_chest';
+export type TitleSource =
+  | 'start'
+  | 'quest'
+  | 'chest'
+  | 'event'
+  | 'miracle_chest'
+  | 'yaga_shop';
 
 export interface TitleDefinition {
   id: string;
@@ -303,6 +309,42 @@ export const titles: TitleDefinition[] = [
     grade: 'epoch',
     source: 'miracle_chest',
     description: 'Там, где сказка кончается, кот ещё сидит на страже.',
+  },
+  // --- Лавка Яги (вещие крупицы) ---
+  {
+    id: 'title_visionary_cat',
+    name: 'Вещий кот',
+    grade: 'epoch',
+    source: 'yaga_shop',
+    description: 'Стекло ему кивает: завтрашний шорох слышно уже сегодня.',
+  },
+  {
+    id: 'title_spirit_talker',
+    name: 'Говорящий с духами',
+    grade: 'epoch',
+    source: 'yaga_shop',
+    description: 'Духи с ним разговаривают. Он — с ними. Иногда даже по делу.',
+  },
+  {
+    id: 'title_mirror_side',
+    name: 'Зазеркальный',
+    grade: 'epoch',
+    source: 'yaga_shop',
+    description: 'По ту сторону рамы, в тёплом дыму, не в темноте.',
+  },
+  {
+    id: 'title_oracle',
+    name: 'Оракул',
+    grade: 'epoch',
+    source: 'yaga_shop',
+    description: 'Духи отвечают коротко, как старому спрошайке.',
+  },
+  {
+    id: 'title_clairvoyant',
+    name: 'Ясновидящий',
+    grade: 'epoch',
+    source: 'yaga_shop',
+    description: 'В дыму слышит нрав сразу — лицо в стекле только после имени.',
   },
 ];
 

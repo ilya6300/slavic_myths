@@ -183,14 +183,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   rusalka: {
     questHook: L(
-      'На берёзе белая рубаха и венок. Смотри с сухого берега — в осоку я не полез.',
-      'A white shirt and a wreath on the birch. Watch from the dry bank — I\'m not going into the reeds.',
-      'Huşta beyaz gömlek ve taç. Kuru kıyıdan bak — sazlığa girmem.',
+      'Ветка качнулась, рубаха белая, пояса нет. Я уже на сухом бугре — в осоку сам не пойду.',
+      'A branch swayed, the shirt is white, no belt. I\'m already on the dry knoll — I won\'t go into the sedge myself.',
+      'Dal sallandı, gömlek beyaz, kuşak yok. Ben çoktan kuru tümsekteyim — sazlığa kendim girmem.',
     ),
     loseLine: L(
-      'Засмотрелся я на белую рубаху среди берёзовых веток, оступился на мокром камушке и бултых в осоку! Обсохну малость и вернусь.',
-      'I stared at the white shirt among birch branches, slipped on a wet stone and splashed into the reeds! I\'ll dry off a bit and come back.',
-      'Beyaz gömleğe bakarken kaydım, ıslak taşa takılıp sazlığa düştüm! Biraz kurulanıp geri gelirim.',
+      'Засмотрелся на венок, шагнул к осоке — и сижу мокрый, а рубаха на берёзе сухая. Берег мой, заводь её. Обсохну и вернусь уже с сухого места.',
+      'I stared at the wreath, stepped toward the sedge — and now I\'m wet, while the shirt on the birch is dry. The bank is mine, the backwater is hers. I\'ll dry off and come back from dry ground.',
+      'Taca bakarken sazlığa adım attım — ben ıslağım, huştaki gömlek kuru. Kıyı benim, koy onun. Kurulanıp kuru yerden dönerim.',
     ),
     lockedHint: L(
       'Ключ из сундука. Эпик. Русалка сама не поётся.',
@@ -200,19 +200,19 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   lada: {
     questHook: L(
-      'В горнице снова тихо после спора. Лад — это мир своих, не кумир с холма.',
-      'The room is quiet again after the quarrel. Lad is peace among one\'s own, not an idol on a hill.',
-      'Oda kavgadan sonra yine sessiz. Lad kendi aranda barıştır, tepedeki put değil.',
+      'Слышишь? После спора в горнице снова тихо. Лад — мир своих, а не резной столб на холме.',
+      'Hear that? After the quarrel the room is quiet again. Lad is peace among one\'s own, not a carved post on a hill.',
+      'Duyuyor musun? Kavgadan sonra oda yine sessiz. Lad kendi aranda barıştır, tepedeki oyma direk değil.',
     ),
     loseLine: L(
-      'Разволновался я, задел хвостом глиняную кружку — упала и разбилась. В суете лада не поймаешь. Успокоимся и попробуем снова.',
-      'Stop staring. You won\'t catch harmony like that.',
-      'Bakmayı kes. Uyumu böyle yakalayamazsın.',
+      'Не поймали лад. Зато я поймал свою кружку — обеими лапами, пока стол ещё дрожал. Выдохнем и зайдём снова, когда в горнице станет тихо.',
+      'We missed the lad. I did catch my mug — both paws, while the table still shook. We\'ll breathe and try again when the room is quiet.',
+      'Uyumu tutamadık. Ama bardağımı tuttum — iki pençeyle, masa hâlâ sallanırken. Oda susunca nefeslenip yine deneriz.',
     ),
     lockedHint: L(
-      '3 осколка. Лада без лада не придёт.',
-      '3 shards. Lada won\'t come without harmony.',
-      '3 parça. Uyum olmadan Lada gelmez.',
+      'Лада без лада не придёт.',
+      'Lada won\'t come without harmony.',
+      'Uyum olmadan Lada gelmez.',
     ),
   },
   veles: {
@@ -227,9 +227,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Orman gölgeleri döndü — öğüdü sonuna kadar dinlemedik. Sabredip yine soralım.',
     ),
     lockedHint: L(
-      '6 осколков. Велес терпелив. Ты — нет.',
-      '4 shards. Veles is patient. You — aren\'t.',
-      '4 parça. Veles sabırlı. Sen — değilsin.',
+      'Велес терпелив. Тебе стоит поучиться.',
+      'Veles is patient. You could learn from that.',
+      'Veles sabırlı. Sende de biraz olsun.',
     ),
   },
   baba_yaga: {
@@ -244,9 +244,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Kulübe yüzünü çevirmedi: kepenge adımı söylemeden burnumu soktum. Direklerde bekleyip kim geldiğini söyleyelim.',
     ),
     lockedHint: L(
-      '3 осколка. Яга уже ступу греет.',
-      '3 shards. Yaga is already warming the mortar.',
-      '3 parça. Yaga havanı ısıtıyor bile.',
+      'У края чащи столбы пахнут дымом — это порог, не курица.',
+      'At the thicket\'s edge the posts smell of smoke — a threshold, not a hen.',
+      'Sık ormanın kenarında direkler duman kokar — eşik, tavuk değil.',
     ),
   },
   koschei_immortal: {
@@ -261,9 +261,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'O ölümsüz. Sen değilsin. İğne kuyruğa değmeden gidelim.',
     ),
     lockedHint: L(
-      '5 осколков. Смерть прячет — ты ищи.',
-      '6 shards. He hides death — you search.',
-      '6 parça. Ölümü saklar — sen ara.',
+      'В тереме блестят сундуки, а ключ — не в сундуке.',
+      'Chests gleam in the terem, but the key is not in a chest.',
+      'Teremde sandıklar parlar, anahtar sandıkta değil.',
     ),
   },
   chudo_yudo: {
@@ -278,9 +278,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Dalga kıyıyı aldı, madeni para hâlâ patide. Payı bütün atıp derinlik durulana dek kuruda oturalım.',
     ),
     lockedHint: L(
-      '8 осколков. После него — Ярило и Перун.',
-      '8 shards. After him — Yarilo and Perun.',
-      '8 parça. Ondan sonra — Yarilo ve Perun.',
+      'После него откроется весенняя глава.',
+      'After him the spring chapter will open.',
+      'Ondan sonra bahar bölümü açılır.',
     ),
   },
   yarilo: {
@@ -295,9 +295,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Bahar çayırdan geçti, ben ot saplarını saydım. Kuyruk yeni ekim ilan etmeden toparlanalım.',
     ),
     lockedHint: L(
-      '8 осколков. Весна ждёт на поле.',
-      '8 shards. Spring waits in the field.',
-      '8 parça. Bahar tarlada bekliyor.',
+      'Белый конь уже ждёт у весеннего поля.',
+      'The white horse already waits by the spring field.',
+      'Beyaz at bahar tarlasının kenarında bekliyor.',
     ),
   },
   perun: {
@@ -312,9 +312,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
       'Gök gürültüsü çoktan meşelerin ardına gitti, ben kase sesini dinledim. Döneriz — kuyruk bile yüksek tepeyi bilir.',
     ),
     lockedHint: L(
-      '10 осколков. Финал книги — Перун.',
-      '10 shards. The book\'s finale — Perun.',
-      '10 parça. Kitabın finali — Perun.',
+      'Гром ждёт в дубраве на высокой горе.',
+      'Thunder waits in the oak grove on the high hill.',
+      'Gök gürültüsü yüksek tepedeki meşe koruluğunda bekliyor.',
     ),
   },
 };

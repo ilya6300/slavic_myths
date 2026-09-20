@@ -11,7 +11,7 @@ describe('profileAcquireHints', () => {
 
   it('should return miracle chest hint for epic and epoch cat skins', () => {
     expect(resolveSkinAcquireHint('cat', 'epic_hero', 'ru')).toBe('Сундук чудес');
-    expect(resolveSkinAcquireHint('cat', 'purple_mage', 'ru')).toBe('Сундук чудес');
+    expect(resolveSkinAcquireHint('cat', 'purple_mage', 'ru')).toBe('Лавка Яги');
   });
 
   it('should return null for default-owned skin id', () => {

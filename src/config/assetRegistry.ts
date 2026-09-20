@@ -81,6 +81,10 @@ export const quizBackgrounds: Record<QuizLocationId, QuizBackgroundConfig> = {
   },
 };
 
+export const izbaProps = {
+  mirrorFloor: fromAssets('izba/mirror_floor.png'),
+} as const;
+
 export const furniture = {
   bake: fromAssets('furniture/bake.png'),
   bench: fromAssets('furniture/bench.png'),
@@ -139,6 +143,9 @@ export const hudIcons = {
   smetana: fromAssets('UI/icon_smetana.png'),
   /** P1: assets/UI/icon_grass.png — пока fallback на пучок двора */
   grass: fromAssets('furniture/yard_grass.png'),
+  /** P0: отдельный icon_candle.png — временно амулет */
+  candle: fromAssets('UI/secret_amulet.png'),
+  truthCrumb: fromAssets('UI/monete_v1.png'),
 } as const;
 
 // --- Духи: гравюра (книга, викторина, fallback трофеев) ---
@@ -255,6 +262,22 @@ export function getCatSkinById(id: string): CatSkinAssets | undefined {
 export function getCatPoseUrl(skinId: string, pose: CatPose): string {
   const skin = getCatSkinById(skinId) ?? getCatSkinById(DEFAULT_CAT_SKIN_ID)!;
   return pose === 'sleep' ? skin.sleep : skin.sit;
+}
+
+/** Компаньоны лавки Яги (не скины кота). Заполнить при production PNG. */
+export type CompanionPetId = 'pet_griffin' | 'pet_humpback_horse' | 'pet_firebird';
+
+export const companionPetSprites: Partial<
+  Record<CompanionPetId, { sit: string; sleep: string }>
+> = {};
+
+export function getCompanionPetPoseUrl(
+  petId: string,
+  pose: CatPose,
+): string | undefined {
+  const entry = companionPetSprites[petId as CompanionPetId];
+  if (!entry) return undefined;
+  return pose === 'sleep' ? entry.sleep : entry.sit;
 }
 
 // --- Трофеи 3D (fallback на гравюру, если файл отсутствует) ---

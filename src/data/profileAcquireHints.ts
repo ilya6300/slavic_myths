@@ -53,7 +53,22 @@ const titleAcquireHints: Record<string, LocalizedText> = {
     'Wonder chest (very rare)',
     'Mucize sandığı (çok nadir)',
   ),
+  title_visionary_cat: L('Лавка Яги', "Yaga's shop", 'Yaga\'nın dükkânı'),
+  title_spirit_talker: L('Лавка Яги', "Yaga's shop", 'Yaga\'nın dükkânı'),
+  title_mirror_side: L('Лавка Яги', "Yaga's shop", 'Yaga\'nın dükkânı'),
+  title_oracle: L('Лавка Яги', "Yaga's shop", 'Yaga\'nın dükkânı'),
+  title_clairvoyant: L('Лавка Яги', "Yaga's shop", 'Yaga\'nın dükkânı'),
 };
+
+const YAGA_SHOP_CAT_SKIN_IDS = new Set([
+  'smook',
+  'purple_mage',
+  'midnight_sun',
+  'fluffy_veles',
+  'stormy_perun',
+  'wondrous_div',
+  'svarozhich',
+]);
 
 const profileAcquireMiracle: LocalizedText = L(
   'Сундук чудес',
@@ -85,6 +100,12 @@ const profileAcquireYaga: LocalizedText = L(
   'Baba Yaga\'yı yendikten sonra',
 );
 
+const profileAcquireYagaShop: LocalizedText = L(
+  'Лавка Яги',
+  "Yaga's shop",
+  'Yaga\'nın dükkânı',
+);
+
 export function resolveTitleAcquireHint(titleId: string, locale: Locale): string | null {
   const hint = titleAcquireHints[titleId];
   if (!hint) return null;
@@ -107,6 +128,10 @@ export function resolveSkinAcquireHint(
   }
   if (category === 'window' && skinId === 'landscape_yaga') {
     return resolveText(profileAcquireYaga, locale);
+  }
+
+  if (category === 'cat' && YAGA_SHOP_CAT_SKIN_IDS.has(skinId)) {
+    return resolveText(profileAcquireYagaShop, locale);
   }
 
   if (category === 'cat') {
@@ -133,6 +158,12 @@ export function resolveAcquireHintForProfile(
   if (!itemId) return null;
   if (tab === 'atmosphere' && itemId === 'thunder_izba') {
     return resolveText(profileAcquirePerun, locale);
+  }
+  if (tab === 'atmosphere' && itemId.startsWith('shop_')) {
+    return resolveText(profileAcquireYagaShop, locale);
+  }
+  if (tab === 'pets' && itemId !== 'none') {
+    return resolveText(profileAcquireYagaShop, locale);
   }
   if (tab === 'titles') return resolveTitleAcquireHint(itemId, locale);
   if (tab === 'cat' || tab === 'izba' || tab === 'window' || tab === 'brownie') {

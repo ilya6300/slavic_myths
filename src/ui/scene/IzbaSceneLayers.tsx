@@ -8,6 +8,7 @@ import {
   enemies,
 
   furniture,
+  izbaProps,
 
   houseSkins,
 
@@ -28,17 +29,16 @@ import {
 } from '../../domain/onboardingGuards';
 
 import { findNextAvailableSpirit } from '../../domain/spiritQueue';
-
+import { divinationUi } from '../../data/divinationContent';
+import { isDivinationUnlocked } from '../../domain/divinationSession';
+import { resolveText } from '../../i18n/resolve';
+import { useLocale } from '../../i18n/LocaleContext';
 import {
-
   benchPlacement,
-
   bookPlacement,
-
   bookStandPlacement,
-
+  mirrorPlacement,
   stovePlacement,
-
 } from '../../config/scenePlacements';
 
 import { gameStore } from '../../store/GameStore';
@@ -140,8 +140,10 @@ const WindowAperture = observer(function WindowAperture() {
 
 const Room1Furniture = observer(function Room1Furniture() {
   const bookRef = useRef<HTMLDivElement>(null);
+  const { locale } = useLocale();
 
   const { onboardingStep, onboardingCompleted } = gameStore;
+  const divinationUnlocked = isDivinationUnlocked(gameStore.spiritStatuses);
 
   const bookAllowed = canInteract(onboardingStep, onboardingCompleted, 'book');
 
@@ -322,6 +324,23 @@ const Room1Furniture = observer(function Room1Furniture() {
           }
         />
       </TutorialHighlight>
+
+      <SceneSprite
+        placementClassName={mirrorPlacement.className}
+        src={izbaProps.mirrorFloor}
+        alt=""
+        interactive={gameStore.onboardingCompleted}
+        onSpriteClick={() => gameStore.clickMirror()}
+        className={
+          divinationUnlocked ? 'scene-mirror--active' : 'scene-mirror--locked'
+        }
+      >
+        {!divinationUnlocked && (
+          <p className="scene-mirror__glass-hint" aria-hidden>
+            {resolveText(divinationUi.mirrorLockedGlass, locale)}
+          </p>
+        )}
+      </SceneSprite>
 
     </>
 
