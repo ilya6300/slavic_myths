@@ -61,6 +61,21 @@
 
 ---
 
+## Лавка Яги — скины кота (эпоха чудес, `assets/pets/the_age_of_miracles/`)
+
+**Канон:** `instruction/plans/draft.md` §«Лавка Яги`. Семь отдельных **персонажей** грейда эпоха чудес — чудо вшито в силуэт, палитру и материал шерсти, **не** наклейка на Рыжика.
+
+**Закон генерации (2026-09-21):**
+- Поза sid/sleep — только **текстом** (геометрия игрового спрайта), **запрещён** визуальный референс `cat_standart`.
+- Референсы стиля эпохи: `purple_mage_sid`, `smook_sid`, `flying_carpet_sid`, `box_closed.png`.
+- Промпты и список id: `scripts/yaga-shop-epoch-cat-prompts.mjs`; UI-теглайны: `src/data/yagaShopCatSkinArt.ts`.
+- Фон генерации: **белый `#FFFFFF`**; постобработка: `remove-border-white-alpha.mjs` (не чёрный фон).
+- Импорт после GenerateImage: `node scripts/import-yaga-cat-skin-drafts.mjs [skinId ...]`.
+
+**Пути:** `assets/pets/the_age_of_miracles/<id>/<id>_sid.png`, `<id>_sleep.png` для `smook`, `purple_mage`, `midnight_sun`, `fluffy_veles`, `stormy_perun`, `wondrous_div`, `svarozhich`.
+
+---
+
 ## P0 — правка существующих PNG (не генерация с нуля)
 
 ### Стёкла скинов избы — альфа
@@ -201,6 +216,44 @@ stylized 3D tactile, matte, cozy casual game navigation,
 isolated black background, no text baked in,
 style reference: assets/furniture/bench.png
 --no vector chevron, flat, material design, thin line icon
+```
+
+---
+
+### `assets/ui/book_quest_btn_wood.png` (P0)
+
+```
+game UI quest action button plank horizontal, carved warm honey-toned wood texture,
+stylized 3D clay wood tactile, soft beveled edges, matte finish,
+empty center area for text overlay, left side reserved for small icon slot,
+Slavic folk subtle carved ornament on border, readable at 44px height touch target,
+isolated black background, no text baked in,
+style reference: assets/ui/quiz_answer_wood.png + assets/furniture/book_of_spirits.png gold trim accent
+--no vector icon, flat design, material design, neon, glassmorphism, text in image
+```
+
+---
+
+### `assets/ui/icon_paw.png` (P0)
+
+```
+small cat paw print icon, stylized 3D clay plasticine, warm terracotta beige,
+matte tactile, cozy casual game HUD icon, isolated black background, no text,
+style reference: assets/pets/common/cat_standart/cat_standart_sid.png paw tone
+--no vector icon, flat, emoji, photorealistic, line art
+```
+
+---
+
+### `assets/ui/book_close_wood.png` (P0)
+
+```
+game UI close button small square, carved dark honey wood with carved X mark,
+stylized 3D tactile matte, leather corner accent optional subtle,
+fits on book leather cover corner, 36-44px readable touch size,
+isolated black background, no text,
+style reference: assets/furniture/book_of_spirits.png dark leather + assets/house/hut_standart.png wood
+--no vector X icon, flat material, thin line icon, neon, glassmorphism
 ```
 
 ---

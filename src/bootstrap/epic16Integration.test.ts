@@ -12,6 +12,9 @@ import {
 import { YAGA_PET_PRICE_CRUMBS } from '../data/pets';
 import { izbaEffects } from '../data/izbaEffects';
 import { getMiracleCatSkinIds } from '../data/skinPools';
+import { pets } from '../data/pets';
+import { getCatSkinById, getCompanionPetPoseUrl } from '../config/assetRegistry';
+import { yagaShopCatSkins } from '../data/yagaShop';
 
 const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 
@@ -27,8 +30,16 @@ describe('Epic 16 integration contracts', () => {
 
   it('should exclude shop epoch cat skins from miracle chest pool', () => {
     const epoch = getMiracleCatSkinIds('epoch');
-    expect(epoch).not.toContain('smook');
-    expect(epoch).not.toContain('purple_mage');
+    for (const item of yagaShopCatSkins) {
+      expect(epoch).not.toContain(item.refId);
+    }
+  });
+
+  it('should register every Yaga shop cat skin in assetRegistry', () => {
+    expect(yagaShopCatSkins).toHaveLength(7);
+    for (const item of yagaShopCatSkins) {
+      expect(getCatSkinById(item.refId)?.id).toBe(item.refId);
+    }
   });
 
   it('should list thunder_izba and four shop FX in izbaEffects', () => {
@@ -55,6 +66,14 @@ describe('Epic 16 integration contracts', () => {
     expect(block1).toContain('layer-izba');
     expect(block2).toContain('WindowAperture');
     expect(block2).toContain('layer-izba');
+  });
+
+  it('should wire companion pet sprites for profile and IzbaScene PetLayer', () => {
+    for (const pet of pets) {
+      expect(getCompanionPetPoseUrl(pet.id, 'sid')).toMatch(
+        /pets\/companion\/pet_/,
+      );
+    }
   });
 
   it('should keep pet and izba FX layers non-interactive in CSS', () => {

@@ -182,5 +182,20 @@ export function findYagaShopItem(shopItemId: string): YagaShopItem | undefined {
   return allYagaShopCrumbItems.find((i) => i.id === shopItemId);
 }
 
+export type YagaShopCatalogTab = 'cat' | 'titles' | 'pets' | 'atmosphere' | 'candles';
+
+export function getYagaShopItemsForTab(tab: Exclude<YagaShopCatalogTab, 'candles'>): YagaShopItem[] {
+  switch (tab) {
+    case 'cat':
+      return yagaShopCatSkins;
+    case 'titles':
+      return yagaShopTitles;
+    case 'pets':
+      return yagaShopPets;
+    case 'atmosphere':
+      return yagaShopIzbaEffects;
+  }
+}
+
 /** IAP свеча — цена только из PaymentsService / каталога SDK. */
 export const YAGA_SHOP_CANDLE_PRODUCT_ID = 'candle_pack_1';

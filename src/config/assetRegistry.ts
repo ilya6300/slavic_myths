@@ -143,8 +143,8 @@ export const hudIcons = {
   smetana: fromAssets('UI/icon_smetana.png'),
   /** P1: assets/UI/icon_grass.png — пока fallback на пучок двора */
   grass: fromAssets('furniture/yard_grass.png'),
-  /** P0: отдельный icon_candle.png — временно амулет */
-  candle: fromAssets('UI/secret_amulet.png'),
+  candle: fromAssets('UI/icon_candle.png'),
+  yagaShop: fromAssets('UI/icon_yaga_shop.png'),
   truthCrumb: fromAssets('UI/monete_v1.png'),
 } as const;
 
@@ -251,6 +251,41 @@ export const catSkins: CatSkinAssets[] = [
   ),
   catSkin('epoch', 'purple_mage', 'purple_mage', 'purple_mage_sid.png', 'purple_mage_sleep.png'),
   catSkin('epoch', 'smook', 'smook', 'smook_sid.png', 'smook_sleep.png'),
+  catSkin(
+    'epoch',
+    'midnight_sun',
+    'midnight_sun',
+    'midnight_sun_sid.png',
+    'midnight_sun_sleep.png',
+  ),
+  catSkin(
+    'epoch',
+    'fluffy_veles',
+    'fluffy_veles',
+    'fluffy_veles_sid.png',
+    'fluffy_veles_sleep.png',
+  ),
+  catSkin(
+    'epoch',
+    'stormy_perun',
+    'stormy_perun',
+    'stormy_perun_sid.png',
+    'stormy_perun_sleep.png',
+  ),
+  catSkin(
+    'epoch',
+    'wondrous_div',
+    'wondrous_div',
+    'wondrous_div_sid.png',
+    'wondrous_div_sleep.png',
+  ),
+  catSkin(
+    'epoch',
+    'svarozhich',
+    'svarozhich',
+    'svarozhich_sid.png',
+    'svarozhich_sleep.png',
+  ),
 ];
 
 export const DEFAULT_CAT_SKIN_ID = 'cat_standart';
@@ -264,12 +299,21 @@ export function getCatPoseUrl(skinId: string, pose: CatPose): string {
   return pose === 'sleep' ? skin.sleep : skin.sit;
 }
 
-/** Компаньоны лавки Яги (не скины кота). Заполнить при production PNG. */
+/** Компаньоны лавки Яги (не скины кота). `assets/pets/companion/`. */
 export type CompanionPetId = 'pet_griffin' | 'pet_humpback_horse' | 'pet_firebird';
+
+const companionPet = (folder: string, sitFile: string) => ({
+  sit: fromAssets(`pets/companion/${folder}/${sitFile}`),
+  sleep: fromAssets(`pets/companion/${folder}/${sitFile}`),
+});
 
 export const companionPetSprites: Partial<
   Record<CompanionPetId, { sit: string; sleep: string }>
-> = {};
+> = {
+  pet_griffin: companionPet('pet_griffin', 'pet_griffin_sid.png'),
+  pet_humpback_horse: companionPet('pet_humpback_horse', 'pet_humpback_horse_sid.png'),
+  pet_firebird: companionPet('pet_firebird', 'pet_firebird_sid.png'),
+};
 
 export function getCompanionPetPoseUrl(
   petId: string,

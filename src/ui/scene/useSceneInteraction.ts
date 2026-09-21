@@ -1,7 +1,5 @@
 import { useEffect, useRef, type RefObject } from 'react';
 
-import { swipeThreshold } from '../../config/sceneLayout';
-import { gameStore } from '../../store/GameStore';
 import { eventUiStore, IDLE_TICKER_KEY } from '../../store/eventUiStore';
 import { sceneUiStore, type IzbaRoom } from '../../store/sceneUiStore';
 
@@ -20,31 +18,13 @@ export function isSceneInteractiveTarget(target: EventTarget | null): boolean {
   return target.closest(INTERACTIVE_SELECTOR) != null;
 }
 
-/** Pan между комнатами: null = остаться в текущей (тап или короткий жест). */
+/** Pan жестом отключён — смена комнаты только кнопками `.scene-nav`. */
 export function resolvePanRoomAfterGesture(
-  dx: number,
-  dt: number,
-  viewportWidth: number,
-  activeRoom: IzbaRoom,
+  _dx: number,
+  _dt: number,
+  _viewportWidth: number,
+  _activeRoom: IzbaRoom,
 ): IzbaRoom | null {
-  const isTap =
-    Math.abs(dx) < swipeThreshold.clickMaxDxPx &&
-    dt < swipeThreshold.clickMaxDtMs;
-  if (isTap) return null;
-
-  const distancePercent = (Math.abs(dx) / viewportWidth) * 100;
-  const velocity = Math.abs(dx) / Math.max(dt, 1);
-  const isSwipe =
-    distancePercent >= swipeThreshold.distancePercent ||
-    velocity >= swipeThreshold.flickVelocityPxPerMs;
-
-  if (!isSwipe) return null;
-
-  if (dx < 0 && activeRoom === 1) return 2;
-  if (dx > 0 && activeRoom === 2) return 1;
-  if (dx > 0 && activeRoom === 1 && gameStore.onboardingCompleted) return 'street';
-  if (dx < 0 && activeRoom === 'street') return 1;
-
   return null;
 }
 
@@ -100,13 +80,7 @@ export function useScenePanSwipe(): {
     );
 
     if (nextRoom != null) {
-      if (nextRoom === 'street') {
-        if (!gameStore.tryEnterStreet()) {
-          /* ночь / Жирдяй — остаёмся в комнате 1, кот в облачке */
-        }
-      } else {
-        sceneUiStore.setRoom(nextRoom);
-      }
+      sceneUiStore.setRoom(nextRoom);
     }
 
     const wasCaptured = capturedRef.current;

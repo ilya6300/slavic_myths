@@ -20,7 +20,7 @@
 | Зеркало (сеанс) | `assets/divination/mirror_session.png` | draft → production после visual-check |
 | Дым сеанса | `assets/divination/smoke_overlay.png` | draft → production после visual-check |
 | 7 скинов кота лавки | `assets/cat/skins/…` по `skinContent` | partial (Дымок/Волшебство есть) |
-| 3 питомца | `assets/pets/{griffin,humpback,firebird}_*.png` | awaiting_user |
+| 3 питомца | `assets/pets/companion/pet_*/pet_*_sid.png` | ✅ production в репо |
 | 4 FX лавки | CSS-классы `izba-effect--fog` … `izba-effect--stars` | code-first + visual_check |
 
 ## SDK — свечи IAP

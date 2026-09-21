@@ -1,6 +1,9 @@
 import { observer } from 'mobx-react-lite';
 
-import { gradeFrames } from '../../config/assetRegistry';
+import {
+  getCompanionPetPoseUrl,
+  gradeFrames,
+} from '../../config/assetRegistry';
 
 import {
   getAllProfileTitles,
@@ -353,6 +356,7 @@ export const ProfileModal = observer(function ProfileModal() {
                   {pets.map((pet) => {
                     const owned = gameStore.isPetOwned(pet.id);
                     const selected = selectedId === pet.id;
+                    const petThumbUrl = getCompanionPetPoseUrl(pet.id, 'sid');
                     return (
                       <button
                         key={pet.id}
@@ -360,7 +364,19 @@ export const ProfileModal = observer(function ProfileModal() {
                         className={`profile-grid__cell profile-grid__cell--pet${selected ? ' profile-grid__cell--selected' : ''}${!owned ? ' profile-grid__cell--locked' : ''}`}
                         onClick={() => profileUiStore.selectItem(pet.id)}
                       >
-                        <span className={`profile-grid__pet-silhouette ${pet.sceneClassName}`} aria-hidden />
+                        {petThumbUrl ? (
+                          <img
+                            className="profile-grid__pet-thumb"
+                            src={petThumbUrl}
+                            alt=""
+                            draggable={false}
+                          />
+                        ) : (
+                          <span
+                            className={`profile-grid__pet-silhouette profile-grid__pet-silhouette--icon ${pet.sceneClassName}`}
+                            aria-hidden
+                          />
+                        )}
                         <span className="profile-grid__title hud-title--epoch">
                           {resolveText(pet.name, locale)}
                         </span>
@@ -389,6 +405,10 @@ export const ProfileModal = observer(function ProfileModal() {
                         className={`profile-grid__cell profile-grid__cell--atmosphere${selected ? ' profile-grid__cell--selected' : ''}${!owned ? ' profile-grid__cell--locked' : ''}`}
                         onClick={() => profileUiStore.selectItem(effect.id)}
                       >
+                        <span
+                          className={`profile-grid__atmosphere-swatch ${effect.sceneClassName}`}
+                          aria-hidden
+                        />
                         <span className={`profile-grid__title ${TITLE_GRADE_CLASS[effect.grade] ?? ''}`}>
                           {resolveIzbaEffectName(effect.id, locale)}
                         </span>

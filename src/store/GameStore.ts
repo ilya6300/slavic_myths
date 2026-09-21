@@ -12,6 +12,7 @@ import {
   STARTER_PACK_CAT_SKIN_ID,
   STARTER_PACK_ENERGY_BONUS,
   STARTER_PACK_OBEREG_BONUS,
+  appConfig,
 } from '../config/gameConstants';
 import {
   applyRewardedSkip,
@@ -65,6 +66,8 @@ import {
   shouldShowDailyQuestPanel as shouldShowDailyQuestPanelDomain,
   syncDailyQuestForCalendarDay,
   isDailyClickTaskComplete,
+  isDailyDayComplete,
+  shouldClearStaleDailyQuestRewardClaim,
 } from '../domain/dailyQuest';
 import {
   applyFragmentDrop,
@@ -72,6 +75,7 @@ import {
 } from '../domain/fragmentDrop';
 import { DAILY_QUEST_CLICK_GOAL } from '../config/gameConstants';
 import { dailyQuestUiStore } from './dailyQuestUiStore';
+import { getDailyQuestTalePageCount } from '../data/folktales';
 import { divinationUiStore } from './divinationUiStore';
 import { isDivinationUnlocked } from '../domain/divinationSession';
 import {
@@ -201,6 +205,7 @@ export class GameStore {
   dailyQuestClickProgress = 0;
   dailyQuestTaleCorrect = false;
   dailyQuestRewardClaimedDayId: string | null = null;
+  dailyQuestFragmentGrantedDayId: string | null = null;
   folktaleIntroShown = false;
 
   izbaItemDialogState: { lastTag: IzbaItemId | null; lastLineIndex: number } = {
@@ -419,8 +424,10 @@ export class GameStore {
     this.dailyQuestTaleSpiritId = save.dailyQuestTaleSpiritId ?? null;
     this.dailyQuestClickProgress = save.dailyQuestClickProgress ?? 0;
     this.dailyQuestTaleCorrect = save.dailyQuestTaleCorrect ?? false;
-    this.dailyQuestRewardClaimedDayId =
-      save.dailyQuestRewardClaimedDayId ?? save.dailyFindClaimedDayId ?? null;
+    this.dailyQuestRewardClaimedDayId = save.dailyQuestRewardClaimedDayId ?? null;
+    this.dailyQuestFragmentGrantedDayId =
+      save.dailyQuestFragmentGrantedDayId ?? null;
+    this.repairDailyQuestFragmentGrantFlags();
     this.folktaleIntroShown = save.folktaleIntroShown ?? false;
     this.izbaItemDialogState = { lastTag: null, lastLineIndex: 0 };
 
@@ -512,6 +519,7 @@ export class GameStore {
       dailyQuestClickProgress: this.dailyQuestClickProgress,
       dailyQuestTaleCorrect: this.dailyQuestTaleCorrect,
       dailyQuestRewardClaimedDayId: this.dailyQuestRewardClaimedDayId,
+      dailyQuestFragmentGrantedDayId: this.dailyQuestFragmentGrantedDayId,
       folktaleIntroShown: this.folktaleIntroShown,
 
       susedkoStealActive: this.susedkoStealActive,
@@ -658,19 +666,68 @@ export class GameStore {
   }
 
   isDailyQuestRewardClaimedToday(now: Date = new Date()): boolean {
-    return this.dailyQuestRewardClaimedDayId === getCalendarDayId(now);
+    const dayId = getCalendarDayId(now);
+    return this.dailyQuestFragmentGrantedDayId === dayId;
+  }
+
+  private repairDailyQuestFragmentGrantFlags(): void {
+    const granted = this.dailyQuestFragmentGrantedDayId;
+    const claimed = this.dailyQuestRewardClaimedDayId;
+    if (granted) {
+      this.dailyQuestRewardClaimedDayId = granted;
+      return;
+    }
+    if (claimed) {
+      this.dailyQuestRewardClaimedDayId = null;
+    }
+  }
+
+  getDailyQuestFragmentTargetSpiritId(): SpiritId | null {
+    return pickFragmentDropTarget(this.spiritStatuses, this.fragmentCounts);
   }
 
   canClaimDailyQuestFragment(now: Date = new Date()): boolean {
     this.ensureDailyQuestDaySynced(now);
     const dayId = getCalendarDayId(now);
-    return canClaimDailyFragmentReward({
+    if (
+      pickFragmentDropTarget(this.spiritStatuses, this.fragmentCounts) === null
+    ) {
+      return false;
+    }
+    const claimedToday = this.dailyQuestFragmentGrantedDayId === dayId;
+    const dayComplete = isDailyDayComplete({
       dayId,
       taleSpiritId: this.dailyQuestTaleSpiritId as SpiritId | null,
       clickProgress: this.dailyQuestClickProgress,
       taleQuizCorrect: this.dailyQuestTaleCorrect,
-      rewardClaimed: this.dailyQuestRewardClaimedDayId === dayId,
+      rewardClaimed: false,
     });
+    if (!dayComplete) return false;
+    if (!claimedToday) return true;
+    return appConfig.debugIgnoreDailyQuestDayLimit;
+  }
+
+  /** Сказ дня для этого духа ещё не пройден (викторина в книге). */
+  isDailyQuestTaleSpirit(spiritId: string): boolean {
+    this.ensureDailyQuestDaySynced();
+    return (
+      this.dailyQuestTaleSpiritId === spiritId && !this.dailyQuestTaleCorrect
+    );
+  }
+
+  beginDailyQuestTaleInBook(fromRect?: DOMRect | null): boolean {
+    this.ensureDailyQuestDaySynced();
+    if (this.dailyQuestTaleCorrect) return false;
+    const spiritId = this.dailyQuestTaleSpiritId as SpiritId | null;
+    if (!spiritId || getDailyQuestTalePageCount(spiritId) === 0) return false;
+    if (!dailyQuestUiStore.prepareQuiz(spiritId)) return false;
+    sceneUiStore.panBlocked = true;
+    if (bookUiStore.isOverlayActive && bookUiStore.phase === 'content') {
+      bookUiStore.enterDailyQuestTaleInPlace(spiritId);
+    } else {
+      bookUiStore.startDailyQuestTale(spiritId, fromRect ?? null);
+    }
+    return true;
   }
 
   claimDailyQuestFragment(now: Date = new Date()): boolean {
@@ -685,18 +742,34 @@ export class GameStore {
       this.spiritStatuses,
       this.fragmentCounts,
     );
-    this.dailyQuestRewardClaimedDayId = getCalendarDayId(now);
+    const grantDayId = getCalendarDayId(now);
+    this.dailyQuestFragmentGrantedDayId = grantDayId;
+    this.dailyQuestRewardClaimedDayId = grantDayId;
+    const line = pickCatLine('fragment_drop', this.language);
+    if (line) {
+      this.lastCatBubble = { kind: 'footnote', text: line };
+    }
     saveService.schedulePersist();
+    void saveService.flushPersist();
     return true;
   }
 
   submitDailyQuestTaleAnswer(answerIndex: number): void {
     const question = dailyQuestUiStore.question;
-    if (!question || !dailyQuestUiStore.isOpen) return;
+    const inDailyBookQuest =
+      bookUiStore.dailyQuestFlow && bookUiStore.dailyQuestUseVictoryTale;
+    if (!question) return;
+    if (!inDailyBookQuest && !dailyQuestUiStore.isOpen) return;
     if (answerIndex === question.correctIndex) {
       this.dailyQuestTaleCorrect = true;
       dailyQuestUiStore.close();
+      if (inDailyBookQuest || bookUiStore.dailyQuestFlow) {
+        bookUiStore.clearDailyQuestFlow();
+        bookUiStore.reset();
+        sceneUiStore.panBlocked = false;
+      }
       saveService.schedulePersist();
+      void saveService.flushPersist();
       return;
     }
     dailyQuestUiStore.loadQuestion(dailyQuestUiStore.sourceQuestionIndex);
@@ -708,6 +781,14 @@ export class GameStore {
   ): void {
     if (!isDailyQuestUnlocked(this.spiritStatuses)) return;
     const dayId = getCalendarDayId(now);
+    if (
+      !this.dailyQuestDayId &&
+      (this.dailyQuestClickProgress > 0 ||
+        this.dailyQuestTaleCorrect ||
+        this.dailyQuestTaleSpiritId != null)
+    ) {
+      this.dailyQuestDayId = dayId;
+    }
     const current =
       this.dailyQuestDayId === dayId
         ? {
@@ -715,7 +796,7 @@ export class GameStore {
             taleSpiritId: this.dailyQuestTaleSpiritId as SpiritId | null,
             clickProgress: this.dailyQuestClickProgress,
             taleQuizCorrect: this.dailyQuestTaleCorrect,
-            rewardClaimed: this.dailyQuestRewardClaimedDayId === dayId,
+            rewardClaimed: this.dailyQuestFragmentGrantedDayId === dayId,
           }
         : this.dailyQuestDayId
           ? {
@@ -724,7 +805,7 @@ export class GameStore {
               clickProgress: this.dailyQuestClickProgress,
               taleQuizCorrect: this.dailyQuestTaleCorrect,
               rewardClaimed:
-                this.dailyQuestRewardClaimedDayId === this.dailyQuestDayId,
+                this.dailyQuestFragmentGrantedDayId === this.dailyQuestDayId,
             }
           : null;
     const synced = syncDailyQuestForCalendarDay(
@@ -733,11 +814,23 @@ export class GameStore {
       now,
       rng,
     );
-    if (synced.dayId !== this.dailyQuestDayId) {
-      this.dailyQuestDayId = synced.dayId;
-      this.dailyQuestTaleSpiritId = synced.taleSpiritId;
+    const dayChanged = synced.dayId !== this.dailyQuestDayId;
+    this.dailyQuestDayId = synced.dayId;
+    this.dailyQuestTaleSpiritId = synced.taleSpiritId;
+    if (dayChanged) {
       this.dailyQuestClickProgress = synced.clickProgress;
       this.dailyQuestTaleCorrect = synced.taleQuizCorrect;
+    }
+    if (
+      shouldClearStaleDailyQuestRewardClaim(
+        this.dailyQuestFragmentGrantedDayId,
+        dayId,
+        this.dailyQuestClickProgress,
+        this.dailyQuestTaleCorrect,
+      )
+    ) {
+      this.dailyQuestFragmentGrantedDayId = null;
+      this.dailyQuestRewardClaimedDayId = null;
     }
   }
 

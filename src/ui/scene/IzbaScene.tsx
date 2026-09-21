@@ -40,7 +40,6 @@ import { Room1Scene, Room2Scene } from './IzbaSceneLayers';
 
 import { ScenePanNav } from './ScenePanNav';
 import { DailyQuestPanel } from '../daily/DailyQuestPanel';
-import { DailyQuestTaleModal } from '../daily/DailyQuestTaleModal';
 import { DivinationModal } from '../divination/DivinationModal';
 import { YagaShopModal } from '../yagaShop/YagaShopModal';
 
@@ -134,7 +133,6 @@ export const IzbaScene = observer(function IzbaScene() {
       <CatDialog />
       <BookOverlay />
       <QuizModal />
-      <DailyQuestTaleModal />
       <DivinationModal />
       <YagaShopModal />
       <ChestLootModal />

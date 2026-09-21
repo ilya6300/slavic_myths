@@ -220,6 +220,16 @@ export function migrateSave(raw: GameSave): GameSave {
     save.version = 13;
   }
 
+  if (save.version < 14) {
+    save.dailyQuestFragmentGrantedDayId =
+      save.dailyQuestFragmentGrantedDayId ?? null;
+    // v13 мог сохранить «награда получена» без claimDailyQuestFragment — сбрасываем.
+    if (save.dailyQuestRewardClaimedDayId && !save.dailyQuestFragmentGrantedDayId) {
+      save.dailyQuestRewardClaimedDayId = null;
+    }
+    save.version = 14;
+  }
+
   if (
     save.starterPackPurchased &&
     !(save.ownedSkinIds ?? []).includes(STARTER_PACK_CAT_SKIN_ID)

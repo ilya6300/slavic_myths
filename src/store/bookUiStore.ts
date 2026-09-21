@@ -28,6 +28,9 @@ export class BookUiStore {
   pageIndex = 0;
   spreadMode: BookSpreadMode = 'spirit';
   folktalePageIndex = 0;
+  /** Ежедневка: сказ в книге → вопрос викторины. */
+  dailyQuestFlow = false;
+  dailyQuestUseVictoryTale = false;
   isFlipping = false;
   phase: BookPhase = 'idle';
   flightFrom: DOMRect | null = null;
@@ -48,6 +51,34 @@ export class BookUiStore {
     return this.phase !== 'content';
   }
 
+  /** Книга уже открыта — только перейти в сказ ежедневки. */
+  enterDailyQuestTaleInPlace(spiritId: SpiritId): void {
+    this.dailyQuestFlow = true;
+    this.dailyQuestUseVictoryTale = true;
+    this.jumpToSpirit(spiritId);
+    this.enterDailyQuestFolktale();
+  }
+
+  startDailyQuestTale(spiritId: SpiritId, fromRect?: DOMRect | null): void {
+    this.dailyQuestFlow = true;
+    this.dailyQuestUseVictoryTale = true;
+    this.startOpen(spiritId, fromRect);
+    if (this.phase === 'content') {
+      this.enterDailyQuestFolktale();
+    }
+  }
+
+  private enterDailyQuestFolktaleAfterOpen(): void {
+    if (this.dailyQuestFlow && this.phase === 'content') {
+      this.enterDailyQuestFolktale();
+    }
+  }
+
+  clearDailyQuestFlow(): void {
+    this.dailyQuestFlow = false;
+    this.dailyQuestUseVictoryTale = false;
+  }
+
   startOpen(spiritId?: SpiritId, fromRect?: DOMRect | null): void {
     this.clearTimers();
     this.spreadMode = 'spirit';
@@ -66,6 +97,7 @@ export class BookUiStore {
       this.phase = 'content';
       this.coverVariant = 'open';
       this.showPageContent = true;
+      this.enterDailyQuestFolktaleAfterOpen();
       return;
     }
 
@@ -85,6 +117,7 @@ export class BookUiStore {
         if (this.phase === 'flying' || this.phase === 'crossfading') {
           this.phase = 'content';
           this.showPageContent = true;
+          this.enterDailyQuestFolktaleAfterOpen();
         }
       }, OPEN_CONTENT_MS),
     );
@@ -139,6 +172,12 @@ export class BookUiStore {
     this.setPageIndex(this.pageIndex + 1);
   }
 
+  enterDailyQuestFolktale(): void {
+    if (this.phase !== 'content') return;
+    this.spreadMode = 'folktale';
+    this.folktalePageIndex = 0;
+  }
+
   enterFolktaleMode(): void {
     if (this.phase !== 'content') return;
     this.spreadMode = 'folktale';
@@ -148,6 +187,9 @@ export class BookUiStore {
   exitFolktaleMode(): void {
     this.spreadMode = 'spirit';
     this.folktalePageIndex = 0;
+    if (this.dailyQuestFlow) {
+      this.clearDailyQuestFlow();
+    }
   }
 
   jumpToSpirit(spiritId: SpiritId): void {
@@ -172,6 +214,7 @@ export class BookUiStore {
     this.isFlipping = false;
     this.spreadMode = 'spirit';
     this.folktalePageIndex = 0;
+    this.clearDailyQuestFlow();
   }
 
   private clearTimers(): void {

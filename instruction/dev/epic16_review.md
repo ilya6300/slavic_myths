@@ -25,7 +25,7 @@
 ## Visual / asset follow-ups (non-blocking for code merge)
 
 - Production PNG: 3 pets (`assets/pets/…`), optional `mirror_session.png`, candle HUD icon.
-- Epic 15 TASK-048: remains gated on owner asset check (unchanged).
+- Epic 15 TASK-048: closed — see `instruction/dev/epic15_review.md`.
 
 ```yaml
 review_verdict:

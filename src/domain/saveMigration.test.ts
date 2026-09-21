@@ -101,6 +101,21 @@ describe('migrateSave', () => {
     expect(migrated.candles).toBe(0);
     expect(migrated.truthCrumbs).toBe(0);
     expect(migrated.ownedPetIds).toEqual([]);
-    expect(migrated.dailyQuestRewardClaimedDayId).toBe('2026-09-19');
+    expect(migrated.dailyQuestRewardClaimedDayId).toBeNull();
+    expect(migrated.dailyQuestFragmentGrantedDayId).toBeNull();
+  });
+
+  it('migrates v13 phantom daily reward claim without fragment grant', () => {
+    const migrated = migrateSave({
+      ...createDefaultSave(),
+      version: 13,
+      dailyQuestRewardClaimedDayId: '2026-09-20',
+      dailyQuestFragmentGrantedDayId: null,
+      dailyQuestClickProgress: 100,
+      dailyQuestTaleCorrect: true,
+    });
+    expect(migrated.version).toBe(SAVE_VERSION);
+    expect(migrated.dailyQuestRewardClaimedDayId).toBeNull();
+    expect(migrated.dailyQuestFragmentGrantedDayId).toBeNull();
   });
 });

@@ -4,6 +4,8 @@
  */
 
 import type { SpiritId } from '../config/assetRegistry';
+import { getDailyQuestTalePageCount } from '../data/folktales';
+import { getQuizBySpiritId } from '../data/quiz';
 import { SPIRIT_ORDER } from '../data/spirits';
 import { DAILY_QUEST_CLICK_GOAL } from '../config/gameConstants';
 import { getCalendarDayId } from './calendarDay';
@@ -38,6 +40,21 @@ export function listDefeatedSpiritIds(
   return SPIRIT_ORDER.filter((id) => spiritStatuses[id] === 'defeated');
 }
 
+/** Ежедневка: сказ (страницы или miniTale) + хотя бы один вопрос викторины. */
+export function isDailyQuestTaleSpiritEligible(spiritId: SpiritId): boolean {
+  if (getDailyQuestTalePageCount(spiritId) <= 0) return false;
+  const quiz = getQuizBySpiritId(spiritId);
+  return (quiz?.questions.length ?? 0) > 0;
+}
+
+export function listDailyQuestTaleSpiritCandidates(
+  spiritStatuses: Record<string, SpiritStatus>,
+): SpiritId[] {
+  return listDefeatedSpiritIds(spiritStatuses).filter(
+    isDailyQuestTaleSpiritEligible,
+  );
+}
+
 /** Случайный дух сказа на день; без повтора подряд при ≥2 победах. */
 export function pickDailyTaleSpiritId(
   defeatedIds: SpiritId[],
@@ -59,15 +76,22 @@ export function syncDailyQuestForCalendarDay(
   rng: () => number = Math.random,
 ): DailyQuestDayState {
   const dayId = getCalendarDayId(now);
-  if (state?.dayId === dayId) return state;
-
-  const defeated = listDefeatedSpiritIds(spiritStatuses);
+  const candidates = listDailyQuestTaleSpiritCandidates(spiritStatuses);
   const previousSpirit =
     state?.dayId && state.taleSpiritId ? state.taleSpiritId : null;
 
+  if (state?.dayId === dayId) {
+    const taleSpiritId =
+      state.taleSpiritId && candidates.includes(state.taleSpiritId)
+        ? state.taleSpiritId
+        : pickDailyTaleSpiritId(candidates, state.taleSpiritId, rng);
+    if (taleSpiritId === state.taleSpiritId) return state;
+    return { ...state, taleSpiritId };
+  }
+
   return {
     dayId,
-    taleSpiritId: pickDailyTaleSpiritId(defeated, previousSpirit, rng),
+    taleSpiritId: pickDailyTaleSpiritId(candidates, previousSpirit, rng),
     clickProgress: 0,
     taleQuizCorrect: false,
     rewardClaimed: false,
@@ -86,6 +110,23 @@ export function isDailyDayComplete(state: DailyQuestDayState): boolean {
 
 export function canClaimDailyFragmentReward(state: DailyQuestDayState): boolean {
   return isDailyDayComplete(state) && !state.rewardClaimed;
+}
+
+/** Сброс ошибочного «награда получена» без закрытого дня (старый баг с daily-find). */
+export function shouldClearStaleDailyQuestRewardClaim(
+  rewardClaimedDayId: string | null,
+  dayId: string,
+  clickProgress: number,
+  taleQuizCorrect: boolean,
+): boolean {
+  if (rewardClaimedDayId !== dayId) return false;
+  return !isDailyDayComplete({
+    dayId,
+    taleSpiritId: null,
+    clickProgress,
+    taleQuizCorrect,
+    rewardClaimed: false,
+  });
 }
 
 /** Случайный индекс вопроса; не повторять сразу тот же индекс при ошибке. */

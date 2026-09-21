@@ -13,7 +13,6 @@ import { getTitleById } from '../../data/titles';
 import { settingsUiContent } from '../../data/dialogContent';
 
 import { canInteract } from '../../domain/onboardingGuards';
-import { isDivinationUnlocked } from '../../domain/divinationSession';
 import { YARD_GRASS_PER_CRAFT } from '../../domain/yardCraft';
 
 import type { Grade } from '../../domain/grade';
@@ -68,9 +67,7 @@ export const GameHud = observer(function GameHud() {
     : resolveText(settingsUiContent.kikimoraRailName, locale);
 
   const showGrassChip = gameStore.onboardingCompleted;
-  const showCandleChip =
-    gameStore.onboardingCompleted &&
-    (isDivinationUnlocked(gameStore.spiritStatuses) || gameStore.candles > 0);
+  const showCandleChip = gameStore.onboardingCompleted;
   const showCrumbChip =
     gameStore.onboardingCompleted && gameStore.truthCrumbs > 0;
   return (
@@ -194,7 +191,7 @@ export const GameHud = observer(function GameHud() {
             >
               <img
                 className="hud-rail__yaga-shop-img"
-                src={hudIcons.truthCrumb}
+                src={hudIcons.yagaShop}
                 alt=""
                 draggable={false}
               />

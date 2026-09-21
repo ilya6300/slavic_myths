@@ -4,6 +4,7 @@ import {
   ENERGY_PER_QUEST,
   LUCK_COINS_PER_CLICK,
   ONBOARDING_ENERGY_FLOOR,
+  appConfig,
 } from '../config/gameConstants';
 import { createDefaultSave } from '../domain/GameSave';
 import { findNextAvailableSpirit } from '../domain/spiritQueue';
@@ -488,6 +489,104 @@ describe('GameStore', () => {
     expect(store.ownedTitleIds).toContain('title_visionary_cat');
     expect(store.purchaseYagaShopItem('shop_title_visionary_cat')).toBe(
       'already_owned',
+    );
+  });
+
+  it('drops phantom daily reward claimed without fragment grant on hydrate', () => {
+    const now = new Date('2026-09-20T12:00:00');
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+    const store = makeStore({
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        bannik: 'defeated',
+      },
+      dailyQuestDayId: '2026-09-20',
+      dailyQuestRewardClaimedDayId: '2026-09-20',
+      dailyQuestFragmentGrantedDayId: null,
+      dailyQuestClickProgress: 100,
+      dailyQuestTaleCorrect: true,
+    });
+    expect(store.isDailyQuestRewardClaimedToday(now)).toBe(false);
+    expect(store.canClaimDailyQuestFragment(now)).toBe(true);
+  });
+
+  it('persists daily quest claim across hydrate', () => {
+    const now = new Date('2026-09-20T12:00:00');
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+    const store = makeStore({
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        bannik: 'defeated',
+      },
+      dailyQuestDayId: '2026-09-20',
+      dailyQuestTaleSpiritId: 'bannik',
+      dailyQuestClickProgress: 100,
+      dailyQuestTaleCorrect: true,
+    });
+    expect(store.claimDailyQuestFragment(now)).toBe(true);
+    const restored = new GameStore();
+    restored.hydrate(store.toSave());
+    expect(restored.isDailyQuestRewardClaimedToday(now)).toBe(true);
+    expect(restored.dailyQuestFragmentGrantedDayId).toBe('2026-09-20');
+    expect(restored.fragmentCounts.baba_yaga).toBe(1);
+  });
+
+  it('clears stale daily quest reward flag when tasks were reset', () => {
+    const now = new Date('2026-09-20T12:00:00');
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+    const store = makeStore({
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        bannik: 'defeated',
+      },
+      dailyQuestDayId: '2026-09-20',
+      dailyQuestRewardClaimedDayId: '2026-09-20',
+      dailyQuestClickProgress: 0,
+      dailyQuestTaleCorrect: false,
+    });
+    store.canClaimDailyQuestFragment(now);
+    expect(store.isDailyQuestRewardClaimedToday(now)).toBe(false);
+  });
+
+  it('does not treat daily-find day as daily quest reward claimed', () => {
+    const now = new Date('2026-09-20T12:00:00');
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+    const store = makeStore({
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        bannik: 'defeated',
+      },
+      dailyFindClaimedDayId: '2026-09-20',
+      dailyQuestRewardClaimedDayId: null,
+    });
+    expect(store.isDailyQuestRewardClaimedToday(now)).toBe(false);
+  });
+
+  it('allows a second daily quest claim the same day only in DEV', () => {
+    const now = new Date('2026-09-20T12:00:00');
+    vi.useFakeTimers();
+    vi.setSystemTime(now);
+    const store = makeStore({
+      spiritStatuses: {
+        ...createDefaultSave().spiritStatuses,
+        bannik: 'defeated',
+      },
+      dailyQuestDayId: '2026-09-20',
+      dailyQuestTaleSpiritId: 'bannik',
+      dailyQuestClickProgress: 100,
+      dailyQuestTaleCorrect: true,
+    });
+    expect(store.claimDailyQuestFragment(now)).toBe(true);
+    expect(store.fragmentCounts.baba_yaga).toBe(1);
+    expect(store.claimDailyQuestFragment(now)).toBe(
+      appConfig.debugIgnoreDailyQuestDayLimit,
+    );
+    expect(store.fragmentCounts.baba_yaga).toBe(
+      appConfig.debugIgnoreDailyQuestDayLimit ? 2 : 1,
     );
   });
 });

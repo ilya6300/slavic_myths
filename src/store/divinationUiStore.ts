@@ -115,7 +115,7 @@ class DivinationUiStore {
   }
 
   continueLine(): void {
-    if (this.phase !== 'line') return;
+    if (this.phase !== 'line' && this.phase !== 'reveal') return;
     const next = this.pendingAfterSmoke;
     this.pendingAfterSmoke = null;
     next?.();

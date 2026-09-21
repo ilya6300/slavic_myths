@@ -4,6 +4,7 @@ import {
   bookUi,
   furniture,
   hudIcons,
+  type SpiritId,
 } from '../../config/assetRegistry';
 import {
   SPIRIT_ORDER,
@@ -21,14 +22,18 @@ import { formatLocalizedTemplate, resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
 import { bookUiStore } from '../../store/bookUiStore';
+import { sceneUiStore } from '../../store/sceneUiStore';
 import { catDialogStore } from '../../store/catDialogStore';
 import { pickCatLine } from '../../data/catDialogs';
 import { ModalCloseButton } from '../common/ModalCloseButton';
 import {
+  getDailyQuestTalePageCount,
+  getDailyQuestTalePages,
   getFolktalePageCount,
   getFolktalePages,
   hasFolktale,
 } from '../../data/folktales';
+import { dailyQuestUiStore } from '../../store/dailyQuestUiStore';
 import { BookFragmentPuzzleIllustration } from './BookFragmentPuzzleIllustration';
 import { spiritIllustrationUrl } from './spiritIllustrationUrl';
 import { useBookPageFlip } from './useBookPageFlip';
@@ -110,6 +115,28 @@ export const BookOverlay = observer(function BookOverlay() {
   const alreadyRevealed = gameStore.illustrationRevealed.includes(spiritId);
 
   useEffect(() => {
+    if (
+      !bookUiStore.dailyQuestFlow ||
+      phase !== 'content' ||
+      spreadMode !== 'folktale' ||
+      gameStore.dailyQuestTaleCorrect
+    ) {
+      return;
+    }
+    const taleId = gameStore.dailyQuestTaleSpiritId as SpiritId | null;
+    if (!taleId) return;
+    if (dailyQuestUiStore.spiritId !== taleId || !dailyQuestUiStore.question) {
+      dailyQuestUiStore.prepareQuiz(taleId);
+    }
+  }, [
+    phase,
+    showContent,
+    spreadMode,
+    gameStore.dailyQuestTaleSpiritId,
+    gameStore.dailyQuestTaleCorrect,
+  ]);
+
+  useEffect(() => {
     if (!isOverlayActive || !isDefeated || alreadyRevealed) {
       setRevealActive(false);
       return;
@@ -122,16 +149,40 @@ export const BookOverlay = observer(function BookOverlay() {
     setRevealActive(true);
   }, [isOverlayActive, spiritId, isDefeated, alreadyRevealed]);
 
-  const folktalePageCount = getFolktalePageCount(spiritId);
-  const folktalePages = getFolktalePages(spiritId, locale);
+  const dailyTaleActive =
+    bookUiStore.dailyQuestFlow && bookUiStore.dailyQuestUseVictoryTale;
+  const dailyTaleSpiritId =
+    dailyTaleActive && gameStore.dailyQuestTaleSpiritId
+      ? (gameStore.dailyQuestTaleSpiritId as SpiritId)
+      : null;
+  const folktaleSpiritId = dailyTaleSpiritId ?? spiritId;
+  const folktalePageCount = dailyTaleActive
+    ? getDailyQuestTalePageCount(folktaleSpiritId)
+    : getFolktalePageCount(spiritId);
+  const folktalePages = dailyTaleActive
+    ? getDailyQuestTalePages(folktaleSpiritId, locale)
+    : getFolktalePages(spiritId, locale);
+  const onLastFolktalePage =
+    spreadMode === 'folktale' &&
+    folktalePageCount > 0 &&
+    bookUiStore.folktalePageIndex >= folktalePageCount - 1;
+  const dailyQuizQuestion =
+    dailyTaleActive && dailyTaleSpiritId && !gameStore.dailyQuestTaleCorrect
+      ? dailyQuestUiStore.question
+      : null;
+  const showDailyQuizOnPage = Boolean(dailyQuizQuestion) && dailyTaleActive;
   const canPrev = isOverlayActive
     ? spreadMode === 'folktale'
-      ? bookUiStore.folktalePageIndex > 0
+      ? dailyTaleActive
+        ? false
+        : bookUiStore.folktalePageIndex > 0
       : pageIndex > 0
     : false;
   const canNext = isOverlayActive
     ? spreadMode === 'folktale'
-      ? bookUiStore.folktalePageIndex < folktalePageCount - 1
+      ? dailyTaleActive
+        ? false
+        : bookUiStore.folktalePageIndex < folktalePageCount - 1
       : pageIndex < SPIRIT_ORDER.length - 1
     : false;
 
@@ -151,6 +202,10 @@ export const BookOverlay = observer(function BookOverlay() {
     status === 'defeated' && hasFolktale(spiritId) && spreadMode === 'spirit';
   const folktalePageText =
     folktalePages[bookUiStore.folktalePageIndex] ?? '';
+  const folktaleBodyText =
+    dailyTaleActive && folktalePages.length > 0
+      ? folktalePages.join('\n\n')
+      : folktalePageText;
 
   const leftFlipClass = getPageFlipClass('left');
   const rightFlipClass = getPageFlipClass('right');
@@ -161,7 +216,13 @@ export const BookOverlay = observer(function BookOverlay() {
     setRevealActive(false);
   };
 
-  const handleClose = () => bookUiStore.close();
+  const handleClose = () => {
+    if (bookUiStore.dailyQuestFlow) {
+      dailyQuestUiStore.close();
+      sceneUiStore.panBlocked = false;
+    }
+    bookUiStore.close();
+  };
 
   const handleGoQuest = () => {
     if (blocked || status !== 'available') return;
@@ -172,6 +233,10 @@ export const BookOverlay = observer(function BookOverlay() {
 
   const handleOpenFolktale = () => {
     if (blocked || status !== 'defeated' || !hasFolktale(spiritId)) return;
+    if (gameStore.isDailyQuestTaleSpirit(spiritId)) {
+      gameStore.beginDailyQuestTaleInBook();
+      return;
+    }
     if (!gameStore.folktaleIntroShown) {
       const line = pickCatLine('folktale_intro', locale);
       if (line) {
@@ -184,7 +249,15 @@ export const BookOverlay = observer(function BookOverlay() {
 
   const handleBackToSpirit = () => {
     if (blocked) return;
+    if (bookUiStore.dailyQuestFlow) {
+      dailyQuestUiStore.close();
+      sceneUiStore.panBlocked = false;
+    }
     bookUiStore.exitFolktaleMode();
+  };
+
+  const handleDailyQuizAnswer = (index: number) => {
+    gameStore.submitDailyQuestTaleAnswer(index);
   };
 
   const handleJumpNext = () => {
@@ -303,11 +376,12 @@ export const BookOverlay = observer(function BookOverlay() {
         <ModalCloseButton onClick={handleClose} disabled={blocked} />
 
         <div
-          className={`book-modal__spread${showContent ? ' book-modal__spread--visible' : ''}${spreadMode === 'folktale' ? ' book-modal__spread--folktale' : ''}`}
+          className={`book-modal__spread${showContent ? ' book-modal__spread--visible' : ''}${spreadMode === 'folktale' ? ' book-modal__spread--folktale' : ''}${dailyTaleActive ? ' book-modal__spread--daily-quest' : ''}`}
+          data-daily-quest-tale={dailyTaleActive ? 'true' : undefined}
           {...spreadPointerHandlers}
         >
           <div
-            className={`book-page book-page--left${leftFlipClass ? ` ${leftFlipClass}` : ''}`}
+            className={`book-page book-page--left${dailyTaleActive ? ' book-page--left--daily-tale' : ''}${leftFlipClass ? ` ${leftFlipClass}` : ''}`}
           >
             {spreadMode === 'folktale' ? (
               <>
@@ -315,26 +389,54 @@ export const BookOverlay = observer(function BookOverlay() {
                   {resolveText(settingsUiContent.bookGoFolktale, locale)}
                 </h3>
                 <p className="book-page__description book-page__folktale">
-                  {folktalePageText}
+                  {folktaleBodyText}
                 </p>
-                <button
-                  type="button"
-                  className="book-page__quest-btn book-page__folktale-btn"
-                  onClick={handleBackToSpirit}
-                  disabled={blocked}
-                >
-                  <img
-                    className="book-page__quest-btn-bg"
-                    src={bookUi.questBtn}
-                    alt=""
-                    draggable={false}
-                  />
-                  <span className="book-page__quest-btn-copy">
-                    <span className="book-page__quest-btn-label">
-                      {resolveText(settingsUiContent.bookBackToSpirit, locale)}
+                {showDailyQuizOnPage && dailyQuizQuestion ? (
+                  <section
+                    className="book-page__folktale-quiz"
+                    aria-label="Daily quest question"
+                  >
+                    <p className="book-page__description book-page__folktale-quiz-prompt">
+                      {dailyQuizQuestion.prompt}
+                    </p>
+                    <div className="book-page__folktale-quiz-answers">
+                      {dailyQuizQuestion.options.map((opt, i) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          className="quiz-answer book-page__folktale-quiz-answer"
+                          onClick={() => handleDailyQuizAnswer(i)}
+                          disabled={blocked}
+                        >
+                          {opt}
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                ) : null}
+                {!dailyTaleActive && onLastFolktalePage ? (
+                  <button
+                    type="button"
+                    className="book-page__quest-btn book-page__folktale-btn"
+                    onClick={handleBackToSpirit}
+                    disabled={blocked}
+                  >
+                    <img
+                      className="book-page__quest-btn-bg"
+                      src={bookUi.questBtn}
+                      alt=""
+                      draggable={false}
+                    />
+                    <span className="book-page__quest-btn-copy">
+                      <span className="book-page__quest-btn-label">
+                        {resolveText(
+                          settingsUiContent.bookBackToSpirit,
+                          locale,
+                        )}
+                      </span>
                     </span>
-                  </span>
-                </button>
+                  </button>
+                ) : null}
               </>
             ) : (
               <>

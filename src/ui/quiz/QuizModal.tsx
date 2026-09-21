@@ -36,9 +36,6 @@ function resolveHouseUrl(skinId: string): string {
 
 export const QuizModal = observer(function QuizModal() {
   const { locale } = useLocale();
-
-  if (divinationUiStore.phase !== 'idle') return null;
-
   const spiritId = quizUiStore.activeSpiritId;
   const spirit = spiritId ? getSpiritById(spiritId) : null;
   const question = quizUiStore.currentQuestion;
@@ -60,6 +57,7 @@ export const QuizModal = observer(function QuizModal() {
     return () => window.clearTimeout(id);
   }, [phase, quizUiStore.questionIndex]);
 
+  if (divinationUiStore.phase !== 'idle') return null;
   if (!spiritId || !spirit) return null;
 
   const locationId = spirit.locationId;

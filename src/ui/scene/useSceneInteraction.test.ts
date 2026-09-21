@@ -43,18 +43,10 @@ describe('resolvePanRoomAfterGesture', () => {
     expect(resolvePanRoomAfterGesture(2, 1, width, 1)).toBeNull();
   });
 
-  it('should switch to room 2 on swipe left from room 1', () => {
+  it('should not switch room on swipe (navigation is arrow-only)', () => {
     const dx = -(width * swipeThreshold.distancePercent) / 100;
-    expect(resolvePanRoomAfterGesture(dx, 300, width, 1)).toBe(2);
-  });
-
-  it('should switch to room 1 on swipe right from room 2', () => {
-    const dx = (width * swipeThreshold.distancePercent) / 100;
-    expect(resolvePanRoomAfterGesture(dx, 300, width, 2)).toBe(1);
-  });
-
-  it('should not switch room when swipe direction does not match active room', () => {
-    const dx = (width * swipeThreshold.distancePercent) / 100;
     expect(resolvePanRoomAfterGesture(dx, 300, width, 1)).toBeNull();
+    expect(resolvePanRoomAfterGesture(-dx, 300, width, 2)).toBeNull();
+    expect(resolvePanRoomAfterGesture(-dx, 300, width, 1)).toBeNull();
   });
 });

@@ -76,6 +76,16 @@
 
 Референс для диалога кота: `[skin]_sid.png` из активного скина. HUD не использует sleep.
 
+### `assets/pets/companion/` — питомцы лавки Яги
+
+**Не скины кота.** Поза `sid` — анфас в камеру (как `cat_standart_sid`); `sleep` пока тот же файл. Код: `companionPetSprites`, `PetLayer`, профиль §pets.
+
+| Путь | Статус | Примечание |
+|------|--------|------------|
+| `companion/pet_griffin/pet_griffin_sid.png` | ✅ есть | Грифон |
+| `companion/pet_humpback_horse/pet_humpback_horse_sid.png` | ✅ есть | Конёк-Горбунок |
+| `companion/pet_firebird/pet_firebird_sid.png` | ✅ есть | Жар-птица (павлиний хвост, золото-огонь) |
+
 ---
 
 ## `assets/brownie/` — домовой
@@ -97,7 +107,7 @@
 | `bench.png` | ✅ есть | Скамейка |
 | `stand.png` | ✅ есть | Подставка под книгу |
 | `book_of_spirits.png` | ✅ есть | Книга бестиария **закрытая** (на подставке в избе) |
-| `book_of_spirits_open.png` | ⏳ нужен (P0) | Книга **открытая** (модалка бестиария); см. `book_layout.md` §2 |
+| `book_of_spirits_open.png` | ✅ есть | Книга **открытая** (модалка бестиария); см. `book_layout.md` §2 |
 | `box_closed.png` | ✅ есть | Обычный сундук (закрыт) |
 | `box_open.png` | ✅ есть | Обычный сундук (открыт) |
 | `shelf.png` | ✅ есть | Полки трофеев |
@@ -232,6 +242,7 @@
 | `icon_obereg.png` | Тайные обереги | ⏳ P0; факт: `assets/UI/secret_amulet.png` |
 | `icon_smetana.png` | Сметана | ✅ есть |
 | `icon_grass.png` | Пучки травы (чип HUD `n/3`) | ⏳ P1; fallback: `furniture/yard_grass.png` |
+| `icon_yaga_shop.png` | Лавка Бабы-Яги (левый рельс HUD) | ✅ есть |
 | `kikimora_companion.png` | Bust Кикиморы на левом рельсе HUD | ⏳ P0; fallback: кроп `kikimora_weaving.png` (**не** гравюра книги) |
 | `assets/UI/amulet_against_the_house_spirit.png` | оберег (вариант) | ✅ есть |
 | `fragment_shard.png` | Осколок фрагмента Эпохи | ⏳ P2 |
@@ -240,8 +251,11 @@
 
 | Файл | Назначение | Статус |
 |------|------------|--------|
-| `arrow_right_wood.png` | Стрелка в трофеи | ⏳ P0 |
-| `arrow_left_wood.png` | Стрелка в избу | ⏳ P0 |
+| `arrow_right_wood.png` | Стрелка в трофеи / книга | ✅ MVP placeholder |
+| `arrow_left_wood.png` | Стрелка в избу / книга | ✅ MVP placeholder |
+| `book_quest_btn_wood.png` | Кнопка «В путь» в книге | ✅ MVP placeholder |
+| `icon_paw.png` | Лапка у квеста | ✅ MVP placeholder |
+| `book_close_wood.png` | Закрыть книгу × | ✅ MVP placeholder |
 
 ### Диалог и викторина
 

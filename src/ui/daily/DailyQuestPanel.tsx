@@ -1,11 +1,13 @@
+import type { MouseEvent } from 'react';
 import { observer } from 'mobx-react-lite';
 import { DAILY_QUEST_CLICK_GOAL } from '../../config/gameConstants';
 import { dailyQuestContent } from '../../data/dailyQuestContent';
 import { formatLocalizedTemplate, resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
-import { gameStore } from '../../store/GameStore';
-import { dailyQuestUiStore } from '../../store/dailyQuestUiStore';
 import type { SpiritId } from '../../config/assetRegistry';
+import { getSpiritById } from '../../data/spirits';
+import { appConfig } from '../../config/gameConstants';
+import { gameStore } from '../../store/GameStore';
 
 export const DailyQuestPanel = observer(function DailyQuestPanel() {
   const { locale } = useLocale();
@@ -18,13 +20,25 @@ export const DailyQuestPanel = observer(function DailyQuestPanel() {
   );
   const clicksComplete = clicksDone >= DAILY_QUEST_CLICK_GOAL;
   const taleComplete = gameStore.dailyQuestTaleCorrect;
-  const claimed = gameStore.isDailyQuestRewardClaimedToday();
+  const claimedToday = gameStore.isDailyQuestRewardClaimedToday();
   const canClaim = gameStore.canClaimDailyQuestFragment();
+  const showClaimButton =
+    canClaim &&
+    (!claimedToday || appConfig.debugIgnoreDailyQuestDayLimit);
+  const showDone = claimedToday && !showClaimButton;
+  const fragmentTargetId = gameStore.getDailyQuestFragmentTargetSpiritId();
+  const fragmentSpiritName =
+    (fragmentTargetId ? getSpiritById(fragmentTargetId)?.name : null) ?? '—';
+  const taleSpiritId = gameStore.dailyQuestTaleSpiritId;
+  const taleSpiritName =
+    (taleSpiritId ? getSpiritById(taleSpiritId as SpiritId)?.name : null) ??
+    '—';
 
-  const openTale = () => {
-    const spiritId = gameStore.dailyQuestTaleSpiritId as SpiritId | null;
-    if (!spiritId || taleComplete) return;
-    dailyQuestUiStore.openTale(spiritId);
+  const openTale = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (taleComplete) return;
+    gameStore.beginDailyQuestTaleInBook();
   };
 
   return (
@@ -57,28 +71,50 @@ export const DailyQuestPanel = observer(function DailyQuestPanel() {
               {resolveText(dailyQuestContent.taleDone, locale)}
             </span>
           ) : (
+            <>
+              <span className="daily-quest-panel__meta daily-quest-panel__meta--tale-spirit">
+                {formatLocalizedTemplate(
+                  dailyQuestContent.taleSpiritHint,
+                  locale,
+                  { spirit: taleSpiritName },
+                )}
+              </span>
             <button
               type="button"
-              className="daily-quest-panel__link"
+              className="daily-quest-panel__tale-btn"
               onClick={openTale}
             >
               {resolveText(dailyQuestContent.taleOpen, locale)}
             </button>
+            </>
           )}
         </li>
       </ul>
-      {claimed ? (
+      {showDone ? (
         <p className="daily-quest-panel__claim daily-quest-panel__claim--done">
           {resolveText(dailyQuestContent.claimDone, locale)}
         </p>
+      ) : showClaimButton ? (
+        <button
+          type="button"
+          className="daily-quest-panel__claim"
+          onClick={() => {
+            gameStore.claimDailyQuestFragment();
+          }}
+        >
+          {formatLocalizedTemplate(dailyQuestContent.claimFragment, locale, {
+            spirit: fragmentSpiritName,
+          })}
+        </button>
       ) : (
         <button
           type="button"
           className="daily-quest-panel__claim"
-          disabled={!canClaim}
-          onClick={() => gameStore.claimDailyQuestFragment()}
+          disabled
         >
-          {resolveText(dailyQuestContent.claimFragment, locale)}
+          {formatLocalizedTemplate(dailyQuestContent.claimFragment, locale, {
+            spirit: fragmentSpiritName,
+          })}
         </button>
       )}
     </aside>

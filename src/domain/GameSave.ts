@@ -105,8 +105,10 @@ export interface GameSave {
   dailyQuestTaleSpiritId: string | null;
   dailyQuestClickProgress: number;
   dailyQuestTaleCorrect: boolean;
-  /** День, когда уже выдан фрагмент за полную ежедневку. */
+  /** @deprecated UI-флаг; канон выдачи — dailyQuestFragmentGrantedDayId */
   dailyQuestRewardClaimedDayId: string | null;
+  /** День, когда фрагмент за полную ежедневку реально начислен. */
+  dailyQuestFragmentGrantedDayId: string | null;
 
   /** Сноска при первом открытии сказки в книге. */
   folktaleIntroShown: boolean;
@@ -241,6 +243,7 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     dailyQuestClickProgress: 0,
     dailyQuestTaleCorrect: false,
     dailyQuestRewardClaimedDayId: null,
+    dailyQuestFragmentGrantedDayId: null,
     folktaleIntroShown: false,
 
     energyRegenBonusPercent: 0,

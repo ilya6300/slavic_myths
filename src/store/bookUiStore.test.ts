@@ -122,4 +122,18 @@ describe('BookUiStore', () => {
     store.startOpen('bannik', mockRect());
     expect(store.pageIndex).toBeGreaterThan(0);
   });
+
+  it('should open folktale spread for daily quest without react effect', () => {
+    store.startDailyQuestTale('brownie', null);
+    expect(store.dailyQuestFlow).toBe(true);
+    expect(store.spreadMode).toBe('folktale');
+    expect(store.folktalePageIndex).toBe(0);
+  });
+
+  it('should enter daily folktale after animated open completes', () => {
+    store.startDailyQuestTale('brownie', mockRect());
+    expect(store.spreadMode).toBe('spirit');
+    vi.advanceTimersByTime(1250);
+    expect(store.spreadMode).toBe('folktale');
+  });
 });

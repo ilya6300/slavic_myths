@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite';
 import {
   brownieSkins,
   getCatSkinById,
+  getCompanionPetPoseUrl,
   houseSkins,
   viewSkins,
   type BrownieSkinId,
@@ -13,6 +14,7 @@ import { getTitleById } from '../../data/titles';
 import { isNightTime } from '../../domain/nightTime';
 import { useLocale } from '../../i18n/LocaleContext';
 import { getPetById } from '../../data/pets';
+import { getIzbaEffectById } from '../../data/izbaEffects';
 import { resolveText } from '../../i18n/resolve';
 import { gameStore } from '../../store/GameStore';
 import { profileUiStore } from '../../store/profileUiStore';
@@ -141,25 +143,39 @@ export const ProfilePreview = observer(function ProfilePreview() {
           alt=""
           draggable={false}
         />
-        {pet && (
-          <div
-            className={`profile-modal__preview-pet ${pet.sceneClassName}`}
-            aria-hidden
-            title={resolveText(pet.name, locale)}
-          />
-        )}
+        {pet && (() => {
+          const petUrl = getCompanionPetPoseUrl(pet.id, 'sid');
+          return petUrl ? (
+            <img
+              className="profile-modal__preview-pet-img"
+              src={petUrl}
+              alt=""
+              draggable={false}
+              title={resolveText(pet.name, locale)}
+            />
+          ) : (
+            <div
+              className={`profile-modal__preview-pet profile-modal__preview-pet--icon ${pet.sceneClassName}`}
+              aria-hidden
+              title={resolveText(pet.name, locale)}
+            />
+          );
+        })()}
       </div>
     );
   }
 
   if (tab === 'atmosphere') {
     const effectId = selectedId ?? gameStore.equippedIzbaEffectId;
-    const previewClass =
+    const effect =
       effectId && effectId !== 'none'
-        ? ' profile-modal__preview-stage--atmosphere-thunder'
-        : '';
+        ? getIzbaEffectById(effectId)
+        : undefined;
+    const effectClass = effect?.sceneClassName ?? '';
     return (
-      <div className={`profile-modal__preview-stage profile-modal__preview-stage--izba-fx${previewClass}`}>
+      <div
+        className={`profile-modal__preview-stage profile-modal__preview-stage--izba-fx${effectClass ? ` ${effectClass}` : ''}`}
+      >
         <img
           className="profile-modal__preview-solo profile-modal__preview-solo--izba"
           src={resolveHouseUrl(gameStore.skins.izba)}

@@ -26,6 +26,11 @@ const skinLocalizedNames: Record<ProfileSkinCategory, Record<string, LocalizedTe
     flying_carpet: L('Ковёр-самолёт', 'Flying Carpet', 'Uçan Halı'),
     purple_mage: L('Волшебство', 'Sorcery', 'Büyü'),
     smook: L('Дымок', 'Smook', 'Duman'),
+    midnight_sun: L('Ночное солнце', 'Midnight Sun', 'Gece Güneşi'),
+    fluffy_veles: L('Мохнатый', 'Fluffy', 'Tüylü'),
+    stormy_perun: L('Грозовик', 'Stormy', 'Fırtınalı'),
+    wondrous_div: L('Дивный', 'Wondrous', 'Harika'),
+    svarozhich: L('Сварожич', 'Svarozhich', 'Svarojič'),
   },
   izba: {
     hut_standart: L('Стандартная', 'Standard Hut', 'Standart Kulübe'),

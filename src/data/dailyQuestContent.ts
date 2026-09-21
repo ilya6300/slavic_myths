@@ -6,14 +6,28 @@ export const dailyQuestContent = {
   panelTitle: L('Задания дня', 'Daily tasks', 'Günlük görevler'),
   taskClicks: L('Погладить кота', 'Pet the cat', 'Kediyi sev'),
   taskTale: L('Сказ дня', 'Tale of the day', 'Günün masalı'),
+  taleSpiritHint: L(
+    'Сказ о {spirit}',
+    'Tale of {spirit}',
+    '{spirit} masalı',
+  ),
   clicksProgress: L(
     '{done} / {total} кликов',
     '{done} / {total} clicks',
     '{done} / {total} tıklama',
   ),
   taleDone: L('Сказ пройден', 'Tale complete', 'Masal tamam'),
-  taleOpen: L('Читать и ответить', 'Read and answer', 'Oku ve cevapla'),
-  claimFragment: L('Забрать осколок', 'Claim fragment', 'Parçayı al'),
+  taleOpen: L(
+    'Прочти и ответь на сказку!',
+    'Read the tale and answer!',
+    'Masalı oku ve cevapla!',
+  ),
+  taleQuizCta: L('Ответить', 'Answer', 'Cevapla'),
+  claimFragment: L(
+    'Забрать фрагмент — {spirit}',
+    'Claim fragment — {spirit}',
+    'Parçayı al — {spirit}',
+  ),
   claimDone: L('Награда получена', 'Reward claimed', 'Ödül alındı'),
   taleModalTitle: L('Сказ дня', 'Tale of the day', 'Günün masalı'),
   taleIntro: L(

@@ -14,12 +14,24 @@ class DailyQuestUiStore {
     makeAutoObservable(this);
   }
 
-  openTale(spiritId: SpiritId, rng: () => number = Math.random): void {
+  /** Подготовить вопрос викторины (книга / ежедневка), без отдельной модалки. */
+  prepareQuiz(spiritId: SpiritId, rng: () => number = Math.random): boolean {
     const quiz = getQuizBySpiritId(spiritId);
-    if (!quiz?.questions.length) return;
+    if (!quiz?.questions.length) return false;
     this.spiritId = spiritId;
-    this.isOpen = true;
+    this.isOpen = false;
     this.loadQuestion(null, rng);
+    return true;
+  }
+
+  openTale(spiritId: SpiritId, rng: () => number = Math.random): void {
+    if (!this.prepareQuiz(spiritId, rng)) return;
+    this.isOpen = true;
+  }
+
+  showQuizInBook(): void {
+    if (!this.spiritId || !this.question) return;
+    this.isOpen = true;
   }
 
   close(): void {

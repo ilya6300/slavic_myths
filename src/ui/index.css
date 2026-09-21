@@ -1133,7 +1133,7 @@ body {
 }
 
 .izba-scene--effect-thunder .layer-izba-fx,
-.profile-modal__preview-stage--atmosphere-thunder {
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-thunder {
   background: rgba(8, 12, 28, 0.38);
 }
 
@@ -1154,7 +1154,7 @@ body {
   animation: izba-thunder-flash 7s ease-in-out infinite;
 }
 
-.profile-modal__preview-stage--atmosphere-thunder::after {
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-thunder::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -1167,6 +1167,127 @@ body {
     rgba(220, 235, 255, 0.4) 50%,
     transparent 58%
   );
+}
+
+.profile-modal__preview-stage--izba-fx {
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-fog::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(185, 198, 210, 0.82) 0%,
+    rgba(195, 205, 215, 0.55) 30%,
+    rgba(195, 205, 215, 0.22) 55%,
+    transparent 78%
+  );
+}
+
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-firefly::before,
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-firefly::after {
+  content: '';
+  position: absolute;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 230, 0.98) 0%,
+    rgba(255, 210, 90, 0.75) 35%,
+    transparent 72%
+  );
+  box-shadow: 0 0 0.55rem 0.2rem rgba(255, 200, 80, 0.45);
+}
+
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-firefly::before {
+  left: 68%;
+  top: 38%;
+  animation: izba-firefly-drift-a 7s ease-in-out infinite;
+}
+
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-firefly::after {
+  left: 28%;
+  top: 52%;
+  animation: izba-firefly-drift-b 9s ease-in-out infinite;
+}
+
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-ball-lightning::after {
+  content: '';
+  position: absolute;
+  left: 38%;
+  bottom: 32%;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    rgba(220, 245, 255, 0.95) 0%,
+    rgba(140, 185, 255, 0.55) 42%,
+    rgba(80, 120, 200, 0.2) 62%,
+    transparent 78%
+  );
+  box-shadow:
+    0 0 0.65rem 0.25rem rgba(160, 210, 255, 0.55),
+    0 0 1.2rem 0.45rem rgba(100, 160, 255, 0.25);
+  animation:
+    izba-ball-lightning-glow 5s ease-in-out infinite,
+    izba-ball-lightning-drift-1 28s ease-in-out infinite;
+}
+
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-stars::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 10, 28, 0.72) 0%,
+    rgba(12, 18, 40, 0.35) 38%,
+    transparent 62%
+  );
+}
+
+.profile-modal__preview-stage--izba-fx.izba-scene--effect-stars::after {
+  content: '';
+  position: absolute;
+  left: 11%;
+  top: 9%;
+  width: 7px;
+  height: 7px;
+  pointer-events: none;
+  background: #fffef8;
+  clip-path: polygon(
+    50% 0%,
+    58% 38%,
+    98% 50%,
+    58% 62%,
+    50% 100%,
+    42% 62%,
+    2% 50%,
+    42% 38%
+  );
+  box-shadow:
+    0 0 4px 1px rgba(255, 248, 220, 0.5),
+    4.2rem 1.1rem 0 0 #fffef8,
+    1.8rem 2.4rem 0 0 #fff8e8,
+    7.5rem 0.6rem 0 0 #fff,
+    5.1rem 2.8rem 0 0 #fffef8,
+    9.2rem 1.9rem 0 0 #fff6d8,
+    2.6rem 0.35rem 0 0 #fff,
+    6.8rem 3.1rem 0 0 #fffef8,
+    10.4rem 0.9rem 0 0 #fff,
+    3.3rem 1.65rem 0 0 #fff8f0,
+    8.1rem 2.2rem 0 0 #fffef8,
+    12.2rem 1.4rem 0 0 #fff;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.8));
+  animation: izba-stars-twinkle 5s ease-in-out infinite;
 }
 
 @keyframes izba-thunder-flash {
@@ -1193,91 +1314,279 @@ body {
 .izba-scene--effect-fog .layer-izba-fx {
   background: linear-gradient(
     to top,
-    rgba(195, 205, 215, 0.42) 0%,
-    rgba(195, 205, 215, 0.12) 28%,
-    transparent 55%
+    rgba(185, 198, 210, 0.78) 0%,
+    rgba(195, 205, 215, 0.52) 32%,
+    rgba(200, 210, 220, 0.22) 58%,
+    transparent 82%
   );
 }
 
-.izba-scene--effect-firefly .layer-izba-fx::before {
+.izba-scene--effect-fog .layer-izba-fx::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    radial-gradient(circle at 22% 38%, rgba(255, 220, 140, 0.55) 0%, transparent 0.35%),
-    radial-gradient(circle at 28% 42%, rgba(255, 200, 100, 0.35) 0%, transparent 0.25%),
-    radial-gradient(circle at 72% 55%, rgba(255, 210, 120, 0.45) 0%, transparent 0.3%),
-    radial-gradient(circle at 18% 62%, rgba(255, 230, 160, 0.4) 0%, transparent 0.28%);
-  animation: izba-firefly-pulse 5s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(210, 218, 228, 0.18) 35%,
+    rgba(210, 218, 228, 0.28) 50%,
+    rgba(210, 218, 228, 0.15) 65%,
+    transparent 100%
+  );
+  opacity: 0.85;
 }
 
-.izba-scene--effect-ball-lightning .layer-izba-fx::after {
-  content: '';
+.izba-scene--effect-stars .layer-izba-fx {
+  background: linear-gradient(
+    180deg,
+    rgba(4, 6, 22, 0.82) 0%,
+    rgba(8, 12, 30, 0.55) 22%,
+    rgba(10, 14, 34, 0.22) 42%,
+    transparent 58%
+  );
+}
+
+.layer-izba-fx__star {
   position: absolute;
-  left: 38%;
-  bottom: 28%;
-  width: 6vw;
-  height: 6vw;
-  max-width: 4.5rem;
-  max-height: 4.5rem;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%) rotate(var(--star-rot, 0deg));
+  background: #fffef8;
+  clip-path: polygon(
+    50% 0%,
+    58% 38%,
+    98% 50%,
+    58% 62%,
+    50% 100%,
+    42% 62%,
+    2% 50%,
+    42% 38%
+  );
+  box-shadow: 0 0 4px 1px rgba(255, 248, 220, 0.55);
+  animation: izba-star-twinkle 5.5s ease-in-out infinite;
+}
+
+.layer-izba-fx__firefly {
+  position: absolute;
+  width: 0.55vw;
+  height: 0.55vw;
+  min-width: 5px;
+  min-height: 5px;
+  max-width: 0.65rem;
+  max-height: 0.65rem;
   border-radius: 50%;
   pointer-events: none;
   background: radial-gradient(
     circle,
-    rgba(200, 230, 255, 0.75) 0%,
-    rgba(120, 160, 220, 0.35) 45%,
-    transparent 70%
+    rgba(255, 255, 235, 0.98) 0%,
+    rgba(255, 215, 100, 0.8) 38%,
+    transparent 72%
   );
-  animation: izba-ball-lightning-glow 4s ease-in-out infinite;
+  box-shadow:
+    0 0 0.35vw 0.12vw rgba(255, 200, 90, 0.55),
+    0 0 0.9vw 0.25vw rgba(255, 180, 60, 0.22);
 }
 
-.izba-scene--effect-stars .layer-izba-fx::before {
-  content: '';
+.layer-izba-fx__firefly--1 {
+  left: calc(100vw + 58vw);
+  bottom: 42vh;
+  animation: izba-firefly-drift-a 8s ease-in-out infinite;
+}
+
+.layer-izba-fx__firefly--2 {
+  left: calc(100vw + 72vw);
+  bottom: 58vh;
+  animation: izba-firefly-drift-b 10s ease-in-out infinite 1.2s;
+}
+
+.layer-izba-fx__firefly--3 {
+  left: calc(100vw + 42vw);
+  bottom: 36vh;
+  animation: izba-firefly-drift-c 9s ease-in-out infinite 0.4s;
+}
+
+.layer-izba-fx__firefly--4 {
+  left: calc(200vw + 55vw);
+  bottom: 48vh;
+  animation: izba-firefly-drift-b 11s ease-in-out infinite 0.8s;
+}
+
+.layer-izba-fx__ball-lightning-wrap {
   position: absolute;
-  inset: 0 0 40%;
+  left: calc(var(--ball-room-band, 100vw) + 26vw);
+  bottom: 34vh;
+  z-index: 1;
   pointer-events: none;
-  background-image:
-    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.9), transparent),
-    radial-gradient(1px 1px at 34% 8%, rgba(255, 255, 255, 0.75), transparent),
-    radial-gradient(1.5px 1.5px at 58% 14%, rgba(255, 248, 220, 0.85), transparent),
-    radial-gradient(1px 1px at 78% 22%, rgba(255, 255, 255, 0.7), transparent),
-    radial-gradient(1px 1px at 22% 28%, rgba(255, 255, 255, 0.65), transparent),
-    radial-gradient(1px 1px at 88% 10%, rgba(255, 255, 255, 0.8), transparent);
-  opacity: 0.85;
+  animation: izba-ball-lightning-drift-1 28s ease-in-out infinite;
 }
 
-@keyframes izba-firefly-pulse {
+.layer-izba-fx__ball-lightning-wrap--drift-2 {
+  animation-name: izba-ball-lightning-drift-2;
+  animation-duration: 32s;
+}
+
+.layer-izba-fx__ball-lightning-wrap--drift-3 {
+  animation-name: izba-ball-lightning-drift-3;
+  animation-duration: 30s;
+}
+
+.layer-izba-fx__ball-lightning {
+  position: relative;
+  width: 5vw;
+  height: 5vw;
+  max-width: 3.5rem;
+  max-height: 3.5rem;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(235, 248, 255, 0.95) 0%,
+    rgba(170, 210, 255, 0.65) 38%,
+    rgba(100, 150, 230, 0.28) 58%,
+    transparent 76%
+  );
+  box-shadow:
+    0 0 1.2vw 0.35vw rgba(160, 215, 255, 0.65),
+    0 0 2.4vw 0.8vw rgba(90, 150, 255, 0.28);
+  animation: izba-ball-lightning-glow 5s ease-in-out infinite;
+}
+
+@keyframes izba-firefly-drift-a {
   0%,
   100% {
-    opacity: 0.55;
+    transform: translate(0, 0);
+    opacity: 0.75;
+  }
+  35% {
+    transform: translate(2.5vw, -2vh);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(-1.5vw, 1.2vh);
+    opacity: 0.85;
+  }
+}
+
+@keyframes izba-firefly-drift-b {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.7;
+  }
+  40% {
+    transform: translate(-3vw, 1.8vh);
+    opacity: 1;
+  }
+  65% {
+    transform: translate(2vw, -2.5vh);
+    opacity: 0.8;
+  }
+}
+
+@keyframes izba-firefly-drift-c {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.8;
   }
   50% {
-    opacity: 0.95;
+    transform: translate(3.5vw, 2vh);
+    opacity: 1;
   }
 }
 
 @keyframes izba-ball-lightning-glow {
   0%,
   100% {
-    opacity: 0.5;
-    transform: scale(0.92);
+    opacity: 0.55;
+    filter: brightness(0.92);
   }
   50% {
-    opacity: 0.9;
-    transform: scale(1.05);
+    opacity: 0.95;
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes izba-ball-lightning-drift-1 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(2.2vw, 1.2vh);
+  }
+  50% {
+    transform: translate(-1.8vw, -1.6vh);
+  }
+  75% {
+    transform: translate(2.8vw, -0.8vh);
+  }
+}
+
+@keyframes izba-ball-lightning-drift-2 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(-2.5vw, 1.4vh);
+  }
+  66% {
+    transform: translate(1.6vw, -2vh);
+  }
+}
+
+@keyframes izba-ball-lightning-drift-3 {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(1.2vw, -1.8vh);
+  }
+  55% {
+    transform: translate(-2.2vw, 0.6vh);
+  }
+  80% {
+    transform: translate(2vw, 1.5vh);
+  }
+}
+
+@keyframes izba-star-twinkle {
+  0%,
+  100% {
+    filter: brightness(0.82);
+  }
+  50% {
+    filter: brightness(1.15);
+  }
+}
+
+@keyframes izba-stars-twinkle {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 1;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .izba-scene--effect-firefly .layer-izba-fx::before,
-  .izba-scene--effect-ball-lightning .layer-izba-fx::after {
+  .layer-izba-fx__firefly,
+  .layer-izba-fx__ball-lightning-wrap,
+  .layer-izba-fx__ball-lightning,
+  .layer-izba-fx__star,
+  .profile-modal__preview-stage--izba-fx.izba-scene--effect-firefly::before,
+  .profile-modal__preview-stage--izba-fx.izba-scene--effect-firefly::after,
+  .profile-modal__preview-stage--izba-fx.izba-scene--effect-ball-lightning::after,
+  .profile-modal__preview-stage--izba-fx.izba-scene--effect-stars::after {
     animation: none;
-    opacity: 0.65;
+    opacity: 0.85;
   }
 }
 
-/* --- Питомец у кота (placeholder до production PNG) --- */
+/* --- Питомец у кота (лавка Яги, draft §6) --- */
 
 .scene-pet {
   position: absolute;
@@ -1322,6 +1631,11 @@ body {
   max-height: 8vh;
 }
 
+.scene-pet--firebird.scene-pet--sprite {
+  max-width: 9vw;
+  max-height: 11vh;
+}
+
 .scene-pet__img {
   display: block;
   width: 100%;
@@ -1343,12 +1657,34 @@ body {
   pointer-events: none;
 }
 
+.profile-grid__pet-thumb {
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0 auto 0.35rem;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+
 .profile-grid__pet-silhouette {
   display: block;
   width: 2.5rem;
   height: 2.5rem;
   margin: 0 auto 0.35rem;
   border-radius: 40%;
+}
+
+.profile-modal__preview-pet-img {
+  position: absolute;
+  left: 14%;
+  bottom: 20%;
+  width: 26%;
+  height: auto;
+  max-height: 32%;
+  object-fit: contain;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.35));
 }
 
 .profile-grid__pet-silhouette.scene-pet--griffin {
@@ -1361,6 +1697,168 @@ body {
 
 .profile-grid__pet-silhouette.scene-pet--firebird {
   background: radial-gradient(circle at 40% 35%, #ffe566, #c44b12);
+}
+
+.profile-grid__pet-silhouette--icon {
+  position: relative;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 38% 38% 42% 42%;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18);
+}
+
+.profile-grid__pet-silhouette--icon.scene-pet--griffin::before,
+.profile-grid__pet-silhouette--icon.scene-pet--griffin::after {
+  content: '';
+  position: absolute;
+  top: 0.15rem;
+  width: 0.85rem;
+  height: 1.1rem;
+  background: linear-gradient(160deg, #e8c04a 0%, #8b6914 100%);
+  border-radius: 60% 40% 0 0;
+  opacity: 0.95;
+}
+
+.profile-grid__pet-silhouette--icon.scene-pet--griffin::before {
+  left: -0.35rem;
+  transform: rotate(-28deg);
+}
+
+.profile-grid__pet-silhouette--icon.scene-pet--griffin::after {
+  right: -0.35rem;
+  transform: rotate(28deg);
+}
+
+.profile-grid__pet-silhouette--icon.scene-pet--humpback {
+  height: 2.2rem;
+  border-radius: 45% 45% 35% 35%;
+}
+
+.profile-grid__pet-silhouette--icon.scene-pet--humpback::before {
+  content: '';
+  position: absolute;
+  top: -0.45rem;
+  left: 28%;
+  width: 44%;
+  height: 0.65rem;
+  background: #6b3f22;
+  border-radius: 50% 50% 40% 40%;
+}
+
+.profile-grid__pet-silhouette--icon.scene-pet--firebird {
+  box-shadow:
+    0 0 10px rgba(255, 160, 60, 0.55),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+
+.profile-grid__pet-silhouette--icon.scene-pet--firebird::after {
+  content: '';
+  position: absolute;
+  right: -0.25rem;
+  bottom: 0.35rem;
+  width: 0.9rem;
+  height: 0.55rem;
+  background: linear-gradient(90deg, #ff8c32, transparent);
+  border-radius: 0 80% 0 0;
+  transform: rotate(-18deg);
+}
+
+.profile-modal__preview-pet--icon.scene-pet--griffin::before,
+.profile-modal__preview-pet--icon.scene-pet--griffin::after {
+  content: '';
+  position: absolute;
+  top: 8%;
+  width: 38%;
+  height: 45%;
+  background: linear-gradient(160deg, #e8c04a 0%, #8b6914 100%);
+  border-radius: 60% 40% 0 0;
+}
+
+.profile-modal__preview-pet--icon.scene-pet--griffin::before {
+  left: -18%;
+  transform: rotate(-25deg);
+}
+
+.profile-modal__preview-pet--icon.scene-pet--griffin::after {
+  right: -18%;
+  transform: rotate(25deg);
+}
+
+.profile-modal__preview-pet--icon.scene-pet--humpback::before {
+  content: '';
+  position: absolute;
+  top: -22%;
+  left: 22%;
+  width: 56%;
+  height: 28%;
+  background: #6b3f22;
+  border-radius: 50%;
+}
+
+.profile-modal__preview-pet--icon.scene-pet--firebird::after {
+  content: '';
+  position: absolute;
+  right: -12%;
+  bottom: 18%;
+  width: 42%;
+  height: 28%;
+  background: linear-gradient(90deg, #ff8c32, transparent);
+  border-radius: 0 80% 0 0;
+  transform: rotate(-15deg);
+}
+
+.profile-grid__atmosphere-swatch {
+  display: block;
+  width: 2.75rem;
+  height: 2rem;
+  margin: 0 auto 0.35rem;
+  border-radius: 0.35rem;
+  border: 1px solid rgba(90, 60, 30, 0.35);
+  position: relative;
+  overflow: hidden;
+  background: rgba(40, 28, 18, 0.35);
+}
+
+.profile-grid__atmosphere-swatch.izba-scene--effect-thunder {
+  background: rgba(8, 12, 28, 0.65);
+}
+
+.profile-grid__atmosphere-swatch.izba-scene--effect-fog {
+  background: linear-gradient(
+    to top,
+    rgba(195, 205, 215, 0.75) 0%,
+    rgba(120, 100, 80, 0.35) 100%
+  );
+}
+
+.profile-grid__atmosphere-swatch.izba-scene--effect-firefly {
+  background: radial-gradient(
+    circle at 30% 50%,
+    rgba(255, 220, 140, 0.9) 0%,
+    rgba(50, 35, 22, 0.85) 45%
+  );
+}
+
+.profile-grid__atmosphere-swatch.izba-scene--effect-ball-lightning {
+  background: radial-gradient(
+    circle at 55% 55%,
+    rgba(200, 230, 255, 0.95) 0%,
+    rgba(40, 28, 18, 0.5) 55%
+  );
+}
+
+.profile-grid__atmosphere-swatch.izba-scene--effect-stars {
+  background: linear-gradient(
+    180deg,
+    rgba(12, 16, 32, 0.95) 0%,
+    rgba(40, 28, 18, 0.4) 100%
+  );
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0.35rem 0.25rem 0 1px rgba(255, 255, 255, 0.85),
+    1.1rem 0.15rem 0 1px rgba(255, 248, 220, 0.9),
+    1.75rem 0.45rem 0 1.5px rgba(255, 255, 255, 0.75),
+    2.35rem 0.2rem 0 1px rgba(255, 255, 255, 0.8);
 }
 
 /* Затемнение окна — только через .layer-night; без filter на JPEG,
@@ -1646,13 +2144,16 @@ body {
 
 .scene-nav {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 8%;
+  top: auto;
+  bottom: 18vh;
+  width: clamp(44px, 5vw, 64px);
+  height: clamp(72px, 14vh, 120px);
   border: none;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.35), transparent);
+  border-radius: 0.35rem;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.15));
   color: #f5e6d0;
   font-size: 2rem;
+  line-height: 1;
   cursor: pointer;
   pointer-events: auto;
   opacity: 0;
@@ -2376,6 +2877,11 @@ body {
   align-items: center;
   text-align: center;
   justify-content: space-between;
+}
+
+.book-page--left--daily-tale {
+  justify-content: flex-start;
+  gap: 0.35rem;
 }
 
 .book-page--right {
@@ -3595,8 +4101,9 @@ body {
 .daily-quest-panel {
   position: absolute;
   left: 1.2vw;
-  top: 12vh;
-  z-index: 12;
+  top: 9vh;
+  /* Выше .layer-nav (80): иначе клик по «Прочти…» попадает в ‹ на улицу */
+  z-index: 90;
   width: 14vw;
   min-width: 148px;
   max-width: 200px;
@@ -3645,7 +4152,7 @@ body {
   opacity: 0.85;
 }
 
-.daily-quest-panel__link {
+.daily-quest-panel__tale-btn {
   margin-top: 0.15em;
   padding: 0;
   border: none;
@@ -3653,7 +4160,8 @@ body {
   color: #e8c878;
   cursor: pointer;
   font: inherit;
-  text-decoration: underline;
+  text-align: left;
+  text-decoration: none;
 }
 
 .daily-quest-panel__claim {
@@ -3885,16 +4393,18 @@ body {
   align-items: stretch;
   justify-content: center;
   gap: 0.5rem;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   pointer-events: auto;
 }
 
 .divination-overlay__line {
+  filter: drop-shadow(2px 4px 6px black);
   margin: 0;
-  color: #f0e6d8;
+  color: #64605a;
   font-size: clamp(12px, 1.6vw, 15px);
   line-height: 1.4;
   text-align: center;
+  font-weight: 600;
 }
 
 .divination-overlay__actions,
@@ -3922,70 +4432,64 @@ body {
   }
 }
 
-.yaga-shop-modal__tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.yaga-shop-modal__tab {
-  flex: 1;
-  padding: 0.4rem 0.6rem;
-  border: 1px solid rgba(80, 55, 30, 0.5);
-  background: rgba(40, 28, 18, 0.55);
-  color: inherit;
-  cursor: pointer;
-}
-
-.yaga-shop-modal__tab--active {
-  background: rgba(90, 60, 35, 0.75);
-}
-
-.yaga-shop-modal__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  max-height: 50vh;
-  overflow-y: auto;
-}
-
-.yaga-shop-modal__row {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 0.5rem;
+.yaga-shop-modal__balance {
+  display: inline-flex;
   align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.75rem;
+  font-weight: 600;
+}
+
+.yaga-shop-modal__balance img {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.yaga-shop-modal__price {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.25rem 0 0.5rem;
+  font-weight: 600;
 }
 
 .yaga-shop-modal__price img {
   width: 1.2em;
   height: 1.2em;
-  vertical-align: middle;
-  margin-right: 0.2em;
 }
 
-.yaga-shop-modal__buy {
-  min-width: 5rem;
+.yaga-shop-modal__candles-hint {
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.4;
 }
 
-.yaga-shop-modal__iap {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  align-items: flex-start;
+.yaga-shop-modal .profile-grid__cell--cat .yaga-shop-modal__cat-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.2rem;
+  margin: 0;
+  padding: 0 0.25rem;
+  font-size: 0.62rem;
+  line-height: 1.1;
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
 }
 
-.hud-rail__yaga-shop {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.25rem;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: inherit;
+.profile-modal__preview-solo--companion {
+  max-width: 88%;
+  max-height: 92%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.profile-modal__preview-solo-companion-icon {
+  width: 55%;
+  height: 55%;
+  max-width: 8rem;
+  max-height: 8rem;
 }
 
 .hud-rail__yaga-shop-img {
@@ -4225,6 +4729,35 @@ body {
   }
 }
 
+.book-page__folktale-quiz {
+  width: 100%;
+  max-width: 90%;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(139, 105, 20, 0.35);
+}
+
+.book-page__folktale-quiz-prompt {
+  font-size: clamp(0.78rem, 1.6vw, 0.92rem);
+  line-height: 1.45;
+  margin: 0.5rem 0 0.75rem;
+  font-weight: 600;
+  color: #5c3d1e;
+}
+
+.book-page__folktale-quiz-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  margin-top: 0.25rem;
+}
+
+.book-page__folktale-quiz-answer {
+  font-size: clamp(0.72rem, 1.45vw, 0.86rem);
+  text-align: left;
+  padding: 0.45rem 0.55rem;
+}
+
 .book-page__folktale-btn {
   margin-top: 0.5rem;
 }
@@ -4365,7 +4898,7 @@ body {
 .hud-rail {
   position: fixed;
   left: max(8px, env(safe-area-inset-left));
-  top: calc(max(8px, env(safe-area-inset-top)) + 64px);
+  top: 29vh;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -4375,7 +4908,8 @@ body {
 }
 
 .hud-rail__offer,
-.hud-rail__kikimora {
+.hud-rail__kikimora,
+.hud-rail__yaga-shop {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -4390,7 +4924,8 @@ body {
 }
 
 .hud-rail__offer::before,
-.hud-rail__kikimora::before {
+.hud-rail__kikimora::before,
+.hud-rail__yaga-shop::before {
   content: '';
   position: absolute;
   inset: -8px;
@@ -4399,7 +4934,8 @@ body {
 }
 
 .hud-rail__offer:active,
-.hud-rail__kikimora:active {
+.hud-rail__kikimora:active,
+.hud-rail__yaga-shop:active {
   transform: scale(0.97);
 }
 
