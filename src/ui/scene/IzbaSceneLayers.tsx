@@ -331,9 +331,12 @@ const Room1Furniture = observer(function Room1Furniture() {
         alt=""
         interactive={gameStore.onboardingCompleted}
         onSpriteClick={() => gameStore.clickMirror()}
-        className={
-          divinationUnlocked ? 'scene-mirror--active' : 'scene-mirror--locked'
-        }
+        className={[
+          divinationUnlocked ? 'scene-mirror--active' : 'scene-mirror--locked',
+          import.meta.env.DEV ? 'scene-mirror--fx-tune' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
       >
         {!divinationUnlocked && (
           <p className="scene-mirror__glass-hint" aria-hidden>

@@ -9,14 +9,34 @@ export const BrownieLayer = observer(function BrownieLayer() {
 
   const skinId = gameStore.skins.domovoy as BrownieSkinId;
   const src = brownieSkins[skinId] ?? brownieSkins.brownie_standart;
+  const interactive = gameStore.onboardingCompleted;
+
+  const handleClick = () => {
+    if (!interactive) return;
+    gameStore.clickIzbaItem('domovoy');
+  };
 
   return (
     <div
-      className="layer-spirits scene-brownie"
+      className={`layer-spirits scene-brownie${interactive ? ' scene-brownie--interactive scene-sprite--interactive' : ''}`}
       style={{
         '--brownie-left': `${brownieFallbackPlacement.left}vw`,
         '--brownie-bottom': `${brownieFallbackPlacement.bottom}vh`,
       } as CSSProperties}
+      role={interactive ? 'button' : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      aria-label="Домовой"
+      onClick={interactive ? handleClick : undefined}
+      onKeyDown={
+        interactive
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleClick();
+              }
+            }
+          : undefined
+      }
     >
       <img
         className="scene-brownie__img"

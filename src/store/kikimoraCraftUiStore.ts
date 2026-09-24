@@ -1,6 +1,5 @@
 import { makeAutoObservable } from 'mobx';
 
-import { gameStore } from './GameStore';
 import { sceneUiStore } from './sceneUiStore';
 
 export class KikimoraCraftUiStore {
@@ -11,9 +10,6 @@ export class KikimoraCraftUiStore {
   }
 
   open(): void {
-    if (sceneUiStore.activeRoom !== 'street') {
-      gameStore.tryEnterStreet();
-    }
     sceneUiStore.panBlocked = true;
     this.isOpen = true;
   }

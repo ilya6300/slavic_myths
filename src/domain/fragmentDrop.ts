@@ -19,7 +19,7 @@ export function fragmentHaveCount(
   return fragmentCounts[spiritId] ?? 0;
 }
 
-/** Первый дух в канонической очереди, которому ещё нужны осколки. */
+/** Первый дух в канонической очереди, которому ещё нужны фрагменты. */
 export function pickFragmentDropTarget(
   statuses: Record<string, SpiritStatus>,
   fragmentCounts: Record<string, number>,

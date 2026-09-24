@@ -76,10 +76,25 @@ describe('Epic 16 integration contracts', () => {
     }
   });
 
-  it('should keep pet and izba FX layers non-interactive in CSS', () => {
+  it('should keep pet default and izba FX layers non-interactive in CSS', () => {
     const css = readFileSync(resolve(root, 'src/ui/index.css'), 'utf8');
     expect(css).toMatch(/\.scene-pet\s*\{[^}]*pointer-events:\s*none/);
+    expect(css).toMatch(/\.scene-pet--interactive[^}]*pointer-events:\s*auto/);
     expect(css).toMatch(/\.izba-scene__inner\s*>\s*\.layer-izba-fx[^}]*pointer-events:\s*none/);
     expect(css).toMatch(/\.izba-scene--effect-fog/);
+  });
+
+  it('should stack interactive domovoy above furniture for clicks', () => {
+    const css = readFileSync(resolve(root, 'src/ui/index.css'), 'utf8');
+    expect(css).toMatch(/\.scene-brownie--interactive[^}]*z-index:\s*42/);
+    expect(css).toMatch(/\.izba-room \.layer-furniture[^}]*z-index:\s*40/);
+  });
+
+  it('should wire pet click dialog banks for all companion pets', () => {
+    const source = readFileSync(resolve(root, 'src/data/petDialogContent.ts'), 'utf8');
+    for (const pet of pets) {
+      expect(source).toContain(pet.id);
+    }
+    expect(source).toContain('petClickDialogContent');
   });
 });

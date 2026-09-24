@@ -251,9 +251,9 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   koschei_immortal: {
     questHook: L(
-      'В тереме блестят сундуки, а жизнь лежит не в плече. К чаше за печь я его не путаю.',
-      'Chests gleam in the terem, but life does not sit in the shoulder. I do not confuse him with a cup behind the stove.',
-      'Teremde sandıklar parlar, ama yaşam omuzda yatmaz. Onu ocağın ardındaki kâseyle karıştırmam.',
+      'Худой владыка сидит у сундуков и в драку не лезет. Золото блестит — а я лапу прижал: лишняя горсть здесь запирает дверь.',
+      'The thin lord sits by the chests and does not pick a fight. The gold gleams — and I kept my paw down: an extra handful locks the door here.',
+      'Zayıf hükümdar sandıkların yanında oturur ve kavgaya girmez. Altın parlar — ben de patimi çektim: fazla bir avuç burada kapıyı kilitler.',
     ),
     loseLine: L(
       'Потянулись за лишним сундуком — и замок защёлкнулся! Кощей усмехнулся в сухие усы. Переведём дух и пойдём дорогой разума.',
@@ -285,14 +285,14 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   },
   yarilo: {
     questHook: L(
-      'На весеннем лугу белый конь проходит краем поля, а молодые листья шумят у камня.',
-      'On the spring meadow a white horse walks the field edge while young leaves rustle by a stone.',
-      'Bahar çayırında beyaz at tarla kenarından yürür, taşın yanında genç yapraklar hışırdar.',
+      'Белый конь уже на лугу, а трава лезет ему в морду, будто зимы и не было. Я бы остался у миски, но лист на щите блестит — пойдём, пока его не присвоил ветер.',
+      'The white horse is already on the meadow, and the grass is in his muzzle as if winter never was. I would have stayed by the bowl, but the leaf on the shield is shining — let\'s go before the wind claims it.',
+      'Beyaz at çoktan çayırda, ot burnuna giriyor, kış hiç olmamış gibi. Tasın başında kalırdım, ama kalkandaki yaprak parlıyor — rüzgâr sahiplenmeden gidelim.',
     ),
     loseLine: L(
-      'Весна промчалась по лугу, а я всё считал травинки. Давай соберём мысли, пока мой хвост не объявил себя новым посевом.',
-      'Spring raced across the meadow while I counted blades of grass. Let\'s gather our thoughts before my tail declares itself a new sowing.',
-      'Bahar çayırdan geçti, ben ot saplarını saydım. Kuyruk yeni ekim ilan etmeden toparlanalım.',
+      'У меня две новости. Плохая: весна умчалась быстрее, чем я дожевал мысль. Хорошая: хвост я в посев не записал, так что поле ещё твоё. Соберись и зайди снова, пока щит с листом не стал крышкой для моей миски.',
+      'I have two bits of news. The bad one: spring raced off faster than I could finish the thought. The good one: I did not sign my tail up as seed, so the field is still yours. Pull yourself together and come back before the leaf shield becomes a lid for my bowl.',
+      'İki haberim var. Kötü olan: bahar, düşünceyi bitirmemden hızlı kaçtı. İyi olan: kuyruğu ekine yazmadım, tarla hâlâ senin. Toplan ve yapraklı kalkan tasımın kapağı olmadan yine gel.',
     ),
     lockedHint: L(
       'Белый конь уже ждёт у весеннего поля.',

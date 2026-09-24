@@ -425,6 +425,53 @@ export const catDialogBanksContent = {
     ),
   ],
 
+  mirror_locked_click: [
+    L(
+      'Говорят, раньше зеркало использовали для связи с духами. Бр… Посмотри, там нет никого?',
+      'They say mirrors once spoke to spirits. Uh… look — is anyone there?',
+      'Derler ki aynalar bir zaman ruhlarla konuşurmuş. Bak… kimse yok mu?',
+    ),
+    L(
+      'Смотри, я вижу в зеркале кого-то! А, это же я…',
+      'Look, someone\'s in the mirror! Oh — that\'s me…',
+      'Bak, aynada biri var! Ah — benim…',
+    ),
+    L(
+      'Зачем мне оно, я всегда хорошо выгляжу. Что? Там можно гадать? Куда карты раскидывать?',
+      'Why would I need it — I always look fine. What? You can divine there? Where do the cards go?',
+      'Neden bana? Zaten harika görünürüm. Ne? Orada fal bakılıyor mu? Kartlar nereye?',
+    ),
+    L(
+      'Свечи для зеркала? Зачем, оставь себе — коты и так прекрасно видят в темноте!',
+      'Candles for the mirror? Keep them — cats see fine in the dark!',
+      'Ayna için mum? Sen tut — kediler karanlıkta zaten görür!',
+    ),
+  ],
+
+  hud_hint_luck_coins: [
+    L(
+      'Монеты удачи копятся, пока тебя нет, и поднимают шанс редкого лута из сундука. Кликай кота, чтобы заработать монеты удачи.',
+      'Luck coins build up while you\'re away and raise rare chest odds. Click the cat to earn luck coins.',
+      'Şans paraları yokken birikir ve sandıktan nadir loot şansını artırır. Şans parası için kediye tıkla.',
+    ),
+  ],
+
+  hud_hint_talismans: [
+    L(
+      'Тайные обереги спасают от одной ошибки в викторине. Дают за победы над духами; три пучка травы у Кикиморы — ещё один оберег.',
+      'Secret charms cancel one quiz mistake. Win spirits for them; three grass bundles with Kikimora weave another.',
+      'Gizli tılsımlar bir quiz hatasını affeder. Ruhları yen; Kikimora\'da üç ot demeti bir tılsım daha.',
+    ),
+  ],
+
+  hud_hint_candles: [
+    L(
+      'Свечи нужны для гадания в зеркале — после победы над Бабой-Ягой. Первую свечу за духа дают один раз; ещё купишь в лавке Яги.',
+      'Candles fuel mirror divination — after you defeat Baba Yaga. One candle per spirit\'s first win; more in Yaga\'s shop.',
+      'Mumlar ayna falı için — Baba Yaga\'dan sonra. Her ruhtan ilk zaferde bir mum; fazlası Yaga dükkânında.',
+    ),
+  ],
+
   divination_closed: [
     L(
       'Гадание закрыто. Сначала договорись с Бабой-Ягой.',
@@ -442,22 +489,95 @@ export const catDialogBanksContent = {
   ],
 } as const;
 
-/** Реплики на клик по предметам избы (plan §3.2). */
+/** Реплики кота на клик по предметам избы (plan §3.2). */
 export const izbaItemDialogBanks = {
   stove: [
-    L('Туда лезь сам. Я уже обжёг ус.', 'You climb in yourself. I burned my whiskers already.', 'Sen gir. Ben bıyıklarımı çoktan yaktım.'),
-    L('Печка горячая. Усы — нет.', 'Stove\'s hot. Whiskers — nope.', 'Soba sıcak. Bıyıklar — hayır.'),
-    L('Домовой там сидит. Не мешай.', 'Domovoy sits there. Don\'t bother him.', 'Domovoy orada oturuyor. Rahatsız etme.'),
+    L(
+      'Может, печку переставим, пока Домовой спит? Представляешь, как он удивится?',
+      'Maybe we move the stove while the Domovoy sleeps? Imagine his face.',
+      'Domovoy uyurken sobayı taşısak mı? Şaşırışını hayal et.',
+    ),
+    L(
+      'Домовой там сидит: не стучи по крышке, он и так всё слышит.',
+      'The Domovoy sits there — don\'t bang the lid, he hears everything anyway.',
+      'Domovoy orada oturuyor: kapağa vurma, zaten her şeyi duyuyor.',
+    ),
+    L(
+      'Туда лезь сам: я тебе не дрова.',
+      'Climb in yourself — I\'m not your firewood.',
+      'Sen gir içeri — ben senin odunun değilim.',
+    ),
+    L(
+      'Представь: в будущем печи не будет, придумают коробку и назовут «кривоволновка». Ой, умора.',
+      'Picture it: no stoves someday, just a box they\'ll call a "microwave". Oh, I\'m dying.',
+      'Hayal et: bir gün soba olmayacak, kutu icat edecekler, adı mikrodalga. Öldüm gülmekten.',
+    ),
+  ],
+  domovoy: [
+    L(
+      'Домовой, где моя сметана? Домовой, домовой, поиграй и отдай!',
+      'Domovoy, where\'s my sour cream? Domovoy, domovoy, play nice and hand it over!',
+      'Domovoy, kaymağım nerede? Domovoy, domovoy, oyna da ver!',
+    ),
+    L(
+      'А правда, что все домовые — зяблики? Тогда почему он всегда у печки?',
+      'Is it true all domovoys are chilly? Then why is he always by the stove?',
+      'Tüm domovoylar üşür mü gerçekten? O zaman neden hep sobanın yanında?',
+    ),
+    L(
+      'Я однажды спрятал клубок под лавку, а он нашёл. С тех пор клубка больше не видел.',
+      'I hid a yarn ball under the bench once and he found it. Haven\'t seen the ball since.',
+      'Bir kez yumak sedirin altına sakladım, buldu. O günden beri yumak yok.',
+    ),
+    L(
+      'Без него изба рассыпется по углам. С ним — хоть Суседко под полом, хоть чудо-юдо за окном… Хотя нет, лучше не надо.',
+      'Without him the hut falls apart. With him — Susedko under the floor, or a wonder-beast at the window… Actually, skip that last one.',
+      'Onsuz kulübe dağılır. Onunla — Susedko döşeme altında, pencerede bir canavar… Yok, sonuncusu olmasın.',
+    ),
   ],
   bench: [
-    L('Садись. Суседко всё равно под половицу залезет.', 'Sit down. Susedko will crawl under the floor anyway.', 'Otur. Susedko yine döşemenin altına girer.'),
-    L('Лавка крепкая. Не как мои обещания.', 'Bench is solid. Unlike my promises.', 'Sedir sağlam. Sözlerim gibi değil.'),
-    L('Тут я дремал. Почти.', 'I napped here. Almost.', 'Burada uyukladım. Neredeyse.'),
+    L(
+      'Лавка крепкая — не как мои обещания.',
+      'The bench is solid — unlike my promises.',
+      'Sedir sağlam — sözlerim gibi değil.',
+    ),
+    L(
+      'Если устал кликать — садись рядом. Я место не уступлю, но морально поддержу.',
+      'Tired of clicking? Sit nearby. I won\'t move over, but I\'ve got your back.',
+      'Tıklamaktan yoruldun mu? Yanına otur. Yer vermem ama manen yanındayım.',
+    ),
+    L(
+      'Я слышал от Яги: если кликнуть лавку тридцать три раза, она превратится в диван.',
+      'Yaga told me if you click the bench thirty-three times, it turns into a sofa.',
+      'Yaga dedi ki sedire otuz üç kez tıklarsan kanepeye dönüşür.',
+    ),
+    L(
+      'Не переживай: пока тебя нет, я охраняю лавку.',
+      'Don\'t worry — while you\'re gone, I guard the bench.',
+      'Merak etme — sen yokken sediri koruyorum.',
+    ),
   ],
   window: [
-    L('В лесу сегодня тихо. Подозрительно тихо.', 'The forest is quiet today. Suspiciously quiet.', 'Ormanda bugün sessiz. Şüpheli sessiz.'),
-    L('Не смотри долго — лес смотрит в ответ.', 'Don\'t stare — the forest stares back.', 'Uzun bakma — orman da bakıyor.'),
-    L('За окном ветер. Или кто-то большой дышит.', 'Wind outside. Or someone big breathing.', 'Dışarıda rüzgar. Ya da büyük biri nefes alıyor.'),
+    L(
+      'Не смотри долго: лес смотрит в ответ.',
+      'Don\'t stare too long — the forest stares back.',
+      'Uzun bakma — orman da bakıyor.',
+    ),
+    L(
+      'За окном ветер. Или кто-то большой дышит — я на «ветер» надеюсь.',
+      'Wind outside. Or someone big breathing — I\'m betting on wind.',
+      'Dışarıda rüzgar. Ya da büyük biri nefes alıyor — ben rüzgara bahse girerim.',
+    ),
+    L(
+      'Скин окна смени — этот что-то надоел уже.',
+      'Change the window skin — this one\'s gotten old.',
+      'Pencere görünümünü değiştir — bu sıktı artık.',
+    ),
+    L(
+      'Я тебе не собака: сам иди гуляй.',
+      'I\'m not your dog — go for a walk yourself.',
+      'Ben köpeğin değilim — git kendin gez.',
+    ),
   ],
 } as const;
 

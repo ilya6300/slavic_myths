@@ -24,7 +24,7 @@ import { gameStore } from '../../store/GameStore';
 import { bookUiStore } from '../../store/bookUiStore';
 import { sceneUiStore } from '../../store/sceneUiStore';
 import { catDialogStore } from '../../store/catDialogStore';
-import { pickCatLine } from '../../data/catDialogs';
+import { getQuestHook, pickCatLine } from '../../data/catDialogs';
 import { ModalCloseButton } from '../common/ModalCloseButton';
 import {
   getDailyQuestTalePageCount,
@@ -444,6 +444,11 @@ export const BookOverlay = observer(function BookOverlay() {
               {spirit.name}
             </h3>
             <p className="book-page__description">{spirit.bookDescription}</p>
+            {(status === 'available' || status === 'locked') && (
+              <p className="book-page__study-hint">
+                {getQuestHook(spiritId, locale)}
+              </p>
+            )}
             <div className="book-page__reward-block">
               <div className="book-page__reward-heading">
                 <span className="book-page__reward-label">

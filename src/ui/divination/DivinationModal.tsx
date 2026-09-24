@@ -19,12 +19,17 @@ export const DivinationModal = observer(function DivinationModal() {
     }
   };
 
-  const showSmoke = phase === 'smoke';
+  const mirrorFxTune = import.meta.env.DEV;
+  const showSmoke = phase === 'smoke' || mirrorFxTune;
   const showPortrait =
     phase === 'reveal' || (phase === 'result' && divinationUiStore.portraitUrl);
 
   return (
-    <div className="divination-overlay" role="dialog" aria-modal="true">
+    <div
+      className={`divination-overlay${mirrorFxTune ? ' divination-overlay--fx-tune' : ''}`}
+      role="dialog"
+      aria-modal="true"
+    >
       <div className="divination-overlay__frame">
         <ModalCloseButton
           className="divination-overlay__close"
@@ -36,7 +41,14 @@ export const DivinationModal = observer(function DivinationModal() {
           alt=""
           draggable={false}
         />
-        {showSmoke && <div className="divination-overlay__smoke" aria-hidden />}
+        {showSmoke && (
+          <div className="divination-overlay__smoke" aria-hidden>
+            <span className="divination-overlay__smoke-wisp divination-overlay__smoke-wisp--1" />
+            <span className="divination-overlay__smoke-wisp divination-overlay__smoke-wisp--2" />
+            <span className="divination-overlay__smoke-wisp divination-overlay__smoke-wisp--3" />
+            <span className="divination-overlay__smoke-wisp divination-overlay__smoke-wisp--4" />
+          </div>
+        )}
         {showPortrait && divinationUiStore.portraitUrl && (
           <img
             className="divination-overlay__portrait"

@@ -10,4 +10,12 @@ describe('izbaItemDialog', () => {
     const second = pickIzbaItemLine('stove', 'ru', first.nextState, () => 0);
     expect(second.text).not.toBe(first.text);
   });
+
+  it('should expose domovoy bank lines', () => {
+    const line = pickIzbaItemLine('domovoy', 'ru', {
+      lastTag: null,
+      lastLineIndex: 0,
+    });
+    expect(line.text.length).toBeGreaterThan(10);
+  });
 });

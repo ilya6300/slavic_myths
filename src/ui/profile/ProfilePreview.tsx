@@ -137,12 +137,6 @@ export const ProfilePreview = observer(function ProfilePreview() {
     const pet = petId ? getPetById(petId) : null;
     return (
       <div className="profile-modal__preview-stage profile-modal__preview-stage--pets">
-        <img
-          className="profile-modal__preview-solo profile-modal__preview-solo--cat"
-          src={getCatSkinById(gameStore.skins.cat)?.sit ?? ''}
-          alt=""
-          draggable={false}
-        />
         {pet && (() => {
           const petUrl = getCompanionPetPoseUrl(pet.id, 'sid');
           return petUrl ? (

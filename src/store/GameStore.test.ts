@@ -443,7 +443,13 @@ describe('GameStore', () => {
     });
     store.clickMirror();
     expect(divinationUiStore.phase).toBe('idle');
-    expect(store.lastCatBubble?.text).toBeTruthy();
+    expect(store.lastCatBubble?.text).toMatch(/зеркал|Зачем|Свечи|кого-то/i);
+  });
+
+  it('clickHudResourceHint explains luck coins', () => {
+    const store = makeStore({ onboardingCompleted: true });
+    store.clickHudResourceHint('luck_coins');
+    expect(store.lastCatBubble?.text).toMatch(/Кликай кота|монет/i);
   });
 
   it('confirmDivinationAsk spends one candle and starts session', () => {

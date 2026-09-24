@@ -13,9 +13,9 @@ export const pets = [
     id: 'pet_griffin',
     name: L('Грифон', 'Griffin', 'Grifon'),
     description: L(
-      'Сторож резьбы: сидит у книги или порога, не кликабельный.',
-      'Guardian of carvings: sits by the book or threshold, not clickable.',
-      'Oyma bekçisi: kitabın veya eşikte, tıklanamaz.',
+      'Сторож резьбы: сидит у книги или порога; по клику — короткая реплика.',
+      'Guardian of carvings: by the book or threshold; tap for a short line.',
+      'Oyma bekçisi: kitap veya eşikte; tıkla — kısa bir replik.',
     ),
     sceneClassName: 'scene-pet--griffin',
   },

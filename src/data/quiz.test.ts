@@ -105,23 +105,24 @@ describe('quiz data', () => {
     expect(byId.veles.questions).toHaveLength(12);
     expect(byId.baba_yaga.questions).toHaveLength(12);
     expect(byId.koschei_immortal.questions).toHaveLength(12);
-    expect(byId.chudo_yudo.questions).toHaveLength(13);
-    expect(byId.yarilo.questions).toHaveLength(11);
-    expect(byId.perun.questions).toHaveLength(11);
+    expect(byId.chudo_yudo.questions).toHaveLength(12);
+    expect(byId.yarilo.questions).toHaveLength(12);
+    expect(byId.perun.questions).toHaveLength(13);
 
     expect(byId.dedushka_toptygin.questions[0].options[0]).toContain(
       'нарушение',
     );
     expect(byId.poludnica.questions[1].options[0]).toContain('всё поле целиком');
-    expect(byId.rusalka.questions[0].options[0]).toContain('без рыбьего хвоста');
+    expect(byId.rusalka.questions[0].options[0]).toContain('полурыбой');
+    expect(byId.rusalka.questions[5].prompt).toContain('гребень');
     expect(byId.rusalka.catHook).toContain('на сухом бугре');
-    expect(byId.lada.questions[0].options[0]).toContain('Мир и порядок в семье');
-    expect(byId.veles.questions[0].options[0]).toContain('стадо, и богатство');
+    expect(byId.lada.questions[0].options[0]).toContain('кружка остаётся общей');
+    expect(byId.veles.questions[1].options[0]).toContain('слово «скот»');
     expect(byId.baba_yaga.questions[1].options[0]).toContain('окуренные дымом');
-    expect(byId.koschei_immortal.questions[1].options[0]).toContain(
-      'отдельно от тела',
+    expect(byId.koschei_immortal.questions[3].options[0]).toContain(
+      'спрятанной в стороне от тела',
     );
-    expect(byId.chudo_yudo.questions[2].options[0]).toContain('западная голова');
+    expect(byId.chudo_yudo.questions[1].options[0]).toContain('западная принимает');
     expect(byId.chudo_yudo.catHook).not.toContain('Калинов');
     expect(byId.baba_yaga.catHook).toContain('столбы пахнут дымом');
     expect(byId.poludnica.loseMessage).toContain('Зной накрыл полосу');

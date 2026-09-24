@@ -3,6 +3,7 @@ import {
   CAT_SLEEP_MAX_MS,
   CAT_SLEEP_MIN_MS,
 } from '../config/gameConstants';
+import type { PetId } from '../data/pets';
 import type { GameStore } from './GameStore';
 
 let boundGameStore: GameStore | null = null;
@@ -36,6 +37,9 @@ export class SceneUiStore {
   yardGrassSlots: number[] = [];
   grassChipShake = false;
   grassChipFlash = false;
+  /** Реплика питомца над спрайтом (клик без монет, draft §6). */
+  petBubble: { petId: PetId; text: string } | null = null;
+  lastPetClickLine: Partial<Record<PetId, string>> = {};
 
   constructor() {
     makeAutoObservable(this);
@@ -157,6 +161,18 @@ export class SceneUiStore {
     globalThis.setTimeout(() => {
       this.grassChipFlash = false;
     }, 350);
+  }
+
+  showPetBubble(petId: PetId, text: string): void {
+    this.petBubble = { petId, text };
+  }
+
+  clearPetBubble(): void {
+    this.petBubble = null;
+  }
+
+  rememberPetClickLine(petId: PetId, text: string): void {
+    this.lastPetClickLine = { ...this.lastPetClickLine, [petId]: text };
   }
 }
 

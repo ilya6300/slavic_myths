@@ -145,7 +145,7 @@ export const hudIcons = {
   grass: fromAssets('furniture/yard_grass.png'),
   candle: fromAssets('UI/icon_candle.png'),
   yagaShop: fromAssets('UI/icon_yaga_shop.png'),
-  truthCrumb: fromAssets('UI/monete_v1.png'),
+  truthCrumb: fromAssets('UI/icon_truth_crumb.png'),
 } as const;
 
 // --- Духи: гравюра (книга, викторина, fallback трофеев) ---

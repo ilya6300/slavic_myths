@@ -67,9 +67,16 @@ export const GameHud = observer(function GameHud() {
     : resolveText(settingsUiContent.kikimoraRailName, locale);
 
   const showGrassChip = gameStore.onboardingCompleted;
-  const showCandleChip = gameStore.onboardingCompleted;
+  const showCandleChip = true;
   const showCrumbChip =
     gameStore.onboardingCompleted && gameStore.truthCrumbs > 0;
+
+  const handleHudHint = (
+    resource: 'luck_coins' | 'talismans' | 'candles',
+  ) => {
+    if (!gameStore.onboardingCompleted) return;
+    gameStore.clickHudResourceHint(resource);
+  };
   return (
     <header className="layer-hud">
       <div className="hud-top">
@@ -103,18 +110,25 @@ export const GameHud = observer(function GameHud() {
         </span>
 
         <div className="hud-resources">
-          <span
+          <button
+            type="button"
             className={`hud-stat hud-coins${eventUiStore.susedkoPhase === 'stealing' ? ' hud-coins--stealing' : ''}`}
             title="Luck coins"
+            onClick={() => handleHudHint('luck_coins')}
           >
             <img className="hud-stat__img" src={hudIcons.coin} alt="" />
             {gameStore.luckCoins}
-          </span>
+          </button>
 
-          <span className="hud-stat hud-oberegs" title="Talismans">
+          <button
+            type="button"
+            className="hud-stat hud-oberegs"
+            title="Talismans"
+            onClick={() => handleHudHint('talismans')}
+          >
             <img className="hud-stat__img" src={hudIcons.obereg} alt="" />
             {gameStore.talismans}
-          </span>
+          </button>
 
           {showGrassChip && (
             <span
@@ -127,10 +141,15 @@ export const GameHud = observer(function GameHud() {
           )}
 
           {showCandleChip && (
-            <span className="hud-stat hud-candle" title="Candles">
+            <button
+              type="button"
+              className="hud-stat hud-candle"
+              title="Candles"
+              onClick={() => handleHudHint('candles')}
+            >
               <img className="hud-stat__img" src={hudIcons.candle} alt="" />
               {gameStore.candles}
-            </span>
+            </button>
           )}
 
           {showCrumbChip && (

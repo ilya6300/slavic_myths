@@ -834,12 +834,28 @@ export class GameStore {
     }
   }
 
+  clickHudResourceHint(
+    resource: 'luck_coins' | 'talismans' | 'candles',
+  ): void {
+    if (!this.onboardingCompleted) return;
+    if (this.handleZhirdyayBlockedInteraction()) return;
+    const tag =
+      resource === 'luck_coins'
+        ? 'hud_hint_luck_coins'
+        : resource === 'talismans'
+          ? 'hud_hint_talismans'
+          : 'hud_hint_candles';
+    const line = pickCatLine(tag, this.language);
+    if (line) this.lastCatBubble = { kind: 'footnote', text: line };
+    sceneUiStore.registerActivity();
+  }
+
   clickMirror(): void {
     if (!this.onboardingCompleted) return;
     if (this.handleZhirdyayBlockedInteraction()) return;
     sceneUiStore.registerActivity();
     if (!isDivinationUnlocked(this.spiritStatuses)) {
-      const line = pickCatLine('divination_closed', this.language);
+      const line = pickCatLine('mirror_locked_click', this.language);
       if (line) this.lastCatBubble = { kind: 'footnote', text: line };
       return;
     }
@@ -974,6 +990,7 @@ export class GameStore {
 
   clickIzbaItem(itemId: IzbaItemId): void {
     if (!this.onboardingCompleted) return;
+    if (itemId === 'domovoy' && !this.isBrownieOnScene()) return;
     if (this.handleZhirdyayBlockedInteraction()) return;
     const { text, nextState } = pickIzbaItemLine(
       itemId,

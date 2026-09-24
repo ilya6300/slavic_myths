@@ -2,7 +2,7 @@ import type { Locale } from '../i18n/types';
 import { resolveLines } from '../i18n/resolve';
 import { izbaItemDialogBanks } from '../data/dialogContent';
 
-export type IzbaItemId = 'stove' | 'bench' | 'window';
+export type IzbaItemId = 'stove' | 'bench' | 'window' | 'domovoy';
 
 export interface IzbaItemPickState {
   lastTag: IzbaItemId | null;
