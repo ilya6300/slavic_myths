@@ -2070,12 +2070,8 @@ body {
 }
 
 .hud-energy {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
   pointer-events: auto;
-  z-index: 1;
+  flex-shrink: 0;
 }
 
 .hud-energy--empty {
@@ -2102,8 +2098,7 @@ body {
   pointer-events: auto;
   flex-shrink: 1;
   min-width: 0;
-  /* Не наезжать на центральную энергию при 3–4 чипах */
-  max-width: min(46vw, 300px);
+  max-width: min(78vw, 520px);
 }
 
 .hud-stat {
@@ -2393,8 +2388,19 @@ button.hud-stat:hover {
   }
 
   .hud-resources {
-    max-width: min(40vw, 340px);
+    max-width: min(62vw, 560px);
     gap: 0.5rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .hud-top {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  .hud-resources {
+    max-width: 100%;
   }
 }
 
@@ -2404,7 +2410,7 @@ button.hud-stat:hover {
   }
 
   .hud-resources {
-    max-width: min(52vw, 240px);
+    max-width: min(72vw, 320px);
     gap: 0.3rem;
   }
 
@@ -2660,9 +2666,13 @@ button.hud-stat:hover {
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
+  .book-modal.layer-modal {
+    padding: 0;
+  }
+
   .book-modal {
-    --book-stage-h: 86vh;
-    --book-stage-max-w: calc(86vh * var(--book-open-aspect));
+    --book-stage-max-w: min(100vw, calc(100dvh * var(--book-open-aspect)));
+    --book-stage-h: min(100dvh, calc(100vw / var(--book-open-aspect)));
   }
 }
 
@@ -3327,9 +3337,13 @@ button.hud-stat:hover {
 }
 
 @media (max-width: 700px) {
+  .book-modal.layer-modal {
+    padding: 0;
+  }
+
   .book-modal {
-    --book-stage-max-w: min(96vw, 720px);
-    --book-stage-h: min(76vh, calc(var(--book-stage-max-w) / var(--book-open-aspect)));
+    --book-stage-max-w: min(100vw, calc(100dvh * var(--book-open-aspect)));
+    --book-stage-h: min(100dvh, calc(100vw / var(--book-open-aspect)));
   }
 
   .book-modal__bookmark-label {
@@ -3337,23 +3351,33 @@ button.hud-stat:hover {
   }
 
   .book-page__name {
-    font-size: clamp(1rem, 3.8vw, 1.35rem);
+    font-size: clamp(0.82rem, 3.2vw, 1rem);
+    margin-bottom: 0.3rem;
   }
 
   .book-page__description,
   .book-page__reward,
+  .book-page__study-hint,
   .book-page__reward-label,
   .book-page__reward-amount {
-    font-size: 0.78rem;
-    line-height: 1.35;
+    font-size: 0.62rem;
+    line-height: 1.28;
+    margin-bottom: 0.28rem;
   }
 
   .book-page__reward-heading {
-    font-size: 0.72rem;
+    font-size: 0.6rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .book-page__folktale-quiz-prompt,
+  .book-page__folktale-quiz-answer {
+    font-size: 0.58rem;
+    line-height: 1.25;
   }
 
   .book-page__quest-btn-label {
-    font-size: 0.82rem;
+    font-size: 0.68rem;
   }
 
   .book-modal__counter {
@@ -3392,6 +3416,41 @@ button.hud-stat:hover {
 }
 
 @media (max-width: 700px) {
+  .quiz.layer-modal {
+    align-items: stretch;
+    justify-content: flex-start;
+    padding:
+      max(0.4rem, env(safe-area-inset-top))
+      max(0.4rem, env(safe-area-inset-right))
+      max(0.4rem, env(safe-area-inset-bottom))
+      max(0.4rem, env(safe-area-inset-left));
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .quiz-panel {
+    width: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0.75rem 0.85rem;
+  }
+
+  .quiz-question {
+    margin: 0.55rem 0;
+    font-size: 0.88rem;
+  }
+
+  .quiz-answers {
+    gap: 8px;
+  }
+
+  .quiz-answer {
+    min-height: 40px;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.82rem;
+    line-height: 1.3;
+  }
+
   .quiz-modal .quiz-question {
     font-size: 0.9rem;
   }
@@ -4200,6 +4259,20 @@ button.hud-stat:hover {
   font-size: clamp(11px, 0.85vw, 14px);
   pointer-events: auto;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+@media (max-width: 700px) {
+  .daily-quest-panel {
+    top: calc(max(8px, env(safe-area-inset-top)) + 116px);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 720px) and (min-width: 701px) {
+  .daily-quest-panel {
+    top: calc(max(8px, env(safe-area-inset-top)) + 72px);
+    max-height: calc(100vh - 76px);
+    overflow-y: auto;
+  }
 }
 
 .daily-quest-panel__title {
@@ -5320,12 +5393,44 @@ button.hud-stat:hover {
 }
 
 @media (max-width: 767px) {
+  /* Панель ежедневки занимает левый верх. Рельс ниже неё, иначе «Дар путника» накрывает её и лавку. */
+  .hud-rail {
+    top: calc(max(8px, env(safe-area-inset-top)) + 292px);
+    max-width: 22vw;
+    gap: 8px;
+  }
+
+  .hud-rail__offer {
+    position: fixed;
+    left: 25vw;
+    top: 2vh;
+    z-index: 101;
+  }
+
   .hud-rail__offer-img {
-    max-height: 56px;
+    max-height: 48px;
   }
 
   .hud-rail__kikimora-img {
-    max-height: 72px;
+    max-height: 56px;
+  }
+
+  .hud-rail__yaga-shop-img {
+    width: auto;
+    max-width: none;
+    max-height: 48px;
+  }
+
+  .hud-rail__yaga-shop-label {
+    margin-top: 4px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: rgba(40, 28, 18, 0.72);
+    font-size: 12px;
+    font-weight: 600;
+    color: #f5e6d0;
+    text-align: center;
+    pointer-events: none;
   }
 }
 
@@ -5833,22 +5938,27 @@ button.hud-stat:hover {
     margin-bottom: 0.5rem;
   }
 
-  /* Книга */
+  /* Книга на весь экран */
+  .book-modal.layer-modal {
+    padding: 0;
+  }
+
   .book-modal {
-    --book-stage-max-w: min(92vw, calc(68vh * var(--book-open-aspect)));
-    --book-stage-h: min(68vh, calc(var(--book-stage-max-w) / var(--book-open-aspect)));
+    --book-stage-max-w: min(100vw, calc(100dvh * var(--book-open-aspect)));
+    --book-stage-h: min(100dvh, calc(100vw / var(--book-open-aspect)));
   }
 
   .book-page__name {
-    font-size: clamp(0.88rem, 2.6vw, 1.1rem);
-    margin-bottom: 0.4rem;
+    font-size: clamp(0.78rem, 2.4vw, 0.95rem);
+    margin-bottom: 0.25rem;
   }
 
   .book-page__description,
-  .book-page__reward {
-    font-size: 0.72rem;
-    line-height: 1.38;
-    margin-bottom: 0.35rem;
+  .book-page__reward,
+  .book-page__study-hint {
+    font-size: 0.6rem;
+    line-height: 1.25;
+    margin-bottom: 0.22rem;
   }
 
   .book-page__reward-label,

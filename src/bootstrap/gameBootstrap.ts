@@ -4,6 +4,7 @@ import { fragmentRequirements } from '../config/lootTables';
 import { spirits } from '../data/spirits';
 import type { GameSave, SpiritStatus } from '../domain/GameSave';
 import { migrateSave } from '../domain/saveMigration';
+import { stripLegacyDevMetaSeed } from '../domain/legacyDevSaveStrip';
 import { applyFragmentUnlocks } from '../domain/spiritQueue';
 import { initPlatform, getPlatformSdk, isAuthorized } from '../platform/platformService';
 import { pickBestSave } from '../services/pickBestSave';
@@ -36,6 +37,25 @@ export function stripLegacyDevFragmentSeedFromCounts(
     }
   }
   return { counts: next, changed };
+}
+
+function applyDevStripLegacyMetaSeed(): boolean {
+  if (!import.meta.env.DEV) return false;
+
+  const meta = stripLegacyDevMetaSeed({
+    ownedSkinIds: gameStore.ownedSkinIds,
+    truthCrumbs: gameStore.truthCrumbs,
+    spiritStatuses: gameStore.spiritStatuses,
+    starterPackPurchased: gameStore.starterPackPurchased,
+    skins: gameStore.skins,
+  });
+  if (meta.changed) {
+    gameStore.ownedSkinIds = meta.ownedSkinIds;
+    gameStore.truthCrumbs = meta.truthCrumbs;
+    gameStore.skins = meta.skins;
+    return true;
+  }
+  return false;
 }
 
 function applyDevStripLegacyFragmentSeed(): boolean {
@@ -116,10 +136,11 @@ export async function bootstrapGame(): Promise<void> {
     gameStore.hydrate(best);
   }
 
+  const strippedDevMeta = applyDevStripLegacyMetaSeed();
   const strippedDevFragments = applyDevStripLegacyFragmentSeed();
 
   bindCloudPersist();
-  if (strippedDevFragments) {
+  if (strippedDevMeta || strippedDevFragments) {
     saveService.schedulePersist();
   }
   await settingsUiStore.refreshAuth();

@@ -12,7 +12,6 @@ import {
   STARTER_PACK_CAT_SKIN_ID,
   STARTER_PACK_ENERGY_BONUS,
   STARTER_PACK_OBEREG_BONUS,
-  appConfig,
 } from '../config/gameConstants';
 import {
   applyRewardedSkip,
@@ -703,8 +702,7 @@ export class GameStore {
       rewardClaimed: false,
     });
     if (!dayComplete) return false;
-    if (!claimedToday) return true;
-    return appConfig.debugIgnoreDailyQuestDayLimit;
+    return !claimedToday;
   }
 
   /** Сказ дня для этого духа ещё не пройден (викторина в книге). */

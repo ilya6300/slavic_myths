@@ -4,7 +4,6 @@ import {
   ENERGY_PER_QUEST,
   LUCK_COINS_PER_CLICK,
   ONBOARDING_ENERGY_FLOOR,
-  appConfig,
 } from '../config/gameConstants';
 import { createDefaultSave } from '../domain/GameSave';
 import { findNextAvailableSpirit } from '../domain/spiritQueue';
@@ -572,7 +571,7 @@ describe('GameStore', () => {
     expect(store.isDailyQuestRewardClaimedToday(now)).toBe(false);
   });
 
-  it('allows a second daily quest claim the same day only in DEV', () => {
+  it('should allow only one daily quest fragment claim per calendar day', () => {
     const now = new Date('2026-09-20T12:00:00');
     vi.useFakeTimers();
     vi.setSystemTime(now);
@@ -588,11 +587,7 @@ describe('GameStore', () => {
     });
     expect(store.claimDailyQuestFragment(now)).toBe(true);
     expect(store.fragmentCounts.baba_yaga).toBe(1);
-    expect(store.claimDailyQuestFragment(now)).toBe(
-      appConfig.debugIgnoreDailyQuestDayLimit,
-    );
-    expect(store.fragmentCounts.baba_yaga).toBe(
-      appConfig.debugIgnoreDailyQuestDayLimit ? 2 : 1,
-    );
+    expect(store.claimDailyQuestFragment(now)).toBe(false);
+    expect(store.fragmentCounts.baba_yaga).toBe(1);
   });
 });

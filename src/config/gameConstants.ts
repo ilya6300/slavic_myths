@@ -96,6 +96,4 @@ export const appConfig = {
   isTestMode: import.meta.env.VITE_TEST_MODE === 'true',
   /** DEV: выход на двор ночью (прод: блок по nightTime). */
   debugAllowStreetAtNight: import.meta.env.DEV,
-  /** DEV: ежедневку можно закрывать больше одного раза за календарный день. */
-  debugIgnoreDailyQuestDayLimit: import.meta.env.DEV,
 } as const;

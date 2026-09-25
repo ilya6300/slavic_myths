@@ -101,15 +101,15 @@ export const GameHud = observer(function GameHud() {
           </span>
         </button>
 
-        <span
-          className={`hud-stat hud-energy${gameStore.energy === 0 ? ' hud-energy--empty' : ''}`}
-          title="Energy"
-        >
-          <img className="hud-stat__img" src={hudIcons.energy} alt="" />
-          {gameStore.energy}/{gameStore.maxEnergy}
-        </span>
-
         <div className="hud-resources">
+          <span
+            className={`hud-stat hud-energy${gameStore.energy === 0 ? ' hud-energy--empty' : ''}`}
+            title="Energy"
+          >
+            <img className="hud-stat__img" src={hudIcons.energy} alt="" />
+            {gameStore.energy}/{gameStore.maxEnergy}
+          </span>
+
           <button
             type="button"
             className={`hud-stat hud-coins${eventUiStore.susedkoPhase === 'stealing' ? ' hud-coins--stealing' : ''}`}

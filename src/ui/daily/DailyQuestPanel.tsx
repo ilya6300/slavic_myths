@@ -6,7 +6,6 @@ import { formatLocalizedTemplate, resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import type { SpiritId } from '../../config/assetRegistry';
 import { getSpiritById } from '../../data/spirits';
-import { appConfig } from '../../config/gameConstants';
 import { gameStore } from '../../store/GameStore';
 
 export const DailyQuestPanel = observer(function DailyQuestPanel() {
@@ -22,9 +21,7 @@ export const DailyQuestPanel = observer(function DailyQuestPanel() {
   const taleComplete = gameStore.dailyQuestTaleCorrect;
   const claimedToday = gameStore.isDailyQuestRewardClaimedToday();
   const canClaim = gameStore.canClaimDailyQuestFragment();
-  const showClaimButton =
-    canClaim &&
-    (!claimedToday || appConfig.debugIgnoreDailyQuestDayLimit);
+  const showClaimButton = canClaim;
   const showDone = claimedToday && !showClaimButton;
   const fragmentTargetId = gameStore.getDailyQuestFragmentTargetSpiritId();
   const fragmentSpiritName =
