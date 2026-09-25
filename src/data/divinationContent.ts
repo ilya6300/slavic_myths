@@ -49,6 +49,12 @@ export const divinationUi = {
   ),
   ask: L('Спросить', 'Ask', 'Sor'),
   notNow: L('Не сейчас', 'Not now', 'Şimdi değil'),
+  rewardedLookLine: L(
+    'Свеча кончилась. Короткая сказка — и стекло ответит.',
+    'The candle is out. A short tale, and the glass will answer.',
+    'Mum bitti. Kısa bir masal — cam cevap verecek.',
+  ),
+  hearTheTale: L('Послушай сказку', 'Hear the tale', 'Masalı dinle'),
   guessTitle: L('Я думаю это…', 'I think it is…', 'Sanırım bu…'),
   resultCorrect: L('Правильно!', 'Correct!', 'Doğru!'),
   resultWrong: L('Не верно!', 'Not quite!', 'Yanlış!'),

@@ -4,6 +4,7 @@
 
 import type { SpiritId } from '../config/assetRegistry';
 import { SPIRIT_ORDER } from '../data/spirits';
+import { getCalendarDayId } from './calendarDay';
 import type { SpiritStatus } from './GameSave';
 
 export const DIVINATION_NAME_BUTTON_COUNT = 8;
@@ -45,4 +46,15 @@ export function isDivinationUnlocked(
   statuses: Record<string, SpiritStatus>,
 ): boolean {
   return statuses.baba_yaga === 'defeated';
+}
+
+/** Один взгляд без свечи на календарные сутки, только после Яги. */
+export function canOfferDivinationRewardedLook(
+  unlocked: boolean,
+  candles: number,
+  rewardedDayId: string | null,
+  now: Date,
+): boolean {
+  if (!unlocked || candles > 0) return false;
+  return rewardedDayId !== getCalendarDayId(now);
 }

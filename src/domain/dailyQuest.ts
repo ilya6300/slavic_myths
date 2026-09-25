@@ -112,6 +112,51 @@ export function canClaimDailyFragmentReward(state: DailyQuestDayState): boolean 
   return isDailyDayComplete(state) && !state.rewardClaimed;
 }
 
+export interface DailyQuestRewardedResetState {
+  dayId: string;
+  taleSpiritId: string | null;
+  clickProgress: number;
+  taleQuizCorrect: boolean;
+  fragmentGrantedDayId: string | null;
+  rewardClaimedDayId: string | null;
+  rewardedResetDayId: string | null;
+}
+
+export function canResetDailyQuestWithRewarded(
+  unlocked: boolean,
+  fragmentGrantedDayId: string | null,
+  rewardedResetDayId: string | null,
+  now: Date,
+): boolean {
+  if (!unlocked) return false;
+  const today = getCalendarDayId(now);
+  return fragmentGrantedDayId === today && rewardedResetDayId !== today;
+}
+
+export function resetDailyQuestAfterRewarded(
+  state: DailyQuestRewardedResetState,
+  now: Date,
+): DailyQuestRewardedResetState {
+  return {
+    dayId: state.dayId,
+    taleSpiritId: state.taleSpiritId,
+    clickProgress: 0,
+    taleQuizCorrect: false,
+    fragmentGrantedDayId: null,
+    rewardClaimedDayId: null,
+    rewardedResetDayId: getCalendarDayId(now),
+  };
+}
+
+export function syncDailyQuestRewardedResetDayId(
+  rewardedResetDayId: string | null,
+  previousDayId: string | null,
+  now: Date,
+): string | null {
+  if (previousDayId !== getCalendarDayId(now)) return null;
+  return rewardedResetDayId;
+}
+
 /** Сброс ошибочного «награда получена» без закрытого дня (старый баг с daily-find). */
 export function shouldClearStaleDailyQuestRewardClaim(
   rewardClaimedDayId: string | null,

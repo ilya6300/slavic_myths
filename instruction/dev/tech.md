@@ -1321,3 +1321,235 @@ A11y бара: `role="progressbar"`, `aria-valuemin={0}`, `aria-valuemax={requir
 `claimQuizVictory` начисляет +1 свечу через `grantFirstVictoryCandle`. Покупки/IAP/UI — TASK-052–053.
 
 ---
+
+## Epic 17 — Rewarded-лимиты: сундук, зеркало, ежедневка
+
+> Источник: `instruction/dev/tasks.md` Epic 17, TASK-056 / 058 / 060. Правила владельца 2026-09-25 перебивают `scenario.md` §6.1 «−30 мин» и `draft.md` §1 «календаря взгляда нет» только в узком месте ниже. Базовые 3 часа кулдауна и свеча как обычный вход в сеанс не меняются. TASK-057 / 059 / 061 только читают предикаты; вёрстку и тексты кнопок этот эпик не задаёт.
+
+### Решение
+
+Три независимых счётчика живут в том же `GameSave` и том же `GameStore`. Нового store и нового слоя нет. Реклама по-прежнему только через `adsService.showRewarded` (внутри — `adsUiStore` в DEV / `platform` SDK в проде). UI не вызывает SDK. Успех ролика — колбэк `onRewarded`; отмена и закрытие без награды — `onClose`, он игровые счётчики не меняет. Энергия (`restoreEnergyWithRewarded`) остаётся отдельным роликом и эти поля не трогает.
+
+Сейчас `SAVE_VERSION = 14`. Весь эпик — одна миграция **v14 → v15**.
+
+### SAVE v15
+
+| Поле | Тип | Default | Кто пишет |
+|------|-----|---------|-----------|
+| `chestRewardedCharges` | `number` (0…4) | `4` | только успешный скип сундука и ленивое пополнение |
+| `chestRewardedNaturalRefillAt` | `number \| null` | `null` | только `openChest`, когда заряды уже 0 |
+| `divinationRewardedDayId` | `string \| null` | `null` | только успешный взгляд без свечи, в момент старта сеанса |
+| `dailyQuestRewardedResetDayId` | `string \| null` | `null` | успешный сброс ежи; `null` на смене календарного дня |
+
+`createDefaultSave` задаёт те же дефолты. `GameStore.hydrate` / `toSave` прокидывают поля как остальные скаляры сейва. `chestReadyAt`, `candles`, `dailyQuestTaleSpiritId` и прогресс ежи миграция не меняет.
+
+`migrateSave`, один блок `if (save.version < 15)`:
+
+- `chestRewardedCharges = 4` (старый сейв без поля — полный лимит);
+- `chestRewardedNaturalRefillAt = null`;
+- `divinationRewardedDayId = null` (суточный взгляд доступен);
+- `dailyQuestRewardedResetDayId = null` (сброс сегодня не использован);
+- `version = 15`, дальше общий `save.version = SAVE_VERSION`.
+
+Второго bump (v16) под зеркало или ежу нет: все четыре поля заводит первый разработчик, который трогает `saveMigration.ts` в этом эпике. Остальные TASK только читают уже существующие поля. Битые числа зарядов при чтении зажимать в 0…4.
+
+Константы в `src/config/gameConstants.ts`:
+
+| Константа | Было | Стало |
+|-----------|------|--------|
+| `SAVE_VERSION` | `14` | `15` |
+| `CHEST_COOLDOWN_HOURS` | `3` | `3` (не менять) |
+| `CHEST_REWARDED_SKIP_MINUTES` | `30` | `90` |
+| `CHEST_REWARDED_CHARGE_LIMIT` | — | `4` |
+
+`applyRewardedSkip` уже вычитает `CHEST_REWARDED_SKIP_MINUTES` и зажимает результат через `Math.max(now, …)`, поэтому отдельно «не уходить в минус» не кодировать.
+
+### Структура модулей
+
+| Path | Ответственность | Менять? |
+|------|----------------|---------|
+| `src/config/gameConstants.ts` | версия сейва, 90 минут, лимит 4, кулдаун 3 ч | да |
+| `src/domain/GameSave.ts` | четыре поля, дефолты | да |
+| `src/domain/saveMigration.ts` | блок v15 | да |
+| `src/domain/chestCooldown.ts` | время скипа (как сейчас) + чистые функции зарядов | дописать функции |
+| `src/domain/divinationSession.ts` | предикат рекламного взгляда рядом с `isDivinationUnlocked` | дописать функцию |
+| `src/domain/dailyQuest.ts` | предикат и сброс ежи; снятие флага на новом дне | дописать функции |
+| `src/domain/calendarDay.ts` | `getCalendarDayId` — тот же day id, что у ежи | нет |
+| `src/domain/candles.ts` | `canSpendCandle` / `spendCandle` | нет |
+| `src/store/GameStore.ts` | поля, hydrate/toSave, три action + предикаты для UI | да |
+| `src/store/adsUiStore.ts` | `RewardedLoreContext` += `'divination' \| 'dailyQuest'` | да, тип |
+| `src/services/adsService.ts` | единственная точка rewarded | нет |
+| `src/domain/spareChestKey.ts`, `wonderChest.ts` | ключ и сундук чудес | нет |
+
+Новый файл домена не заводить: заряд — продолжение `chestCooldown.ts`, взгляд — `divinationSession.ts`, сброс ежи — `dailyQuest.ts`.
+
+### Ключевые типы / чистые функции
+
+Заряд не сериализуется отдельным типом. В сейве два поля; в домене их собирает аргумент:
+
+```ts
+export interface ChestRewardedChargeState {
+  charges: number;
+  naturalRefillAt: number | null;
+}
+
+/** Если заряды 0 и now >= naturalRefillAt — вернуть лимит 4 и сбросить метку. Иначе состояние то же. */
+export function syncChestRewardedCharges(
+  state: ChestRewardedChargeState,
+  now: number,
+): ChestRewardedChargeState;
+
+/** Успешный скип: −1 заряд (не ниже 0) и applyRewardedSkip. naturalRefillAt не ставит и не снимает. */
+export function applyChestRewardedChargeSkip(
+  state: ChestRewardedChargeState,
+  chestReadyAt: number | null,
+  now: number,
+): { charges: ChestRewardedChargeState; chestReadyAt: number };
+
+/**
+ * После openChest, когда новый chestReadyAt уже посчитан.
+ * Заряды > 0 → naturalRefillAt = null.
+ * Заряды === 0 → naturalRefillAt = этот chestReadyAt.
+ */
+export function armChestRewardedNaturalRefill(
+  state: ChestRewardedChargeState,
+  nextChestReadyAt: number,
+): ChestRewardedChargeState;
+
+export function canSkipChestWithRewarded(charges: number): boolean;
+```
+
+```ts
+/** Зеркало открыто (Яга побеждена), свечей 0, day id взгляда !== сегодня. */
+export function canOfferDivinationRewardedLook(
+  unlocked: boolean,
+  candles: number,
+  rewardedDayId: string | null,
+  now: Date,
+): boolean;
+```
+
+`unlocked` — тот же смысл, что `isDivinationUnlocked` (`baba_yaga === 'defeated'`). День — `getCalendarDayId(now)`.
+
+```ts
+/** Банник побеждён, фрагмент ежи выдан сегодня, флаг сброса !== сегодня. */
+export function canResetDailyQuestWithRewarded(
+  unlocked: boolean,
+  fragmentGrantedDayId: string | null,
+  rewardedResetDayId: string | null,
+  now: Date,
+): boolean;
+
+/**
+ * Тот же dayId и тот же taleSpiritId.
+ * clickProgress = 0, taleQuizCorrect = false,
+ * fragmentGrantedDayId и rewardClaimedDayId = null,
+ * rewardedResetDayId = getCalendarDayId(now).
+ * pickDailyTaleSpiritId не вызывать.
+ */
+export function resetDailyQuestAfterRewarded(
+  state: DailyQuestRewardedResetState,
+  now: Date,
+): DailyQuestRewardedResetState;
+
+/** previousDayId !== сегодня → null. Иначе флаг как был. */
+export function syncDailyQuestRewardedResetDayId(
+  rewardedResetDayId: string | null,
+  previousDayId: string | null,
+  now: Date,
+): string | null;
+```
+
+`DailyQuestRewardedResetState` — плоский аргумент из уже существующих полей ежи плюс `rewardedResetDayId`. `DailyQuestDayState` и `syncDailyQuestForCalendarDay` не расширять: смена дня по-прежнему перевыбирает духа сказа, рекламный сброс — нет.
+
+`RewardedLoreContext = 'smetana' | 'chest' | 'divination' | 'dailyQuest'`. Энергия остаётся `'smetana'`, сундук — `'chest'`.
+
+### Поток данных
+
+Общий контур:
+
+```
+кнопка UI → GameStore action → предикат домена
+  → adsService.showRewarded(onRewarded, onClose, lore)
+      onRewarded: ещё раз предикат → мутация своих полей → schedulePersist()
+      onClose:    ничего из v15
+```
+
+**Сундук.** `skipChestCooldownWithRewarded(now)`:
+
+1. Нет `firstChestOpened` или сундук уже готов — return.
+2. `syncChestRewardedCharges`. Если заряды стали 4 — записать в store и persist.
+3. `charges === 0` — return, ролик не показывать.
+4. `adsService.showRewarded`. В `onRewarded` повторить шаги 2–3 (сундук мог стать готов, пока ролик шёл). Иначе `applyChestRewardedChargeSkip`, записать `chestReadyAt` и заряды. `naturalRefillAt` этот колбэк не меняет.
+
+`openChest` после уже существующего `this.chestReadyAt = chestReadyAtAfterOpen(now)`:
+
+1. Сначала `syncChestRewardedCharges(now)` (ожидание 3 ч могло кончиться в момент открытия).
+2. Затем `armChestRewardedNaturalRefill` от нового `chestReadyAt`.
+
+Пока заряды 1…4, свой конец таймера лимит не пополняет и не сжигает: `sync` молчит, потому что `naturalRefillAt === null`. Метка ставится только открытием при уже нулевых зарядах — это и есть «следующий кулдаун живые 3 часа». Остаток после 4-го скипа (в том числе мгновенная готовность, если до конца было меньше 90 минут) метку не ставит: заряд уже списан, пополнение ждёт следующее открытие и его полные 3 часа.
+
+`applyChestKeyReward` (ключ делает неготовый сундук готовым) и `openWonderChest` эти два поля не читают и не пишут. Ключ, оборвавший кулдаун с уже стоящей меткой, метку не снимает; следующее `openChest` при зарядах 0 перезапишет её новым `chestReadyAt`.
+
+Предикат для TASK-057: `canSkipChestCooldownWithRewarded(now)` = сундук уже открывали, кулдаун не кончился, после sync заряды > 0. Видимость кнопки и текст «1,5 часа» — не здесь.
+
+**Зеркало.** Свеча по-прежнему списывается только в `confirmDivinationAsk`, и только если `candles > 0`. Этот путь `divinationRewardedDayId` не пишет и ролик не вызывает.
+
+`clickMirror` при закрытом зеркале — как сейчас (реплика, без ролика и без сеанса). При свечах > 0 — как сейчас (`openThreshold`, без ролика). При 0 свечей, зеркало открыто и `canOfferDivinationRewardedLook` — открыть тот же порог, день не писать, свечу не трогать: «Не сейчас» остаётся `closeDivination`. При 0 свечей и уже использованном дне — как сейчас, реплика `divination_no_candle`, сеанс не начинать.
+
+`confirmDivinationAsk` при `candles === 0` делает return и сеанс не начинает.
+
+`confirmDivinationRewardedLook(now)` — единственный ролик зеркала, lore `'divination'`:
+
+- предикат ложен или фаза не `threshold` — return, ролик не показывать;
+- `onRewarded`: снова предикат, `candles === 0`, фаза всё ещё `threshold`. Тогда `divinationRewardedDayId = getCalendarDayId(now)` и тот же `beginSessionAfterCandle`, что после свечи. `addCandles` / `spendCandle` не вызывать;
+- `onClose` и `closeDivination` день не пишут.
+
+Взгляд со свечой в те же сутки идёт старым `confirmDivinationAsk` и поле дня не меняет. На другой `getCalendarDayId` предикат снова истинен без отдельного сброса. Поле сундука этот action не трогает.
+
+**Ежа.** `resetDailyQuestWithRewarded(now)`:
+
+1. `ensureDailyQuestDaySynced(now)` — внутри, на смене `dailyQuestDayId`, записать результат `syncDailyQuestRewardedResetDayId`. Прогресс и дух сказа по-прежнему меняет только существующий `syncDailyQuestForCalendarDay`.
+2. `canResetDailyQuestWithRewarded` ложен (нет Банника, награда сегодня не выдана, флаг уже сегодня) — return, ролик не показывать.
+3. `onRewarded`: снова sync и предикат от того же `now`. Если за время ролика день сменился, календарный сброс уже обнулил ежу — флаг нового дня не ставить и return. Иначе применить `resetDailyQuestAfterRewarded`.
+4. Повторная награда — существующий `claimDailyQuestFragment` (`pickFragmentDropTarget` / `applyFragmentDrop`). Второй метод награды не заводить.
+
+`onClose` прогресс и флаг не меняет. Заряды сундука и `divinationRewardedDayId` этот action не трогает. Пропуски не копить: отдельного счётчика пропущенных сбросов нет.
+
+### Инварианты
+
+- Базовый кулдаун открытия — `CHEST_COOLDOWN_HOURS` (3). Меняется только `CHEST_REWARDED_SKIP_MINUTES` (90). Успешный ролик сундука снимает 90 минут и ровно 1 заряд; отмена не снимает время и не тратит заряд.
+- Зарядов 4. После четвёртого успешного скипа следующий кулдаун, который стартует в `openChest` при нуле зарядов, идёт до `chestReadyAt` без скипа. Когда `now` достигает `chestRewardedNaturalRefillAt`, лимит снова 4. Пока заряды не 0, свой конец таймера лимит не пополняет.
+- Если до конца таймера меньше 90 минут, скип доводит `chestReadyAt` до `now` и всё равно списывает 1 заряд.
+- Энергия, зеркало и ежа `chestRewardedCharges` / `chestRewardedNaturalRefillAt` не меняют. Ролик зеркала не заменяет сброс ежи и наоборот.
+- Свечи > 0: сеанс только через свечу, рекламы зеркала нет. Свечей 0 и зеркало после Яги: один взгляд на `getCalendarDayId`, свеча не начисляется и не списывается. День пишется в `onRewarded` непосредственно перед стартом сеанса. «Не сейчас» и отмена ролика день не тратят. Взгляд со свечой в те же сутки рекламный day id не тратит. До Яги ролика и сеанса нет.
+- Сброс ежи только после выданной награды текущего дня и только после Банника. Обнуляет клики, флаг сказа и оба флага награды (`dailyQuestFragmentGrantedDayId`, `dailyQuestRewardClaimedDayId`). `dailyQuestTaleSpiritId` тот же. Второй сброс в те же сутки недоступен. Флаг снимается на новый календарный день в `ensureDailyQuestDaySynced` вместе с обычным сбросом ежи. Отмена ролика не сбрасывает.
+- Старый сейв: заряды 4, взгляд доступен, сброс ежи не использован, прочий прогресс на месте.
+- Сериализация только `toSave` / `hydrate`. SDK только из `adsService`.
+
+### Риски
+
+| Риск | Как не словить |
+|------|----------------|
+| Пополнить лимит на любом «сундук готов и заряды 0» | пополнение только из `syncChestRewardedCharges`, когда метка стояла и `now` её достиг. Четвёртый скип метку не ставит |
+| Списать заряд до колбэка или в `onClose` | −1 только внутри `onRewarded` после повторной проверки |
+| Второй bump версии из параллельных TASK | один блок v15 на все четыре поля |
+| `confirmDivinationAsk` при 0 свечей молча начнёт сеанс или начислит свечу | при 0 свечей return; день пишет только `confirmDivinationRewardedLook` |
+| Рекламный сброс вызовет `pickDailyTaleSpiritId` или `syncDailyQuestForCalendarDay` как новый день | только `resetDailyQuestAfterRewarded`; дух сказа копируется |
+| Полночь во время ролика ежи сожжёт завтрашний сброс | в колбэке сначала sync; если день сменился — return без записи флага |
+| Общий «счётчик рекламы» на три механики | три пары полей, три action; `restoreEnergyWithRewarded` не расширять |
+| Ключ или сундук чудес случайно двигают заряды | не вызывать charge-функции из `spareChestKey.ts` и `openWonderChest` |
+| UI пойдёт в `getPlatformSdk().adv` | кнопки TASK-057/059/061 вызывают методы `GameStore` |
+
+### Соответствие задачам
+
+| TASK | Модули |
+|------|--------|
+| TASK-056 | `gameConstants` (90 мин, лимит 4, v15), `chestCooldown.ts`, `GameSave`, `saveMigration`, `GameStore.skipChestCooldownWithRewarded` + `openChest`, предикат `canSkipChestCooldownWithRewarded` |
+| TASK-058 | `divinationSession.canOfferDivinationRewardedLook`, `GameSave.divinationRewardedDayId`, `GameStore.clickMirror` / `confirmDivinationAsk` / `confirmDivinationRewardedLook` |
+| TASK-060 | `dailyQuest.ts` (`canResetDailyQuestWithRewarded`, `resetDailyQuestAfterRewarded`, `syncDailyQuestRewardedResetDayId`), `GameSave.dailyQuestRewardedResetDayId`, `GameStore.ensureDailyQuestDaySynced` + `resetDailyQuestWithRewarded`; награда повторной ежи — текущий `claimDailyQuestFragment` |
+| TASK-057 | читает `canSkipChestCooldownWithRewarded` и число зарядов после sync. Вёрстку не проектировать |
+| TASK-059 | читает `canOfferDivinationRewardedLook`. Вёрстку не проектировать |
+| TASK-061 | читает `canResetDailyQuestWithRewarded`. Вёрстку не проектировать |
+
+---

@@ -29,6 +29,11 @@ export const dailyQuestContent = {
     'Parçayı al — {spirit}',
   ),
   claimDone: L('Награда получена', 'Reward claimed', 'Ödül alındı'),
+  rewardedReset: L(
+    'Послушай сказку — пройди ещё раз',
+    'Hear the tale — go again',
+    'Masalı dinle — bir daha geç',
+  ),
   taleModalTitle: L('Сказ дня', 'Tale of the day', 'Günün masalı'),
   taleIntro: L(
     'Сегодня кот вспомнил сказ о {spirit}.',

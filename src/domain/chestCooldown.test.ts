@@ -56,13 +56,13 @@ describe('chestCooldown', () => {
 
 
 
-  it('should skip 30 minutes with rewarded', () => {
+  it('should skip 90 minutes with rewarded', () => {
 
-    const readyAt = now + 60 * 60 * 1000;
+    const readyAt = now + 3 * 60 * 60 * 1000;
 
     const next = applyRewardedSkip(readyAt, now);
 
-    expect(next).toBe(readyAt - 30 * 60 * 1000);
+    expect(next).toBe(readyAt - 90 * 60 * 1000);
 
   });
 

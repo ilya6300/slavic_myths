@@ -80,7 +80,7 @@ function resolveLootLabel(
       const spirit = loot.itemId
         ? getSpiritById(loot.itemId as SpiritId)
         : null;
-      return `${resolveText(settingsUiContent.chestRewardSpiritKey, locale)}: ${spirit?.name ?? loot.itemId ?? ''}`;
+      return `${resolveText(settingsUiContent.chestRewardSpiritKey, locale)}: ${spirit ? resolveText(spirit.name, locale) : loot.itemId ?? ''}`;
     }
     case 'chest_key':
       return resolveText(settingsUiContent.chestRewardChestKey, locale);
@@ -96,7 +96,7 @@ function resolveLootLabel(
       const spirit = loot.itemId
         ? getSpiritById(loot.itemId as SpiritId)
         : null;
-      return `${resolveText(settingsUiContent.chestRewardFragment, locale)}: ${spirit?.name ?? loot.itemId ?? ''}${dup}`;
+      return `${resolveText(settingsUiContent.chestRewardFragment, locale)}: ${spirit ? resolveText(spirit.name, locale) : loot.itemId ?? ''}${dup}`;
     }
     default:
       return '';

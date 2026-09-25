@@ -1,0 +1,726 @@
+{
+  "Добрый я: дом сыт — и я спокоен": {
+    "en": "I am kind: the house is well fed — and I am at peace.",
+    "tr": "İyiyim: ev tok — ben de huzurluyum."
+  },
+  "Кто бережёт горницу, с тем я в ладу.": {
+    "en": "Whoever keeps the room, I am in accord with them.",
+    "tr": "Odayı koruyanla uyum içindeyim."
+  },
+  "Живу в избе, у тёплой стены, и порог мне свой": {
+    "en": "I live in the hut, by the warm wall, and the threshold is mine.",
+    "tr": "Kulübede, sıcak duvarın yanında yaşarım, eşik de benimdir."
+  },
+  "Горница — мой дом: сторожу её изнутри, не со двора.": {
+    "en": "The room is my home: I guard it from inside, not from the yard.",
+    "tr": "Oda benim evim: onu içeriden korurum, avludan değil."
+  },
+  "Стихией не управляю: небо и ветер мне чужды": {
+    "en": "I do not command the elements: sky and wind are foreign to me.",
+    "tr": "Doğaya hükmetmem: gök ve rüzgâr bana yabancıdır."
+  },
+  "Погодой не командую — тучам я не хозяин.": {
+    "en": "I do not command the weather — I am not master of the clouds.",
+    "tr": "Havaya hükmetmem — bulutların efendisi değilim."
+  },
+  "Из воды я не вышел: там сыро и холодно": {
+    "en": "I did not come out of the water: it is damp and cold there.",
+    "tr": "Sudan çıkmadım: orası nemli ve soğuktur."
+  },
+  "Вода мне чужда — в глубине мокро и тесно.": {
+    "en": "Water is foreign to me — in the deep it is wet and cramped.",
+    "tr": "Su bana yabancıdır — derinlikte ıslak ve dardır."
+  },
+  "Лес мне чужд: там темно и сыро": {
+    "en": "The forest is foreign to me: it is dark and damp there.",
+    "tr": "Orman bana yabancıdır: orası karanlık ve nemlidir."
+  },
+  "В бор не хожу: чаща шумная, а мне там не своё.": {
+    "en": "I do not go into the pine wood: the thicket is noisy, and it is not my place.",
+    "tr": "Çamlığa gitmem: sık orman gürültülüdür, orası bana ait değil."
+  },
+  "На зверя не похож: обличье у меня людское": {
+    "en": "I do not look like a beast: my form is human.",
+    "tr": "Hayvana benzemem: kılığım insandır."
+  },
+  "Зверем не был — морды и шерсти на мне нет.": {
+    "en": "I was never a beast — I have neither a muzzle nor fur.",
+    "tr": "Hiç hayvan olmadım — ne hayvan suratım ne tüyüm var."
+  },
+  "Поле мне чуждо, там холодно ночами": {
+    "en": "The field is foreign to me; it is cold there at night.",
+    "tr": "Tarla bana yabancıdır, geceleri orası soğuktur."
+  },
+  "Поле мне чужое: там ветрено и пусто.": {
+    "en": "The field is not mine: it is windy and empty there.",
+    "tr": "Tarla bana ait değil: orası rüzgârlı ve boştur."
+  },
+  "Хитрить не люблю: прятать и дурачить не по мне": {
+    "en": "I do not like to trick: hiding and fooling people are not my way.",
+    "tr": "Hile sevmem: saklamak ve kandırmak bana göre değil."
+  },
+  "Шуток не держу — нрав прямой, без озорства.": {
+    "en": "I do not go in for jokes — my temper is straight, without mischief.",
+    "tr": "Şaka etmem — huyum dosdoğrudur, yaramazlık yoktur."
+  },
+  "Добрый я, зла за пазухой не ношу": {
+    "en": "I am kind; I do not carry evil hidden in my bosom.",
+    "tr": "İyiyim, koynumda kötülük saklamam."
+  },
+  "Шутки люблю, а обиды не коплю.": {
+    "en": "I like jokes, and I do not store up grudges.",
+    "tr": "Şaka severim, gücenik biriktirmem."
+  },
+  "Живу здесь с тобой, и стены мне свои": {
+    "en": "I live here with you, and the walls are mine.",
+    "tr": "Burada seninle yaşarım, duvarlar da benimdir."
+  },
+  "Изба — мой дом: я сосед горницы, не гость со двора.": {
+    "en": "The hut is my home: I am the room's neighbor, not a guest from the yard.",
+    "tr": "Kulübe benim evim: odanın komşusuyum, avludan gelen konuk değil."
+  },
+  "Стихией управлять не умею": {
+    "en": "I am not able to command the elements.",
+    "tr": "Doğaya hükmedemem."
+  },
+  "Погодой не командую — ветер и тучи идут сами.": {
+    "en": "I do not command the weather — wind and clouds go on their own.",
+    "tr": "Havaya hükmetmem — rüzgâr ve bulutlar kendi gider."
+  },
+  "Из воды я не вышел: там холодно и сыро": {
+    "en": "I did not come out of the water: it is cold and damp there.",
+    "tr": "Sudan çıkmadım: orası soğuk ve nemlidir."
+  },
+  "Река мне чужда — в омуте мокро и тесно.": {
+    "en": "The river is foreign to me — in the pool it is wet and cramped.",
+    "tr": "Irmak bana yabancıdır — girdapta ıslak ve dardır."
+  },
+  "Лес мне чужд: там темно и пусто для меня": {
+    "en": "The forest is foreign to me: it is dark and empty for me there.",
+    "tr": "Orman bana yabancıdır: orası benim için karanlık ve boştur."
+  },
+  "Чаща мне не дом: там сыро и шумно.": {
+    "en": "The thicket is not my home: it is damp and noisy there.",
+    "tr": "Sık orman benim evim değil: orası nemli ve gürültülüdür."
+  },
+  "Мохнатый сосед: зверьком меня кличут не зря": {
+    "en": "A shaggy neighbor: they do not call me a little beast for nothing.",
+    "tr": "Tüylü komşu: bana küçük hayvan demeleri boşuna değil."
+  },
+  "Шёрстка и лапки есть — зверь, да свой, домашний.": {
+    "en": "I have a bit of fur and little paws — a beast, yet one's own, of the household.",
+    "tr": "Biraz kürküm ve küçük patilerim var — hayvanım, ama kendine ait, evcil."
+  },
+  "Поле мне чуждо: там голо и свищет ветер": {
+    "en": "The field is foreign to me: it is bare there, and the wind whistles.",
+    "tr": "Tarla bana yabancıdır: orası çıplaktır, rüzgâr ıslık çalar."
+  },
+  "На поле мне не своё — там пусто и холодно ночами.": {
+    "en": "The field is not my place — it is empty and cold there at night.",
+    "tr": "Tarlada yerim yok — geceleri orası boş ve soğuktur."
+  },
+  "Хитрить люблю: спрячу — поищут, найдут — посмеюсь": {
+    "en": "I like to trick: I hide it — they search; they find it — I laugh.",
+    "tr": "Hile severim: saklarım — ararlar, bulurlar — gülerim."
+  },
+  "Озорство мне по нраву — без злого умысла, да с хитрецой.": {
+    "en": "Mischief suits me — without evil intent, but with a bit of cunning.",
+    "tr": "Yaramazlık hoşuma gider — kötü niyet yok, ama biraz kurnazlık var."
+  },
+  "Добрым не зови: ласки не дождёшься": {
+    "en": "Do not call me kind: you will wait in vain for a kind touch.",
+    "tr": "Bana iyi deme: benden okşama bekleme."
+  },
+  "К людям мягок не бываю — нрав строгий, не ласковый.": {
+    "en": "I am not soft with people — my temper is strict, not tender.",
+    "tr": "İnsanlara yumuşak olmam — huyum sıkıdır, şefkatli değil."
+  },
+  "В избе мне чуждо, там тесно и душно": {
+    "en": "The hut is foreign to me; it is cramped and stuffy there.",
+    "tr": "Kulübe bana yabancıdır, orası dar ve boğucudur."
+  },
+  "Изба мне не дом: за стенами слишком тихо и тесно.": {
+    "en": "The hut is not my home: within the walls it is too quiet and cramped.",
+    "tr": "Kulübe benim evim değil: duvarların içinde fazla sessiz ve dardır."
+  },
+  "Стихией не умею управлять": {
+    "en": "I do not know how to command the elements.",
+    "tr": "Doğaya nasıl hükmedeceğimi bilmem."
+  },
+  "Погодой не командую — тучам и ветру я не хозяин.": {
+    "en": "I do not command the weather — I am not master of the clouds and the wind.",
+    "tr": "Havaya hükmetmem — bulutların ve rüzgârın efendisi değilim."
+  },
+  "Омут холоден: я люблю тёплую воду": {
+    "en": "The pool is cold: I like warm water.",
+    "tr": "Girdap soğuktur: ılık suyu severim."
+  },
+  "Вода на земле всегда холодная, лучше тёплая.": {
+    "en": "Water on the earth is always cold; warm is better.",
+    "tr": "Yerdeki su hep soğuktur, ılık olan daha iyidir."
+  },
+  "Зверем не был — морды на мне нет.": {
+    "en": "I was never a beast — I have no muzzle.",
+    "tr": "Hiç hayvan olmadım — hayvan suratım yok."
+  },
+  "На поле мне не своё: там голо и ветрено": {
+    "en": "The field is not my place: it is bare and windy there.",
+    "tr": "Tarlada yerim yok: orası çıplak ve rüzgârlıdır."
+  },
+  "Поле чужое: днём жарко, ночью холодно.": {
+    "en": "The field is not mine: hot by day, cold by night.",
+    "tr": "Tarla bana ait değil: gündüz sıcak, gece soğuk."
+  },
+  "Хитрить не люблю: нрав прямой, без обмана": {
+    "en": "I do not like to trick: my temper is straight, without deceit.",
+    "tr": "Hile sevmem: huyum dosdoğrudur, aldatmaca yoktur."
+  },
+  "Озорства не держу — прятать и дурачить не по мне.": {
+    "en": "I do not go in for mischief — hiding and fooling people are not my way.",
+    "tr": "Yaramazlık etmem — saklamak ve kandırmak bana göre değil."
+  },
+  "Доброй не зови: ласки мало, нрав строгий": {
+    "en": "Do not call me kind: there is little tenderness, and my temper is strict.",
+    "tr": "Bana iyi deme: okşama az, huyum sıkıdır."
+  },
+  "К людям нежна не бываю — покоя от меня ждать не стоит.": {
+    "en": "I am not tender with people — it is no use expecting peace from me.",
+    "tr": "İnsanlara nazik olmam — benden huzur beklemeye değmez."
+  },
+  "Живу в избе, в сыром углу, и стены мне свои": {
+    "en": "I live in the hut, in a damp corner, and the walls are mine.",
+    "tr": "Kulübede, nemli bir köşede yaşarım, duvarlar da benimdir."
+  },
+  "Горница моя: я домашний дух стен, не гость с топи.": {
+    "en": "The room is mine: I am a household spirit of the walls, not a guest from the mire.",
+    "tr": "Oda benim: duvarların ev ruhuyum, bataklıktan gelmiş konuk değil."
+  },
+  "Погодой не командую — тучам я не хозяйка.": {
+    "en": "I do not command the weather — I am not mistress of the clouds.",
+    "tr": "Havaya hükmetmem — bulutların hanımı değilim."
+  },
+  "Из воды я не вышла: там сыро и холодно": {
+    "en": "I did not come out of the water: it is damp and cold there.",
+    "tr": "Sudan çıkmadım: orası nemli ve soğuktur."
+  },
+  "Вода мне чужда — в омуте мокро и тесно.": {
+    "en": "Water is foreign to me — in the pool it is wet and cramped.",
+    "tr": "Su bana yabancıdır — girdapta ıslak ve dardır."
+  },
+  "Лес мне чужд: там темно и пусто": {
+    "en": "The forest is foreign to me: it is dark and empty there.",
+    "tr": "Orman bana yabancıdır: orası karanlık ve boştur."
+  },
+  "В бор не хожу: чаща шумная, не по мне.": {
+    "en": "I do not go into the pine wood: the thicket is noisy, not to my liking.",
+    "tr": "Çamlığa gitmem: sık orman gürültülü, bana göre değil."
+  },
+  "На зверя не похожа: обличье у меня людское": {
+    "en": "I do not look like a beast: my form is human.",
+    "tr": "Hayvana benzemem: kılığım insandır."
+  },
+  "Зверем не была — морды и шерсти на мне нет.": {
+    "en": "I was never a beast — I have neither a muzzle nor fur.",
+    "tr": "Hiç hayvan olmadım — ne hayvan suratım ne tüyüm var."
+  },
+  "Поле мне чуждо, там ветрено и пусто": {
+    "en": "The field is foreign to me; it is windy and empty there.",
+    "tr": "Tarla bana yabancıdır, orası rüzgârlı ve boştur."
+  },
+  "Поле мне чужое: там холодно ночами.": {
+    "en": "The field is not mine: it is cold there at night.",
+    "tr": "Tarla bana ait değil: geceleri orası soğuktur."
+  },
+  "Хитрить не люблю: шуток не держу": {
+    "en": "I do not like to trick: I do not go in for jokes.",
+    "tr": "Hile sevmem: şaka etmem."
+  },
+  "Озорства не держу — нрав прямой, без забавы.": {
+    "en": "I do not go in for mischief — my temper is straight, without sport.",
+    "tr": "Yaramazlık etmem — huyum dosdoğrudur, eğlence yoktur."
+  },
+  "Добрый я, пока полосу не топчут зря": {
+    "en": "I am kind, so long as the strip is not trampled for nothing.",
+    "tr": "İyiyim, şerit boşuna çiğnenmediği sürece."
+  },
+  "К тем, кто земле спасибо сказал, я весёлый и свой.": {
+    "en": "To those who thanked the land, I am merry and one of their own.",
+    "tr": "Toprağa teşekkür edene neşeliyim, onlardan biriyim."
+  },
+  "В избе мне тесно, там душно": {
+    "en": "The hut is too cramped for me; it is stuffy there.",
+    "tr": "Kulübe bana dar gelir, orası boğucudur."
+  },
+  "Изба мне чужда: за стенами слишком тесно.": {
+    "en": "The hut is foreign to me: within the walls it is too cramped.",
+    "tr": "Kulübe bana yabancıdır: duvarların içinde fazla dardır."
+  },
+  "Вода мне чужда — глубь мокрая, не по мне.": {
+    "en": "Water is foreign to me — the deep is wet, not to my liking.",
+    "tr": "Su bana yabancıdır — derinlik ıslak, bana göre değil."
+  },
+  "Лес мне чужд: там темно и тесно": {
+    "en": "The forest is foreign to me: it is dark and cramped there.",
+    "tr": "Orman bana yabancıdır: orası karanlık ve dardır."
+  },
+  "В бор не хожу: чаща сырая, а мне там не своё.": {
+    "en": "I do not go into the pine wood: the thicket is damp, and it is not my place.",
+    "tr": "Çamlığa gitmem: sık orman nemlidir, orası bana ait değil."
+  },
+  "Зверем не был — шерсти и морды на мне нет.": {
+    "en": "I was never a beast — I have neither fur nor a muzzle.",
+    "tr": "Hiç hayvan olmadım — ne tüyüm ne hayvan suratım var."
+  },
+  "Из поля я: полдень и край полосы — мой час": {
+    "en": "I am from the field: noon and the edge of the strip are my hour.",
+    "tr": "Tarladanım: öğle ve şeridin kenarı benim saatimdir."
+  },
+  "Колос звенит — и я на месте, на своей полосе.": {
+    "en": "The ear rings — and I am in my place, on my own strip.",
+    "tr": "Başak çınlar — ben de yerimdeyim, kendi şeridimde."
+  },
+  "Шуток не держу: прятать и дурачить не по мне.": {
+    "en": "I do not go in for jokes: hiding and fooling people are not my way.",
+    "tr": "Şaka etmem: saklamak ve kandırmak bana göre değil."
+  },
+  "Добрый я: хлеб людей кормит — и я с ним спокоен": {
+    "en": "I am kind: bread feeds people — and I am at peace with that.",
+    "tr": "İyiyim: ekmek insanı besler — ben de onunla huzurluyum."
+  },
+  "Зерно берегу и гостя не гоню: нрав у меня тихий.": {
+    "en": "I guard the grain and do not drive a guest away: my temper is quiet.",
+    "tr": "Tahılı korurum, konuğu kovmam: huyum sakindir."
+  },
+  "Изба мне не дом: там слишком тесно.": {
+    "en": "The hut is not my home: it is too cramped there.",
+    "tr": "Kulübe benim evim değil: orası fazla dardır."
+  },
+  "Вода мне чужда — сырость омута мне не по нраву.": {
+    "en": "Water is foreign to me — the damp of the pool is not to my liking.",
+    "tr": "Su bana yabancıdır — girdabın nemi bana göre değil."
+  },
+  "На поле мне не своё — там пусто и свищет ветер": {
+    "en": "The field is not my place — it is empty there, and the wind whistles.",
+    "tr": "Tarlada yerim yok — orası boştur, rüzgâr ıslık çalar."
+  },
+  "Поле мне чужое: там ветрено и голо.": {
+    "en": "The field is not mine: it is windy and bare there.",
+    "tr": "Tarla bana ait değil: orası rüzgârlı ve çıplaktır."
+  },
+  "Хитрить не люблю: обмана не держу": {
+    "en": "I do not like to trick: I do not go in for deceit.",
+    "tr": "Hile sevmem: aldatmam."
+  },
+  "Шуток не держу — нрав прямой, без хитрецы.": {
+    "en": "I do not go in for jokes — my temper is straight, without cunning.",
+    "tr": "Şaka etmem — huyum dosdoğrudur, kurnazlık yoktur."
+  },
+  "К людям мягок не бываю — нрав строгий.": {
+    "en": "I am not soft with people — my temper is strict.",
+    "tr": "İnsanlara yumuşak olmam — huyum sıkıdır."
+  },
+  "Изба мне чужда: за стенами слишком тесно и тихо.": {
+    "en": "The hut is foreign to me: within the walls it is too cramped and quiet.",
+    "tr": "Kulübe bana yabancıdır: duvarların içinde fazla dar ve sessizdir."
+  },
+  "Из леса я: здесь мой закон и мой дом": {
+    "en": "I am from the forest: here are my law and my home.",
+    "tr": "Ormandanım: burada yasa da ev de benimdir."
+  },
+  "Чаща — мой дом, опушка — мой порог.": {
+    "en": "The thicket is my home, the forest edge is my threshold.",
+    "tr": "Sık orman benim evim, orman kenarı benim eşiğimdir."
+  },
+  "На зверя не похож: звериное мне чуждо": {
+    "en": "I do not look like a beast: what is beastly is foreign to me.",
+    "tr": "Hayvana benzemem: hayvanlık bana yabancıdır."
+  },
+  "Зверем не был — звериной шкуры не ношу.": {
+    "en": "I was never a beast — I do not wear a beast's hide.",
+    "tr": "Hiç hayvan olmadım — hayvan postu giymem."
+  },
+  "Поле мне чуждо, там пусто и ветрено": {
+    "en": "The field is foreign to me; it is empty and windy there.",
+    "tr": "Tarla bana yabancıdır, orası boş ve rüzgârlıdır."
+  },
+  "Поле мне чужое: там голо, свищет ветер.": {
+    "en": "The field is not mine: it is bare there, the wind whistles.",
+    "tr": "Tarla bana ait değil: orası çıplaktır, rüzgâr ıslık çalar."
+  },
+  "Озорства не держу — нрав прямой, не ради забавы.": {
+    "en": "I do not go in for mischief — my temper is straight, not for sport.",
+    "tr": "Yaramazlık etmem — huyum dosdoğrudur, eğlence için değil."
+  },
+  "В избе мне чуждо, там сухо и тесно": {
+    "en": "The hut is foreign to me; it is dry and cramped there.",
+    "tr": "Kulübe bana yabancıdır, orası kuru ve dardır."
+  },
+  "Горница мне не дом: там душно и тесно.": {
+    "en": "The room is not my home: it is stuffy and cramped there.",
+    "tr": "Oda benim evim değil: orası boğucu ve dardır."
+  },
+  "Вода слушается меня: глубь идёт по моей воле": {
+    "en": "Water obeys me: the deep moves by my will.",
+    "tr": "Su bana boyun eğer: derinlik benim isteğimle yürür."
+  },
+  "Водная гладь мне послушна: плеск и круги живут по моей воле.": {
+    "en": "The water's surface obeys me: the splash and the circles live by my will.",
+    "tr": "Su yüzeyi bana boyun eğer: şapırtı ve halkalar benim isteğimle yaşar."
+  },
+  "Из воды я: берег — порог, омут — дом": {
+    "en": "I am from the water: the bank is a threshold, the pool is home.",
+    "tr": "Sudanım: kıyı eşiktir, girdap evdir."
+  },
+  "Сам я с воды: сухой берег мне чужой.": {
+    "en": "I myself am of the water: a dry bank is foreign to me.",
+    "tr": "Kendim sudanım: kuru kıyı bana yabancıdır."
+  },
+  "В бор не хожу: чаща тесная, не по мне.": {
+    "en": "I do not go into the pine wood: the thicket is cramped, not to my liking.",
+    "tr": "Çamlığa gitmem: sık orman dar, bana göre değil."
+  },
+  "Зверем не был — звериной морды не ношу.": {
+    "en": "I was never a beast — I do not wear a beast's muzzle.",
+    "tr": "Hiç hayvan olmadım — hayvan suratı taşımam."
+  },
+  "Поле мне чуждо, там сухо и ветрено": {
+    "en": "The field is foreign to me; it is dry and windy there.",
+    "tr": "Tarla bana yabancıdır, orası kuru ve rüzgârlıdır."
+  },
+  "Поле мне чужое: там пусто и жарко.": {
+    "en": "The field is not mine: it is empty and hot there.",
+    "tr": "Tarla bana ait değil: orası boş ve sıcaktır."
+  },
+  "Хитрить не люблю: нрав прямой, без забавы": {
+    "en": "I do not like to trick: my temper is straight, without sport.",
+    "tr": "Hile sevmem: huyum dosdoğrudur, eğlence yoktur."
+  },
+  "Шуток не держу — закон прямой, не шутка.": {
+    "en": "I do not go in for jokes — the law is straight, not a joke.",
+    "tr": "Şaka etmem — yasa dosdoğrudur, şaka değil."
+  },
+  "Добрый я, пока тишину не тревожат": {
+    "en": "I am kind, so long as the quiet is not disturbed.",
+    "tr": "İyiyim, sessizlik bozulmadığı sürece."
+  },
+  "Сила моя без злобы.": {
+    "en": "My strength is without malice.",
+    "tr": "Gücümde kötülük yoktur."
+  },
+  "Из леса я: тихий центр бора — моё место": {
+    "en": "I am from the forest: the quiet center of the pine wood is my place.",
+    "tr": "Ormandanım: çamlığın sessiz ortası benim yerimdir."
+  },
+  "Чаща моя, пока в ней тихо.": {
+    "en": "The thicket is mine, so long as it stays quiet.",
+    "tr": "Sık orman benimdir, içinde sessizlik durdukça."
+  },
+  "Похож на зверя — шерсть густая, лапа тяжёлая": {
+    "en": "I look like a beast — thick fur, a heavy paw.",
+    "tr": "Hayvana benzerim — tüy sık, pati ağır."
+  },
+  "Звериное обличье моё — тяжёлая поступь, не человечий кафтан.": {
+    "en": "Mine is a beast's form — a heavy tread, not a human kaftan.",
+    "tr": "Kılığım hayvanındır — ağır adım, insan kaftanı değil."
+  },
+  "Поле мне чужое: там голо и холодно ночами.": {
+    "en": "The field is not mine: it is bare and cold there at night.",
+    "tr": "Tarla bana ait değil: geceleri orası çıplak ve soğuktur."
+  },
+  "Шуток не держу — сила без хитрецы.": {
+    "en": "I do not go in for jokes — strength without cunning.",
+    "tr": "Şaka etmem — güç var, kurnazlık yok."
+  },
+  "Добрая я: в зной напоминаю меру, чтобы полоса дышала": {
+    "en": "I am kind: in the heat I remind them of measure, so the strip can breathe.",
+    "tr": "İyiyim: sıcakta ölçüyü hatırlatırım, şerit nefes alsın diye."
+  },
+  "Жаркий час любит тень — и я к людям добрая, если знают меру.": {
+    "en": "The hot hour loves shade — and I am kind to people if they know the measure.",
+    "tr": "Sıcak saat gölgeyi sever — ölçüyü bilirlerse insanlara ben de iyiyimdir."
+  },
+  "Изба мне не дом: за ставнями слишком тесно.": {
+    "en": "The hut is not my home: behind the shutters it is too cramped.",
+    "tr": "Kulübe benim evim değil: panjurların ardı fazla dardır."
+  },
+  "Полдень мне отвечает жаром: кто жнёт без тени, того кружит зной": {
+    "en": "Noon answers me with heat: whoever reaps without shade, the heat makes them dizzy.",
+    "tr": "Öğle bana sıcakla karşılık verir: gölgesiz biçenin başını sıcak döndürür."
+  },
+  "Мне послушен час, когда тень коротка и воздух стоит столбом.": {
+    "en": "The hour obeys me when the shadow is short and the air stands like a column.",
+    "tr": "Gölge kısayken ve hava bir sütun gibi dururken o saat bana boyun eğer."
+  },
+  "Зверем не была — шерсти и морды на мне нет.": {
+    "en": "I was never a beast — I have neither fur nor a muzzle.",
+    "tr": "Hiç hayvan olmadım — ne tüyüm ne hayvan suratım var."
+  },
+  "Из поля я: когда солнце в самом верху, я на ржи": {
+    "en": "I am from the field: when the sun is at its highest, I am in the rye.",
+    "tr": "Tarladanım: güneş tam tepedeyken çavdardayım."
+  },
+  "Колос в жару — и я на полосе, напоминаю меру.": {
+    "en": "The ear in the heat — and I am on the strip, reminding them of the measure.",
+    "tr": "Başak sıcakta — ben de şeritteyim, ölçüyü hatırlatırım."
+  },
+  "Хитрить не люблю: нрав прямой": {
+    "en": "I do not like to trick: my temper is straight.",
+    "tr": "Hile sevmem: huyum dosdoğrudur."
+  },
+  "Шуток не держу — обмана не держу.": {
+    "en": "I do not go in for jokes — I do not go in for deceit.",
+    "tr": "Şaka etmem — aldatmam da."
+  },
+  "Доброй не зови: ласки мало": {
+    "en": "Do not call me kind: there is little tenderness.",
+    "tr": "Bana iyi deme: okşama azdır."
+  },
+  "К людям нежна не бываю — нрав строгий.": {
+    "en": "I am not tender with people — my temper is strict.",
+    "tr": "İnsanlara nazik olmam — huyum sıkıdır."
+  },
+  "Изба мне не дом: за стенами душно.": {
+    "en": "The hut is not my home: within the walls it is stuffy.",
+    "tr": "Kulübe benim evim değil: duvarların içi boğucudur."
+  },
+  "Стихией не управляю: небо и тучи мне чужды": {
+    "en": "I do not command the elements: sky and clouds are foreign to me.",
+    "tr": "Doğaya hükmetmem: gök ve bulutlar bana yabancıdır."
+  },
+  "Погодой не командую — стихия мне не подвластна.": {
+    "en": "I do not command the weather — the elements are not in my power.",
+    "tr": "Havaya hükmetmem — doğa benim elimde değildir."
+  },
+  "Из воды я и с берега: сухая изба — не мой дом": {
+    "en": "I am of the water and of the bank: a dry hut is not my home.",
+    "tr": "Sudanım ve kıyıdanım: kuru kulübe benim evim değil."
+  },
+  "Заводь моя — сама я с воды, не с сухого порога.": {
+    "en": "The backwater is mine — I myself am of the water, not of a dry threshold.",
+    "tr": "Koy benimdir — kendim sudanım, kuru eşikten değil."
+  },
+  "В бор не хожу: чаща не моя.": {
+    "en": "I do not go into the pine wood: the thicket is not mine.",
+    "tr": "Çamlığa gitmem: sık orman benim değil."
+  },
+  "Зверем не была — морды на мне нет.": {
+    "en": "I was never a beast — I have no muzzle.",
+    "tr": "Hiç hayvan olmadım — hayvan suratım yok."
+  },
+  "Добрая я: где я — там лад, не спор из-за кружки": {
+    "en": "I am kind: where I am, there is accord, not a quarrel over a mug.",
+    "tr": "İyiyim: neredeysem orada uyum vardır, bardak kavgası değil."
+  },
+  "Добротой держу согласие в семье, не страхом.": {
+    "en": "I hold the family's concord by kindness, not by fear.",
+    "tr": "Ailedeki uyumu iyilikle tutarım, korkuyla değil."
+  },
+  "В избе мне не жить: там тесно и душно": {
+    "en": "I am not one to live in the hut: it is cramped and stuffy there.",
+    "tr": "Kulübede yaşayacak biri değilim: orası dar ve boğucudur."
+  },
+  "Изба мне не дом — стены её мне чужие как жильё.": {
+    "en": "The hut is not my home — its walls are foreign to me as a place to live.",
+    "tr": "Kulübe benim evim değil — duvarları bana oturacak yer olarak yabancıdır."
+  },
+  "В бор не хожу жить: чаща шумная, не по мне.": {
+    "en": "I do not go to live in the pine wood: the thicket is noisy, not to my liking.",
+    "tr": "Çamlıkta yaşamaya gitmem: sık orman gürültülü, bana göre değil."
+  },
+  "Поле мне чуждо как дом: там ветрено и пусто": {
+    "en": "The field is foreign to me as a home: it is windy and empty there.",
+    "tr": "Tarla bana ev olarak yabancıdır: orası rüzgârlı ve boştur."
+  },
+  "Добрый я: скот берегу и меру знаю": {
+    "en": "I am kind: I guard the cattle and I know the measure.",
+    "tr": "İyiyim: sığırı korurum, ölçüyü bilirim."
+  },
+  "Земной совет сыплю, зла не сыплю.": {
+    "en": "I pour out earthly counsel; I do not pour out evil.",
+    "tr": "Yer öğüdü dökerim, kötülük dökmem."
+  },
+  "Вода мне чужда — омут мокрый, не по мне.": {
+    "en": "Water is foreign to me — the pool is wet, not to my liking.",
+    "tr": "Su bana yabancıdır — girdap ıslak, bana göre değil."
+  },
+  "Из леса я и с троп: земной, не из горницы": {
+    "en": "I am from the forest and from the paths: of the earth, not from the room.",
+    "tr": "Ormandanım ve patikalardanım: yerdenim, odadan değil."
+  },
+  "Чаща мне своя, как и скот на её краю.": {
+    "en": "The thicket is mine, as is the cattle at its edge.",
+    "tr": "Sık orman benimdir, kenarındaki sığır da öyle."
+  },
+  "Поле мне чужое: там голо, не моё жильё.": {
+    "en": "The field is not mine: it is bare there, not my dwelling.",
+    "tr": "Tarla bana ait değil: orası çıplaktır, benim konutum değil."
+  },
+  "Озорства не держу — нрав прямой, без хитрецы.": {
+    "en": "I do not go in for mischief — my temper is straight, without cunning.",
+    "tr": "Yaramazlık etmem — huyum dosdoğrudur, kurnazlık yoktur."
+  },
+  "Доброй не зови: ласки не жди": {
+    "en": "Do not call me kind: do not expect tenderness.",
+    "tr": "Bana iyi deme: okşama bekleme."
+  },
+  "К людям мягка не бываю — нрав строгий.": {
+    "en": "I am not soft with people — my temper is strict.",
+    "tr": "İnsanlara yumuşak olmam — huyum sıkıdır."
+  },
+  "Живу в избе — своей, на краю, не в вашей горнице": {
+    "en": "I live in a hut — my own, at the edge, not in your room.",
+    "tr": "Bir kulübede yaşarım — kendiminkinde, kenarda, sizin odanızda değil."
+  },
+  "Изба у меня своя, да это не ваш угол и не ваша горница.": {
+    "en": "I have a hut of my own, but it is not your corner and not your room.",
+    "tr": "Benim kendi kulübem var, ama o sizin köşeniz değil, sizin odanız da değil."
+  },
+  "Из леса я: избушка стоит на рубеже чащи": {
+    "en": "I am from the forest: the little hut stands on the border of the thicket.",
+    "tr": "Ormandanım: kulübecik sık ormanın sınırında durur."
+  },
+  "Чаща вокруг моего дома — да, дворовый угол — нет.": {
+    "en": "The thicket around my house — yes; a yard corner — no.",
+    "tr": "Evimin çevresinde sık orman — evet, avlu köşesi — hayır."
+  },
+  "Шуток не держу — загадок ради забавы не держу.": {
+    "en": "I do not go in for jokes — I do not keep riddles for sport.",
+    "tr": "Şaka etmem — eğlence için bilmece tutmam."
+  },
+  "Изба мне не дом: за стенами слишком тесно и душно.": {
+    "en": "The hut is not my home: within the walls it is too cramped and stuffy.",
+    "tr": "Kulübe benim evim değil: duvarların içinde fazla dar ve boğucudur."
+  },
+  "Из воды я не вышел: там сыро и мокро": {
+    "en": "I did not come out of the water: it is damp and wet there.",
+    "tr": "Sudan çıkmadım: orası nemli ve ıslaktır."
+  },
+  "Вода мне чужда — омут холодный, не по мне.": {
+    "en": "Water is foreign to me — the pool is cold, not to my liking.",
+    "tr": "Su bana yabancıdır — girdap soğuk, bana göre değil."
+  },
+  "Лес мне чужд как дом: там темно и сыро": {
+    "en": "The forest is foreign to me as a home: it is dark and damp there.",
+    "tr": "Orman bana ev olarak yabancıdır: orası karanlık ve nemlidir."
+  },
+  "В бор не хожу жить: чаща не моя.": {
+    "en": "I do not go to live in the pine wood: the thicket is not mine.",
+    "tr": "Çamlıkta yaşamaya gitmem: sık orman benim değil."
+  },
+  "Зверем не был — шерсти звериной на мне нет.": {
+    "en": "I was never a beast — I have no beast's fur on me.",
+    "tr": "Hiç hayvan olmadım — üstümde hayvan tüyü yok."
+  },
+  "Поле мне чужое: там голо, не моё место.": {
+    "en": "The field is not mine: it is bare there, not my place.",
+    "tr": "Tarla bana ait değil: orası çıplaktır, benim yerim değil."
+  },
+  "Хитрить люблю: силу прячу, в лоб не бью": {
+    "en": "I like to trick: I hide my strength, I do not strike head-on.",
+    "tr": "Hile severim: gücümü saklarım, doğrudan vurmam."
+  },
+  "Прятать важное — моя охота, не прямой удар.": {
+    "en": "Hiding what matters is my keen pursuit, not a straight blow.",
+    "tr": "Önemli olanı saklamak benim hevesimdir, düz vuruş değil."
+  },
+  "Добрым не зови: ласки мало": {
+    "en": "Do not call me kind: there is little tenderness.",
+    "tr": "Bana iyi deme: okşama azdır."
+  },
+  "Изба мне не дом: горница тесная и сухая.": {
+    "en": "The hut is not my home: the room is cramped and dry.",
+    "tr": "Kulübe benim evim değil: oda dar ve kurudur."
+  },
+  "Круг на воде слушается меня — глубь отвечает стражу": {
+    "en": "The circle on the water obeys me — the deep answers the guardian.",
+    "tr": "Sudaki daire bana boyun eğer — derinlik bekçiye karşılık verir."
+  },
+  "Гладь и глубь мне послушны, когда круг на месте.": {
+    "en": "Surface and deep obey me when the circle is in its place.",
+    "tr": "Yüzey ve derinlik, daire yerindeyken bana boyun eğer."
+  },
+  "Из воды я: берег — место встречи, не дом": {
+    "en": "I am from the water: the bank is a meeting place, not a home.",
+    "tr": "Sudanım: kıyı buluşma yeridir, ev değil."
+  },
+  "Заводь и глубь — мой дом, не сухая горница.": {
+    "en": "The backwater and the deep are my home, not a dry room.",
+    "tr": "Koy ve derinlik benim evimdir, kuru oda değil."
+  },
+  "Похож на чудище вод, не на соседа из избы": {
+    "en": "I look like a monster of the waters, not like a neighbor from the hut.",
+    "tr": "Suların canavarına benzerim, kulübeden bir komşuya değil."
+  },
+  "Зверь водной глади: не шерсть лесная, а крутая тварь реки.": {
+    "en": "A beast of the water's surface: not forest fur, but a fierce creature of the river.",
+    "tr": "Su yüzeyinin hayvanı: orman tüyü değil, ırmağın azgın yaratığı."
+  },
+  "Шуток не держу — закон прямой, не забава.": {
+    "en": "I do not go in for jokes — the law is straight, not sport.",
+    "tr": "Şaka etmem — yasa dosdoğrudur, eğlence değil."
+  },
+  "Добрый я, как первый лист на лугу": {
+    "en": "I am kind, like the first leaf on the meadow.",
+    "tr": "İyiyim, çayırdaki ilk yaprak gibi."
+  },
+  "Весне зла не надо — надо поле и всход.": {
+    "en": "Spring needs no evil — it needs the field and the sprout.",
+    "tr": "Baharın kötülüğe ihtiyacı yok — tarla ve filiz gerekir."
+  },
+  "Весенний всход мне отвечает: снег ушёл — и поле идёт в рост": {
+    "en": "The spring sprout answers me: the snow has gone — and the field grows.",
+    "tr": "Bahar filizi bana karşılık verir: kar gitti — tarla büyümeye durur."
+  },
+  "Мне послушна ранняя сила поля, когда земля просыпается после снега.": {
+    "en": "The early power of the field obeys me when the earth wakes after the snow.",
+    "tr": "Karın ardından toprak uyanınca tarlanın erken gücü bana boyun eğer."
+  },
+  "Вода мне чужда — омут тёмный, не по мне.": {
+    "en": "Water is foreign to me — the pool is dark, not to my liking.",
+    "tr": "Su bana yabancıdır — girdap karanlık, bana göre değil."
+  },
+  "Лес мне чужд как дом: там темно и тесно": {
+    "en": "The forest is foreign to me as a home: it is dark and cramped there.",
+    "tr": "Orman bana ev olarak yabancıdır: orası karanlık ve dardır."
+  },
+  "В бор не хожу жить: чаща сырая, не по мне.": {
+    "en": "I do not go to live in the pine wood: the thicket is damp, not to my liking.",
+    "tr": "Çamlıkta yaşamaya gitmem: sık orman nemli, bana göre değil."
+  },
+  "Из поля я: первый лист и молодой колос — я уже на лугу": {
+    "en": "I am from the field: the first leaf and the young ear — I am already on the meadow.",
+    "tr": "Tarladanım: ilk yaprak ve genç başak — ben çoktan çayırdayım."
+  },
+  "Колос ещё зелёный — и я на полосе.": {
+    "en": "The ear is still green — and I am on the strip.",
+    "tr": "Başak hâlâ yeşil — ben de şeritteyim."
+  },
+  "Добрым не зови: ласки не жди": {
+    "en": "Do not call me kind: do not expect tenderness.",
+    "tr": "Bana iyi deme: okşama bekleme."
+  },
+  "Изба мне не дом: за стенами слишком тесно.": {
+    "en": "The hut is not my home: within the walls it is too cramped.",
+    "tr": "Kulübe benim evim değil: duvarların içinde fazla dardır."
+  },
+  "Когда я злюсь, метю молнии в обидчика": {
+    "en": "When I grow angry, I aim lightning at the one who wronged me.",
+    "tr": "Kızınca şimşeği bana haksızlık edene nişan alırım."
+  },
+  "Стихия неба мне послушна: молния бьёт точно.": {
+    "en": "The element of the sky obeys me: the lightning strikes true.",
+    "tr": "Göğün doğası bana boyun eğer: şimşek tam isabet eder."
+  },
+  "Из воды я не вышел: там сыро и тесно": {
+    "en": "I did not come out of the water: it is damp and cramped there.",
+    "tr": "Sudan çıkmadım: orası nemli ve dardır."
+  },
+  "Из леса я — из дубравы на горе": {
+    "en": "I am from the forest — from the oak grove on the hill.",
+    "tr": "Ormandanım — tepedeki meşe koruluğundan."
+  },
+  "Чаща моя высокая и своя, не дворовый угол.": {
+    "en": "My thicket is high and my own, not a yard corner.",
+    "tr": "Sık ormanım yüksek ve kendimindir, avlu köşesi değil."
+  }
+}

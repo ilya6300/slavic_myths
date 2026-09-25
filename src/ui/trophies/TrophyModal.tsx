@@ -32,7 +32,9 @@ export const TrophyModal = observer(function TrophyModal() {
       <div className="game-modal__backdrop" aria-hidden onClick={handleClose} />
       <div className="game-modal__panel trophy-modal__panel">
         <ModalCloseButton onClick={handleClose} />
-        <h2 className="game-modal__title trophy-modal__title">{spirit.name}</h2>
+        <h2 className="game-modal__title trophy-modal__title">
+          {resolveText(spirit.name, locale)}
+        </h2>
 
         <div
           className={`game-modal__scene trophy-modal__scene${isEmpty ? ' trophy-modal__scene--empty' : ''}`}
@@ -71,7 +73,9 @@ export const TrophyModal = observer(function TrophyModal() {
             <p className="trophy-modal__grade">
               {resolveText(gradeLabels[spirit.grade], locale)}
             </p>
-            <p className="trophy-modal__tale">{spirit.trophyDescription}</p>
+            <p className="trophy-modal__tale">
+              {resolveText(spirit.trophyDescription, locale)}
+            </p>
           </>
         )}
 

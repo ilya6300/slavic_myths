@@ -1,5 +1,6 @@
 import {
   CHEST_COOLDOWN_HOURS,
+  CHEST_REWARDED_CHARGE_LIMIT,
   CHEST_REWARDED_SKIP_MINUTES,
 } from '../config/gameConstants';
 
@@ -36,4 +37,60 @@ export function applyRewardedSkip(
 ): number {
   const base = chestReadyAt ?? now;
   return Math.max(now, base - SKIP_MS);
+}
+
+export interface ChestRewardedChargeState {
+  charges: number;
+  naturalRefillAt: number | null;
+}
+
+export function clampChestRewardedCharges(charges: number): number {
+  if (!Number.isFinite(charges)) return CHEST_REWARDED_CHARGE_LIMIT;
+  return Math.min(
+    CHEST_REWARDED_CHARGE_LIMIT,
+    Math.max(0, Math.trunc(charges)),
+  );
+}
+
+/** Пополнение только когда заряды уже 0 и живые 3 часа метки прошли. */
+export function syncChestRewardedCharges(
+  state: ChestRewardedChargeState,
+  now: number,
+): ChestRewardedChargeState {
+  if (
+    state.charges === 0 &&
+    state.naturalRefillAt != null &&
+    now >= state.naturalRefillAt
+  ) {
+    return { charges: CHEST_REWARDED_CHARGE_LIMIT, naturalRefillAt: null };
+  }
+  return state;
+}
+
+export function applyChestRewardedChargeSkip(
+  state: ChestRewardedChargeState,
+  chestReadyAt: number | null,
+  now: number,
+): { charges: ChestRewardedChargeState; chestReadyAt: number } {
+  return {
+    charges: {
+      charges: Math.max(0, state.charges - 1),
+      naturalRefillAt: state.naturalRefillAt,
+    },
+    chestReadyAt: applyRewardedSkip(chestReadyAt, now),
+  };
+}
+
+export function armChestRewardedNaturalRefill(
+  state: ChestRewardedChargeState,
+  nextChestReadyAt: number,
+): ChestRewardedChargeState {
+  if (state.charges > 0) {
+    return { charges: state.charges, naturalRefillAt: null };
+  }
+  return { charges: state.charges, naturalRefillAt: nextChestReadyAt };
+}
+
+export function canSkipChestWithRewarded(charges: number): boolean {
+  return charges > 0;
 }

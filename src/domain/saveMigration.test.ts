@@ -105,6 +105,28 @@ describe('migrateSave', () => {
     expect(migrated.dailyQuestFragmentGrantedDayId).toBeNull();
   });
 
+  it('should migrate a v14 save to full chest charges and unused mirror and daily resets when epic 17 fields are absent', () => {
+    const migrated = migrateSave({
+      ...createDefaultSave(),
+      version: 14,
+      candles: 2,
+      chestReadyAt: 123_000,
+      dailyQuestTaleSpiritId: 'brownie',
+      dailyQuestClickProgress: 40,
+      dailyQuestFragmentGrantedDayId: '2026-09-20',
+    }) as ReturnType<typeof migrateSave> & Record<string, unknown>;
+
+    expect(migrated.chestRewardedCharges).toBe(4);
+    expect(migrated.chestRewardedNaturalRefillAt).toBeNull();
+    expect(migrated.divinationRewardedDayId).toBeNull();
+    expect(migrated.dailyQuestRewardedResetDayId).toBeNull();
+    expect(migrated.candles).toBe(2);
+    expect(migrated.chestReadyAt).toBe(123_000);
+    expect(migrated.dailyQuestTaleSpiritId).toBe('brownie');
+    expect(migrated.dailyQuestClickProgress).toBe(40);
+    expect(migrated.dailyQuestFragmentGrantedDayId).toBe('2026-09-20');
+  });
+
   it('migrates v13 phantom daily reward claim without fragment grant', () => {
     const migrated = migrateSave({
       ...createDefaultSave(),

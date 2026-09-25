@@ -23,7 +23,7 @@ export const ProfileStatsPanel = observer(function ProfileStatsPanel() {
     },
     {
       label: resolveText(settingsUiContent.profileStatEnergyRegen, locale),
-      value: `${regen.toFixed(1)} / мин`,
+      value: `${regen.toFixed(1)} ${resolveText(settingsUiContent.profileStatPerMinute, locale)}`,
     },
     {
       label: resolveText(settingsUiContent.profileStatLuckCoinsCap, locale),

@@ -2,9 +2,13 @@ import type { CSSProperties } from 'react';
 import { observer } from 'mobx-react-lite';
 import { brownieSkins, type BrownieSkinId } from '../../config/assetRegistry';
 import { brownieFallbackPlacement } from '../../config/sceneLayout';
+import { getSpiritById } from '../../data/spirits';
+import { resolveText } from '../../i18n/resolve';
+import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
 
 export const BrownieLayer = observer(function BrownieLayer() {
+  const { locale } = useLocale();
   if (!gameStore.isBrownieOnScene()) return null;
 
   const skinId = gameStore.skins.domovoy as BrownieSkinId;
@@ -25,7 +29,7 @@ export const BrownieLayer = observer(function BrownieLayer() {
       } as CSSProperties}
       role={interactive ? 'button' : undefined}
       tabIndex={interactive ? 0 : undefined}
-      aria-label="Домовой"
+      aria-label={resolveText(getSpiritById('brownie')!.name, locale)}
       onClick={interactive ? handleClick : undefined}
       onKeyDown={
         interactive

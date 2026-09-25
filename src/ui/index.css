@@ -4340,6 +4340,12 @@ button.hud-stat:hover {
   cursor: not-allowed;
 }
 
+.daily-quest-panel__reset {
+  min-height: 44px;
+  white-space: normal;
+  text-align: center;
+}
+
 .daily-quest-panel__claim--done {
   border: none;
   background: transparent;

@@ -7,6 +7,9 @@ import { catPlacement } from '../../config/scenePlacements';
 import { gameStore } from '../../store/GameStore';
 import { catDialogStore } from '../../store/catDialogStore';
 import { sceneUiStore } from '../../store/sceneUiStore';
+import { settingsUiContent } from '../../data/dialogContent';
+import { resolveText } from '../../i18n/resolve';
+import { useLocale } from '../../i18n/LocaleContext';
 import { SceneSprite } from './SceneSprite';
 
 function coinFxStyle(leftVw: number, bottomVw: number): CSSProperties {
@@ -17,6 +20,7 @@ function coinFxStyle(leftVw: number, bottomVw: number): CSSProperties {
 }
 
 export const CatLayer = observer(function CatLayer() {
+  const { locale } = useLocale();
   const pose = sceneUiStore.catSleeping ? 'sleep' : 'sid';
   const src = getCatPoseUrl(gameStore.skins.cat, pose);
   const bubble = gameStore.lastCatBubble;
@@ -69,7 +73,7 @@ export const CatLayer = observer(function CatLayer() {
       <SceneSprite
         placementClassName={catPlacement.className}
         src={src}
-        alt="Кот"
+        alt={resolveText(settingsUiContent.catName, locale)}
         interactive={catInteractive}
         onSpriteClick={handleClick}
         className={pose === 'sleep' ? 'scene-cat--sleep' : 'scene-cat--sit'}

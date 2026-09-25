@@ -165,7 +165,10 @@ class DivinationUiStore {
       spiritPortraitPaths.brownie;
     this.enterSmoke(() => {
       this.portraitUrl = portrait;
-      this.lineText = getSpiritById(this.sessionSpiritId!)?.name ?? '';
+      this.lineText = resolveText(
+        getSpiritById(this.sessionSpiritId!)?.name ?? { ru: '', en: '', tr: '' },
+        locale,
+      );
       this.phase = 'reveal';
       this.pendingAfterSmoke = () => {
         this.lineText = resolveText(

@@ -82,11 +82,13 @@ export const ChestCooldownModal = observer(function ChestCooldownModal() {
           )}
         </div>
 
-        <WoodQuestButton
-          className="chest-modal__hurry"
-          label={resolveText(settingsUiContent.chestHurryLuck, locale)}
-          onClick={handleHurry}
-        />
+        {gameStore.canSkipChestCooldownWithRewarded() && (
+          <WoodQuestButton
+            className="chest-modal__hurry"
+            label={resolveText(settingsUiContent.chestHurryLuck, locale)}
+            onClick={handleHurry}
+          />
+        )}
       </div>
     </div>
   );

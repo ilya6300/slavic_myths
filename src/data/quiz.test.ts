@@ -8,8 +8,8 @@ describe('quiz data', () => {
     expect(brownie.questions).toHaveLength(4);
     const bannik = spiritQuizzes.find((q) => q.spiritId === 'bannik')!;
     expect(bannik.questions).toHaveLength(5);
-    expect(bannik.questions[1].prompt).toContain('мыло');
-    expect(bannik.questions[1].options[bannik.questions[1].correctIndex]).toContain(
+    expect(bannik.questions[1].prompt.ru).toContain('мыло');
+    expect(bannik.questions[1].options[bannik.questions[1].correctIndex].ru).toContain(
       'воды, мыло и веник',
     );
     const totalQuestions = spiritQuizzes.reduce(
@@ -32,10 +32,10 @@ describe('quiz data', () => {
     ];
     polevoy.questions.forEach((question, index) => {
       expect(question.correctIndex).toBe(0);
-      expect(question.options[question.correctIndex]).toBe(correct[index]);
+      expect(question.options[question.correctIndex].ru).toBe(correct[index]);
     });
-    expect(polevoy.catHook).toContain('полосой');
-    expect(polevoy.questions[4].prompt).toContain('сиверень');
+    expect(polevoy.catHook.ru).toContain('полосой');
+    expect(polevoy.questions[4].prompt.ru).toContain('сиверень');
   });
 
   it('should mark Leshiy correct answers as index 0', () => {
@@ -52,10 +52,10 @@ describe('quiz data', () => {
     ];
     leshiy.questions.forEach((question, index) => {
       expect(question.correctIndex).toBe(0);
-      expect(question.options[question.correctIndex]).toBe(correct[index]);
+      expect(question.options[question.correctIndex].ru).toBe(correct[index]);
     });
-    expect(leshiy.questions[0].prompt).toContain('замшелому пню');
-    expect(leshiy.miniTale).toContain('вывернутом колокольчике');
+    expect(leshiy.questions[0].prompt.ru).toContain('замшелому пню');
+    expect(leshiy.miniTale.ru).toContain('вывернутом колокольчике');
   });
 
   it('should mark Kikimora correct answers as index 0', () => {
@@ -70,7 +70,7 @@ describe('quiz data', () => {
     ];
     kikimora.questions.forEach((question, index) => {
       expect(question.correctIndex).toBe(0);
-      expect(question.options[question.correctIndex]).toBe(correct[index]);
+      expect(question.options[question.correctIndex].ru).toBe(correct[index]);
     });
   });
 
@@ -87,11 +87,11 @@ describe('quiz data', () => {
     ];
     vodyanoy.questions.forEach((question, index) => {
       expect(question.correctIndex).toBe(0);
-      expect(question.options[question.correctIndex]).toBe(correct[index]);
+      expect(question.options[question.correctIndex].ru).toBe(correct[index]);
     });
-    expect(vodyanoy.questions[0].prompt).toContain('водяное колесо');
-    expect(vodyanoy.loseMessage).toContain('вышел сухой из воды');
-    expect(vodyanoy.miniTale).toContain('сала целиком');
+    expect(vodyanoy.questions[0].prompt.ru).toContain('водяное колесо');
+    expect(vodyanoy.loseMessage.ru).toContain('вышел сухой из воды');
+    expect(vodyanoy.miniTale.ru).toContain('сала целиком');
   });
 
   it('should keep post-Vodyanoy grade counts and encyclopedia anchors', () => {
@@ -109,23 +109,23 @@ describe('quiz data', () => {
     expect(byId.yarilo.questions).toHaveLength(12);
     expect(byId.perun.questions).toHaveLength(13);
 
-    expect(byId.dedushka_toptygin.questions[0].options[0]).toContain(
+    expect(byId.dedushka_toptygin.questions[0].options[0].ru).toContain(
       'нарушение',
     );
-    expect(byId.poludnica.questions[1].options[0]).toContain('всё поле целиком');
-    expect(byId.rusalka.questions[0].options[0]).toContain('полурыбой');
-    expect(byId.rusalka.questions[5].prompt).toContain('гребень');
-    expect(byId.rusalka.catHook).toContain('на сухом бугре');
-    expect(byId.lada.questions[0].options[0]).toContain('кружка остаётся общей');
-    expect(byId.veles.questions[1].options[0]).toContain('слово «скот»');
-    expect(byId.baba_yaga.questions[1].options[0]).toContain('окуренные дымом');
-    expect(byId.koschei_immortal.questions[3].options[0]).toContain(
+    expect(byId.poludnica.questions[1].options[0].ru).toContain('всё поле целиком');
+    expect(byId.rusalka.questions[0].options[0].ru).toContain('полурыбой');
+    expect(byId.rusalka.questions[5].prompt.ru).toContain('гребень');
+    expect(byId.rusalka.catHook.ru).toContain('на сухом бугре');
+    expect(byId.lada.questions[0].options[0].ru).toContain('кружка остаётся общей');
+    expect(byId.veles.questions[1].options[0].ru).toContain('слово «скот»');
+    expect(byId.baba_yaga.questions[1].options[0].ru).toContain('окуренные дымом');
+    expect(byId.koschei_immortal.questions[3].options[0].ru).toContain(
       'спрятанной в стороне от тела',
     );
-    expect(byId.chudo_yudo.questions[1].options[0]).toContain('западная принимает');
-    expect(byId.chudo_yudo.catHook).not.toContain('Калинов');
-    expect(byId.baba_yaga.catHook).toContain('столбы пахнут дымом');
-    expect(byId.poludnica.loseMessage).toContain('Зной накрыл полосу');
+    expect(byId.chudo_yudo.questions[1].options[0].ru).toContain('западная принимает');
+    expect(byId.chudo_yudo.catHook.ru).not.toContain('Калинов');
+    expect(byId.baba_yaga.catHook.ru).toContain('столбы пахнут дымом');
+    expect(byId.poludnica.loseMessage.ru).toContain('Зной накрыл полосу');
   });
 
   it('should shuffle answers and preserve correct index', () => {

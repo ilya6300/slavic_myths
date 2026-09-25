@@ -18,7 +18,7 @@ export const DailyQuestTaleModal = observer(function DailyQuestTaleModal() {
   const intro = formatLocalizedTemplate(
     dailyQuestContent.taleIntro,
     locale,
-    { spirit: spirit.name },
+    { spirit: resolveText(spirit.name, locale) },
   );
 
   const handleAnswer = (index: number) => {
@@ -36,17 +36,21 @@ export const DailyQuestTaleModal = observer(function DailyQuestTaleModal() {
           {resolveText(dailyQuestContent.taleModalTitle, locale)}
         </h2>
         <p className="daily-quest-modal__intro">{intro}</p>
-        <p className="daily-quest-modal__tale">{spirit.miniTale}</p>
-        <p className="daily-quest-modal__prompt">{question.prompt}</p>
+        <p className="daily-quest-modal__tale">
+          {resolveText(spirit.miniTale, locale)}
+        </p>
+        <p className="daily-quest-modal__prompt">
+          {resolveText(question.prompt, locale)}
+        </p>
         <div className="daily-quest-modal__answers">
           {question.options.map((opt, i) => (
             <button
-              key={opt}
+              key={i}
               type="button"
               className="quiz-answer daily-quest-modal__answer"
               onClick={() => handleAnswer(i)}
             >
-              {opt}
+              {resolveText(opt, locale)}
             </button>
           ))}
         </div>

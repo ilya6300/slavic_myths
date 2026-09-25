@@ -343,7 +343,7 @@ export const BookOverlay = observer(function BookOverlay() {
                 <span
                   key={ch}
                   className={`book-modal__progress-bead${active ? ' book-modal__progress-bead--active' : ''}`}
-                  title={getChapterLabel(ch)}
+                  title={getChapterLabel(ch, locale)}
                 />
               );
             })}
@@ -397,18 +397,18 @@ export const BookOverlay = observer(function BookOverlay() {
                     aria-label="Daily quest question"
                   >
                     <p className="book-page__description book-page__folktale-quiz-prompt">
-                      {dailyQuizQuestion.prompt}
+                      {resolveText(dailyQuizQuestion.prompt, locale)}
                     </p>
                     <div className="book-page__folktale-quiz-answers">
                       {dailyQuizQuestion.options.map((opt, i) => (
                         <button
-                          key={opt}
+                          key={i}
                           type="button"
                           className="quiz-answer book-page__folktale-quiz-answer"
                           onClick={() => handleDailyQuizAnswer(i)}
                           disabled={blocked}
                         >
-                          {opt}
+                          {resolveText(opt, locale)}
                         </button>
                       ))}
                     </div>
@@ -441,9 +441,11 @@ export const BookOverlay = observer(function BookOverlay() {
             ) : (
               <>
             <h3 id="book-page-name" className="book-page__name">
-              {spirit.name}
+              {resolveText(spirit.name, locale)}
             </h3>
-            <p className="book-page__description">{spirit.bookDescription}</p>
+            <p className="book-page__description">
+              {resolveText(spirit.bookDescription, locale)}
+            </p>
             {(status === 'available' || status === 'locked') && (
               <p className="book-page__study-hint">
                 {getQuestHook(spiritId, locale)}
@@ -469,7 +471,9 @@ export const BookOverlay = observer(function BookOverlay() {
                     </>
                   )}
               </div>
-              <p className="book-page__reward">{spirit.bookRewardDescription}</p>
+              <p className="book-page__reward">
+                {resolveText(spirit.bookRewardDescription, locale)}
+              </p>
             </div>
 
             {status === 'available' && (
@@ -498,7 +502,9 @@ export const BookOverlay = observer(function BookOverlay() {
                 <span className="book-page__defeated-badge">
                   ✓ {resolveText(settingsUiContent.bookDefeated, locale)}
                 </span>
-                <p className="book-page__mini-tale">{spirit.miniTale}</p>
+                <p className="book-page__mini-tale">
+                  {resolveText(spirit.miniTale, locale)}
+                </p>
               </div>
             )}
 
@@ -540,16 +546,16 @@ export const BookOverlay = observer(function BookOverlay() {
 
             {status === 'locked' && !isFragmentSpirit(spiritId) && (
               <p className="book-page__locked">
-                {spirit.lockedHint ||
+                {resolveText(spirit.lockedHint, locale) ||
                   resolveText(settingsUiContent.bookLocked, locale)}
               </p>
             )}
 
             {status === 'locked' &&
               isFragmentSpirit(spiritId) &&
-              spirit.lockedHint && (
+              resolveText(spirit.lockedHint, locale) && (
                 <p className="book-page__locked book-page__locked--hint">
-                  {spirit.lockedHint}
+                  {resolveText(spirit.lockedHint, locale)}
                 </p>
               )}
               </>

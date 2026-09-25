@@ -45,6 +45,8 @@ export interface GameSave {
   talismans: number;
   /** Свечи для гадания (без лимита накопления). */
   candles: number;
+  /** День взгляда в зеркало без свечи. null — взгляд ещё не использован. */
+  divinationRewardedDayId: string | null;
   /** Вещие крупицы — валюта лавки Яги. */
   truthCrumbs: number;
   titleId: string | null;
@@ -66,6 +68,10 @@ export interface GameSave {
   trophiesUnlocked: string[];
 
   chestReadyAt: number | null;
+  /** Успешные скипы кулдауна сундука, 0…4. */
+  chestRewardedCharges: number;
+  /** Момент, когда нулевые заряды снова станут 4. */
+  chestRewardedNaturalRefillAt: number | null;
   spareChestKeys: number;
   wonderChestWeekSlotUsed: boolean;
   wonderChestClickProgress: number;
@@ -109,6 +115,8 @@ export interface GameSave {
   dailyQuestRewardClaimedDayId: string | null;
   /** День, когда фрагмент за полную ежедневку реально начислен. */
   dailyQuestFragmentGrantedDayId: string | null;
+  /** День, когда ежу уже сбрасывали роликом. null — сброс сегодня не использован. */
+  dailyQuestRewardedResetDayId: string | null;
 
   /** Сноска при первом открытии сказки в книге. */
   folktaleIntroShown: boolean;
@@ -182,6 +190,7 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     luckCoins: 0,
     talismans: START_TALISMANS,
     candles: 0,
+    divinationRewardedDayId: null,
     truthCrumbs: 0,
     titleId: 'novenkiy',
 
@@ -210,6 +219,8 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     trophiesUnlocked: [],
 
     chestReadyAt: null,
+    chestRewardedCharges: 4,
+    chestRewardedNaturalRefillAt: null,
     spareChestKeys: 0,
     wonderChestWeekSlotUsed: false,
     wonderChestClickProgress: 0,
@@ -244,6 +255,7 @@ export function createDefaultSave(now: number = Date.now()): GameSave {
     dailyQuestTaleCorrect: false,
     dailyQuestRewardClaimedDayId: null,
     dailyQuestFragmentGrantedDayId: null,
+    dailyQuestRewardedResetDayId: null,
     folktaleIntroShown: false,
 
     energyRegenBonusPercent: 0,

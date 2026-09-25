@@ -18,26 +18,26 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   brownie: {
     questHook: L(
       'Начни с Домового. Без него в избе бардак — а с ним хоть порядок держится.',
-      'Start with the Domovoy. Without him the hut is chaos.',
-      'Domovoy ile başla. Onsuz kulübede kaos.',
+      'Start with Domovoy. Without him the hut is chaos — with him at least some order holds.',
+      'Domovoy ile başla. Onsuz kulübede kaos — onunla hiç olmazsa düzen durur.',
     ),
     loseLine: L(
       'Ох уж эти домашние хранители. Лапу сломишь, пока поймёшь, чем их порадовать. Давай наберёмся сил и зайдём снова.',
-      'Oh, these spirits. You\'ll break a paw before you get what they want.',
-      'Ah şu ruhlar. Ne istediklerini anlayana kadar pençeni kırarsın.',
+      'Oh, these household keepers. You will break a paw before you learn how to please them. Let us gather strength and come back.',
+      'Ah şu ev bekçileri. Onları neyin sevindirdiğini anlayana kadar pençeni kırarsın. Güç toplayıp yine gelelim.',
     ),
     lockedHint: L('', '', ''),
   },
   susedko: {
     questHook: L(
       'Слышишь шуршание под половицами? Это Суседко разыгрался. Сундук точно у него под полом.',
-      'Hear the rustling? That\'s him. The chest — he has it.',
-      'Hışırtıyı duyuyor musun? O. Sandık — onda.',
+      'Hear the rustling under the floorboards? That is Susedko at his games. The chest is surely under the floor with him.',
+      'Döşemelerin altındaki hışırtıyı duyuyor musun? Susedko oyun ediyor. Sandık kesin onunla döşemenin altında.',
     ),
     loseLine: L(
       'Юркнул под половицу, только хвост мелькнул! И сундук пока не отдаёт. Ничего, усы расправим и ещё разок покараулим.',
-      'He fled. No chest. Where do I keep mice now?',
-      'Kaçtı. Sandık yok. Fareleri nerede saklayacağım?',
+      'He darted under the floorboard, only a tail flashed! And he still will not give up the chest. No matter — we will smooth our whiskers and keep watch once more.',
+      'Döşemenin altına daldı, yalnız kuyruk göründü! Sandığı hâlâ vermiyor. Zararı yok, bıyıklarımızı düzeltip bir kez daha nöbet tutarız.',
     ),
     lockedHint: L(
       'Сначала Домовой. Без него сосед не вылезет.',
@@ -48,8 +48,8 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
   bannik: {
     questHook: L(
       'В бане хозяин строгий. Пар уважает порядок, а торопливых здесь не жалуют.',
-      'Smells like steam. The Bannik likes order and respect — don\'t play hero.',
-      'Buhar kokuyor. Bannik düzen ve saygı sever — kahramanlık oynama.',
+      'In the bathhouse the master is strict. Steam respects order, and the hasty are not welcome here.',
+      'Hamamda efendi sıkıdır. Buhar düzeni sever, acelecileri burada sevmezler.',
     ),
     loseLine: L(
       'Не угодили. Теперь паримся… что не попарились...',
@@ -92,59 +92,59 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
     ),
     lockedHint: L(
       'Сначала Кикимора. Полевой без порядка в избе не выйдет.',
-      'Kikimora first. The Field Spirit won\'t come without order in the hut.',
-      'Önce Kikimora. Tarla ruhu düzensiz kulübeden çıkmaz.',
+      'Kikimora first. Polevik will not come out without order in the hut.',
+      'Önce Kikimora. Kulübede düzen olmadan Polevik çıkmaz.',
     ),
   },
   ovinnik: {
     questHook: L(
       'Пахнет сухим зерном и прогретым деревом. Овинник бережёт хлеб от огня и сырости — заходи с почтением.',
-      'Smells of grain. The Ovinnik hates damp. And slobs.',
-      'Tahıl kokuyor. Ovinnik nemi sevmez. Ve dağınıklığı.',
+      'It smells of dry grain and warmed wood. Ovinnik keeps the bread from fire and damp — enter with respect.',
+      'Kuru tahıl ve ısınmış odun kokuyor. Ovinnik ekmeği ateşten ve nemden korur — saygıyla gir.',
     ),
     loseLine: L(
       'Тихо, слышишь, сзади кто-то шуршит? А, это мой хвост. Всё, больше не отвлекаюсь, а то опять без меня проиграешь... ',
-      'Hide and seek! Quiet, rustle behind… oh, that\'s my tail.',
-      'Saklambaç! Sessiz, arkada hışırtı… ah, kuyruğum.',
+      'Quiet, do you hear someone rustling behind? Oh, that is my tail. That is it, I will not get distracted again, or you will lose without me once more...',
+      'Sessiz, duyuyor musun, arkada biri hışırdıyor? Ah, kuyruğum. Tamam, bir daha dalmayacağım, yoksa yine bensiz kaybedersin...',
     ),
     lockedHint: L(
       'Сначала Полевой. Овинник зерно зря не отдаст.',
-      'Field Spirit first. Ovinnik won\'t give grain for nothing.',
-      'Önce Tarla ruhu. Ovinnik tahılı boşa vermez.',
+      'Polevik first. Ovinnik will not give grain for nothing.',
+      'Önce Polevik. Ovinnik tahılı boşa vermez.',
     ),
   },
   leshiy: {
     questHook: L(
       'В лесу ты в гостях. Леший ведает всеми тропами и шума не любит — не свисти в чаще.',
-      'Paths are tangled. The Leshy is near. Don\'t whistle.',
-      'Patikalar karıştı. Leşy yakında. Islık çalma.',
+      'In the forest you are a guest. Leshy knows every path and dislikes noise — do not whistle in the thicket.',
+      'Ormanda konuksun. Leshy bütün patikaları bilir ve gürültü sevmez — sık ormanda ıslık çalma.',
     ),
     loseLine: L(
       'Увёл Леший тропку в густой малинник! Кругами ходим, сосны верхушками качают. Переведём дух и спросим дорогу с почтением.',
-      'Led us into the thicket. Start over. Wait, how do we get back to the hut? Hm...',
-      'Bizi çalılığa çekti. Baştan. Peki kulübeye nasıl döneriz? Hm...',
+      'Leshy led the path into a thick raspberry patch! We walk in circles, the pines nod their tops. Let us catch our breath and ask the way with respect.',
+      'Leshy patikayı sık ahududuluğa çekti! Daireler çiziyoruz, çamlar tepelerini sallıyor. Soluklanıp yolu saygıyla soralım.',
     ),
     lockedHint: L(
       'Сначала Овинник. Леший тропу без очереди не даст.',
-      'Ovinnik first. The Leshy won\'t show the path out of turn.',
-      'Önce Ovinnik. Leşy sıra beklemeden yol vermez.',
+      'Ovinnik first. Leshy will not give the path out of turn.',
+      'Önce Ovinnik. Leshy sırasız yol vermez.',
     ),
   },
   vodyanoy: {
     questHook: L(
       'Омут глубок, вода темна. Водяной бережёт речные тайны и чистую гладь — ступай у берега осторожно.',
-      'Dark pool. He likes respect — not splashing.',
-      'Karanlık göl. Saygı sever — sıçratma değil.',
+      'The pool is deep, the water is dark. Vodyanoy keeps the river secrets and the clear surface — step carefully by the bank.',
+      'Girdap derin, su karanlık. Vodyanoy ırmak sırlarını ve duru yüzeyi korur — kıyıda dikkatli bas.',
     ),
     loseLine: L(
       'Водяной пригрозил, а я "вышел сухой из воды". Знаешь почему? Я просто туда не полез.',
-      'He threatened — and I came out dry. Know why? I just never went in.',
-      'Tehdit etti — ben kuru çıktım. Neden mi? Hiç girmedim.',
+      'Vodyanoy threatened me, and I “came out of the water dry.” Know why? I simply never went in.',
+      'Vodyanoy tehdit etti, ben ise “sudan kuru çıktım.” Neden mi? Oraya hiç girmedim.',
     ),
     lockedHint: L(
       'Сначала Леший. Водяной без леса не зовёт.',
-      'Leshy first. The Vodyanoy won\'t call without the forest.',
-      'Önce Leşy. Vodyanoy ormansız çağırmaz.',
+      'Leshy first. Vodyanoy does not call without the forest.',
+      'Önce Leshy. Vodyanoy ormansız çağırmaz.',
     ),
   },
   dedushka_toptygin: {
@@ -257,8 +257,8 @@ export const spiritCatDialogContent: Record<SpiritId, SpiritCatDialogEntry> = {
     ),
     loseLine: L(
       'Потянулись за лишним сундуком — и замок защёлкнулся! Кощей усмехнулся в сухие усы. Переведём дух и пойдём дорогой разума.',
-      'He\'s immortal. You aren\'t. Go before the needle finds your tail.',
-      'O ölümsüz. Sen değilsin. İğne kuyruğa değmeden gidelim.',
+      'We reached for an extra chest — and the lock snapped shut! Koschei smirked into his dry mustache. Let us catch our breath and go by the road of reason.',
+      'Fazla sandığa uzandık — kilit şak diye kapandı! Koschei kuru bıyığına sırıttı. Soluklanıp akıl yoluyla gidelim.',
     ),
     lockedHint: L(
       'В тереме блестят сундуки, а ключ — не в сундуке.',

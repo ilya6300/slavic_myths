@@ -68,7 +68,9 @@ export const TrophyRoom = observer(function TrophyRoom() {
                   onClick={() => handleSlotClick(spiritId)}
                   aria-label={
                     unlocked
-                      ? spirit?.name ?? spiritId
+                      ? spirit
+                        ? resolveText(spirit.name, locale)
+                        : spiritId
                       : resolveText(settingsUiContent.trophyNotMet, locale)
                   }
                 >

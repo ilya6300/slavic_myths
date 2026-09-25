@@ -11,6 +11,7 @@ import { GameStore } from '../store/GameStore';
 import { energyUiStore } from '../store/energyUiStore';
 import { sceneUiStore } from '../store/sceneUiStore';
 import { quizUiStore } from '../store/quizUiStore';
+import { adsUiStore } from './adsUiStore';
 import { divinationUiStore } from './divinationUiStore';
 
 function makeStore(partial?: Partial<ReturnType<typeof createDefaultSave>>): GameStore {
@@ -223,7 +224,7 @@ describe('GameStore', () => {
     store.dismissChestLoot();
   });
 
-  it('should skip 30 minutes of chest cooldown with rewarded stub', () => {
+  it('should skip 90 minutes of chest cooldown with rewarded stub', () => {
     vi.useFakeTimers();
     const now = 1_000_000;
     const readyAt = now + 3 * 60 * 60 * 1000;
@@ -238,7 +239,7 @@ describe('GameStore', () => {
     expect(store.isChestReady(now)).toBe(false);
     store.skipChestCooldownWithRewarded(now);
     vi.advanceTimersByTime(10_000);
-    expect(store.chestReadyAt).toBe(readyAt - 30 * 60 * 1000);
+    expect(store.chestReadyAt).toBe(readyAt - 90 * 60 * 1000);
     vi.useRealTimers();
   });
 

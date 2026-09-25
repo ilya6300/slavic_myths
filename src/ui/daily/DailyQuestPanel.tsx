@@ -24,12 +24,19 @@ export const DailyQuestPanel = observer(function DailyQuestPanel() {
   const showClaimButton = canClaim;
   const showDone = claimedToday && !showClaimButton;
   const fragmentTargetId = gameStore.getDailyQuestFragmentTargetSpiritId();
-  const fragmentSpiritName =
-    (fragmentTargetId ? getSpiritById(fragmentTargetId)?.name : null) ?? '—';
+  const fragmentSpirit = fragmentTargetId
+    ? getSpiritById(fragmentTargetId)
+    : undefined;
+  const fragmentSpiritName = fragmentSpirit
+    ? resolveText(fragmentSpirit.name, locale)
+    : '—';
   const taleSpiritId = gameStore.dailyQuestTaleSpiritId;
-  const taleSpiritName =
-    (taleSpiritId ? getSpiritById(taleSpiritId as SpiritId)?.name : null) ??
-    '—';
+  const taleSpirit = taleSpiritId
+    ? getSpiritById(taleSpiritId as SpiritId)
+    : undefined;
+  const taleSpiritName = taleSpirit
+    ? resolveText(taleSpirit.name, locale)
+    : '—';
 
   const openTale = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -88,9 +95,20 @@ export const DailyQuestPanel = observer(function DailyQuestPanel() {
         </li>
       </ul>
       {showDone ? (
-        <p className="daily-quest-panel__claim daily-quest-panel__claim--done">
-          {resolveText(dailyQuestContent.claimDone, locale)}
-        </p>
+        <>
+          <p className="daily-quest-panel__claim daily-quest-panel__claim--done">
+            {resolveText(dailyQuestContent.claimDone, locale)}
+          </p>
+          {gameStore.canResetDailyQuestWithRewarded() && (
+            <button
+              type="button"
+              className="daily-quest-panel__claim daily-quest-panel__reset"
+              onClick={() => gameStore.resetDailyQuestWithRewarded()}
+            >
+              {resolveText(dailyQuestContent.rewardedReset, locale)}
+            </button>
+          )}
+        </>
       ) : showClaimButton ? (
         <button
           type="button"

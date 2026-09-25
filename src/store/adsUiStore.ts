@@ -3,7 +3,7 @@ import { makeAutoObservable } from 'mobx';
 export const REWARDED_STUB_DURATION_SEC = 10;
 export const REWARDED_STUB_CANCEL_WINDOW_SEC = 3;
 
-export type RewardedLoreContext = 'smetana' | 'chest';
+export type RewardedLoreContext = 'smetana' | 'chest' | 'divination' | 'dailyQuest';
 
 export class AdsUiStore {
   isWaitVisible = false;

@@ -5,6 +5,8 @@
  */
 
 import type { SpiritId } from '../config/assetRegistry';
+import type { LocalizedText } from '../i18n/types';
+import { localizeQuizLine } from './quizLocale';
 
 export type QuizLocationId =
   | 'izba'
@@ -15,8 +17,8 @@ export type QuizLocationId =
   | 'temnyy_les';
 
 export interface QuizQuestion {
-  prompt: string;
-  options: string[];
+  prompt: LocalizedText;
+  options: LocalizedText[];
   /** Индекс верного ответа до shuffle */
   correctIndex: number;
 }
@@ -24,9 +26,9 @@ export interface QuizQuestion {
 export interface SpiritQuiz {
   spiritId: SpiritId;
   locationId: QuizLocationId;
-  catHook: string;
-  loseMessage: string;
-  miniTale: string;
+  catHook: LocalizedText;
+  loseMessage: LocalizedText;
+  miniTale: LocalizedText;
   questions: QuizQuestion[];
 }
 
@@ -52,7 +54,21 @@ export const quizLocationBySpirit: Record<SpiritId, QuizLocationId> = {
   perun: 'les',
 };
 
-const rawQuests: Omit<SpiritQuiz, 'locationId'>[] = [
+interface RawQuizQuestion {
+  prompt: string;
+  options: string[];
+  correctIndex: number;
+}
+
+interface RawSpiritQuiz {
+  spiritId: SpiritId;
+  catHook: string;
+  loseMessage: string;
+  miniTale: string;
+  questions: RawQuizQuestion[];
+}
+
+const rawQuests: RawSpiritQuiz[] = [
   {
     "spiritId": "brownie",
     "catHook": "Начни с Домового. Без него в избе бардак — а с ним хоть порядок держится.",
@@ -1496,8 +1512,16 @@ const rawQuests: Omit<SpiritQuiz, 'locationId'>[] = [
 ];
 
 export const spiritQuizzes: SpiritQuiz[] = rawQuests.map((q) => ({
-  ...q,
+  spiritId: q.spiritId,
   locationId: quizLocationBySpirit[q.spiritId],
+  catHook: localizeQuizLine(q.catHook),
+  loseMessage: localizeQuizLine(q.loseMessage),
+  miniTale: localizeQuizLine(q.miniTale),
+  questions: q.questions.map((question) => ({
+    prompt: localizeQuizLine(question.prompt),
+    options: question.options.map((option) => localizeQuizLine(option)),
+    correctIndex: question.correctIndex,
+  })),
 }));
 
 export function getQuizBySpiritId(spiritId: SpiritId): SpiritQuiz | undefined {
@@ -1515,8 +1539,8 @@ export function shuffleArray<T>(items: T[], rng: () => number = Math.random): T[
 }
 
 export interface ShuffledQuestion {
-  prompt: string;
-  options: string[];
+  prompt: LocalizedText;
+  options: LocalizedText[];
   correctIndex: number;
 }
 

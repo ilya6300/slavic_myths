@@ -14,9 +14,14 @@ import {
   STARTER_PACK_OBEREG_BONUS,
 } from '../config/gameConstants';
 import {
-  applyRewardedSkip,
+  applyChestRewardedChargeSkip,
+  armChestRewardedNaturalRefill,
+  canSkipChestWithRewarded,
   chestReadyAtAfterOpen,
+  clampChestRewardedCharges,
   getChestCooldownRemainingMs,
+  syncChestRewardedCharges,
+  type ChestRewardedChargeState,
 } from '../domain/chestCooldown';
 import { applyChestLoot, rollRegularChestLoot, type ChestLootPatch } from '../domain/chestLoot';
 import {
@@ -61,9 +66,12 @@ import { isDailyFindAvailable as isDailyFindAvailableDomain } from '../domain/da
 import { grantFirstVictoryCandle } from '../domain/candles';
 import {
   canClaimDailyFragmentReward,
+  canResetDailyQuestWithRewarded as canResetDailyQuestWithRewardedDomain,
   isDailyQuestUnlocked,
+  resetDailyQuestAfterRewarded,
   shouldShowDailyQuestPanel as shouldShowDailyQuestPanelDomain,
   syncDailyQuestForCalendarDay,
+  syncDailyQuestRewardedResetDayId,
   isDailyClickTaskComplete,
   isDailyDayComplete,
   shouldClearStaleDailyQuestRewardClaim,
@@ -76,7 +84,11 @@ import { DAILY_QUEST_CLICK_GOAL } from '../config/gameConstants';
 import { dailyQuestUiStore } from './dailyQuestUiStore';
 import { getDailyQuestTalePageCount } from '../data/folktales';
 import { divinationUiStore } from './divinationUiStore';
-import { isDivinationUnlocked } from '../domain/divinationSession';
+import { adsUiStore } from './adsUiStore';
+import {
+  canOfferDivinationRewardedLook,
+  isDivinationUnlocked,
+} from '../domain/divinationSession';
 import {
   addCandles,
   addTruthCrumbs,
@@ -171,6 +183,7 @@ export class GameStore {
   luckCoins = 0;
   talismans = 3;
   candles = 0;
+  divinationRewardedDayId: string | null = null;
   truthCrumbs = 0;
   titleId: string | null = 'novenkiy';
 
@@ -189,6 +202,8 @@ export class GameStore {
   trophiesUnlocked: string[] = [];
 
   chestReadyAt: number | null = null;
+  chestRewardedCharges = 4;
+  chestRewardedNaturalRefillAt: number | null = null;
   spareChestKeys = 0;
   wonderChestWeekSlotUsed = false;
   wonderChestClickProgress = 0;
@@ -205,6 +220,7 @@ export class GameStore {
   dailyQuestTaleCorrect = false;
   dailyQuestRewardClaimedDayId: string | null = null;
   dailyQuestFragmentGrantedDayId: string | null = null;
+  dailyQuestRewardedResetDayId: string | null = null;
   folktaleIntroShown = false;
 
   izbaItemDialogState: { lastTag: IzbaItemId | null; lastLineIndex: number } = {
@@ -388,6 +404,7 @@ export class GameStore {
     this.luckCoins = save.luckCoins;
     this.talismans = save.talismans;
     this.candles = save.candles ?? 0;
+    this.divinationRewardedDayId = save.divinationRewardedDayId ?? null;
     this.truthCrumbs = save.truthCrumbs ?? 0;
     this.titleId = save.titleId;
 
@@ -409,6 +426,10 @@ export class GameStore {
     this.trophiesUnlocked = [...save.trophiesUnlocked];
 
     this.chestReadyAt = save.chestReadyAt;
+    this.chestRewardedCharges = clampChestRewardedCharges(
+      save.chestRewardedCharges ?? 4,
+    );
+    this.chestRewardedNaturalRefillAt = save.chestRewardedNaturalRefillAt ?? null;
     this.spareChestKeys = save.spareChestKeys ?? 0;
     this.wonderChestWeekSlotUsed = save.wonderChestWeekSlotUsed;
     this.wonderChestClickProgress = save.wonderChestClickProgress;
@@ -426,6 +447,7 @@ export class GameStore {
     this.dailyQuestRewardClaimedDayId = save.dailyQuestRewardClaimedDayId ?? null;
     this.dailyQuestFragmentGrantedDayId =
       save.dailyQuestFragmentGrantedDayId ?? null;
+    this.dailyQuestRewardedResetDayId = save.dailyQuestRewardedResetDayId ?? null;
     this.repairDailyQuestFragmentGrantFlags();
     this.folktaleIntroShown = save.folktaleIntroShown ?? false;
     this.izbaItemDialogState = { lastTag: null, lastLineIndex: 0 };
@@ -485,6 +507,7 @@ export class GameStore {
       luckCoins: this.luckCoins,
       talismans: this.talismans,
       candles: this.candles,
+      divinationRewardedDayId: this.divinationRewardedDayId,
       truthCrumbs: this.truthCrumbs,
       titleId: this.titleId,
 
@@ -503,6 +526,8 @@ export class GameStore {
       trophiesUnlocked: [...this.trophiesUnlocked],
 
       chestReadyAt: this.chestReadyAt,
+      chestRewardedCharges: this.chestRewardedCharges,
+      chestRewardedNaturalRefillAt: this.chestRewardedNaturalRefillAt,
       spareChestKeys: this.spareChestKeys,
       wonderChestWeekSlotUsed: this.wonderChestWeekSlotUsed,
       wonderChestClickProgress: this.wonderChestClickProgress,
@@ -519,6 +544,7 @@ export class GameStore {
       dailyQuestTaleCorrect: this.dailyQuestTaleCorrect,
       dailyQuestRewardClaimedDayId: this.dailyQuestRewardClaimedDayId,
       dailyQuestFragmentGrantedDayId: this.dailyQuestFragmentGrantedDayId,
+      dailyQuestRewardedResetDayId: this.dailyQuestRewardedResetDayId,
       folktaleIntroShown: this.folktaleIntroShown,
 
       susedkoStealActive: this.susedkoStealActive,
@@ -806,14 +832,22 @@ export class GameStore {
                 this.dailyQuestFragmentGrantedDayId === this.dailyQuestDayId,
             }
           : null;
+    const previousDayId = this.dailyQuestDayId;
     const synced = syncDailyQuestForCalendarDay(
       current,
       this.spiritStatuses,
       now,
       rng,
     );
-    const dayChanged = synced.dayId !== this.dailyQuestDayId;
+    const dayChanged = synced.dayId !== previousDayId;
     this.dailyQuestDayId = synced.dayId;
+    if (dayChanged) {
+      this.dailyQuestRewardedResetDayId = syncDailyQuestRewardedResetDayId(
+        this.dailyQuestRewardedResetDayId,
+        previousDayId,
+        now,
+      );
+    }
     this.dailyQuestTaleSpiritId = synced.taleSpiritId;
     if (dayChanged) {
       this.dailyQuestClickProgress = synced.clickProgress;
@@ -858,6 +892,18 @@ export class GameStore {
       return;
     }
     if (!canSpendCandle(this.candles)) {
+      if (
+        canOfferDivinationRewardedLook(
+          true,
+          this.candles,
+          this.divinationRewardedDayId,
+          new Date(),
+        )
+      ) {
+        divinationUiStore.openThreshold();
+        sceneUiStore.panBlocked = true;
+        return;
+      }
       const line = pickCatLine('divination_no_candle', this.language);
       if (line) this.lastCatBubble = { kind: 'footnote', text: line };
       return;
@@ -1104,7 +1150,7 @@ export class GameStore {
     }
 
     const spirit = getSpiritById(quizUiStore.activeSpiritId!);
-    quizUiStore.showDefeat(spirit?.loseMessage ?? '');
+    if (spirit) quizUiStore.showDefeat(spirit.loseMessage);
     saveService.schedulePersist();
   }
 
@@ -1297,6 +1343,13 @@ export class GameStore {
 
     this.firstChestOpened = true;
     this.chestReadyAt = chestReadyAtAfterOpen(now);
+    this.syncChestCharges(now);
+    this.writeChestCharges(
+      armChestRewardedNaturalRefill(
+        this.chestChargeState(),
+        this.chestReadyAt,
+      ),
+    );
 
     chestUiStore.showLoot(loot);
     saveService.schedulePersist();
@@ -1423,17 +1476,140 @@ export class GameStore {
     catDialogStore.show([{ text: line, mode: 'footnote', tag }]);
   }
 
+  private chestChargeState(): ChestRewardedChargeState {
+    return {
+      charges: this.chestRewardedCharges,
+      naturalRefillAt: this.chestRewardedNaturalRefillAt,
+    };
+  }
+
+  private writeChestCharges(state: ChestRewardedChargeState): void {
+    this.chestRewardedCharges = state.charges;
+    this.chestRewardedNaturalRefillAt = state.naturalRefillAt;
+  }
+
+  private syncChestCharges(now: number): void {
+    this.writeChestCharges(
+      syncChestRewardedCharges(this.chestChargeState(), now),
+    );
+  }
+
+  canSkipChestCooldownWithRewarded(now: number = Date.now()): boolean {
+    this.syncChestCharges(now);
+    if (!this.firstChestOpened || this.isChestReady(now)) return false;
+    return canSkipChestWithRewarded(this.chestRewardedCharges);
+  }
+
   skipChestCooldownWithRewarded(now: number = Date.now()): void {
-    if (!this.firstChestOpened) return;
-    if (this.isChestReady(now)) return;
+    if (!this.canSkipChestCooldownWithRewarded(now)) return;
+    if (adsUiStore.isWaitVisible) return;
 
     adsService.showRewarded(
       () => {
-        this.chestReadyAt = applyRewardedSkip(this.chestReadyAt, now);
+        this.syncChestCharges(now);
+        if (!this.firstChestOpened || this.isChestReady(now)) return;
+        if (!canSkipChestWithRewarded(this.chestRewardedCharges)) return;
+        const next = applyChestRewardedChargeSkip(
+          this.chestChargeState(),
+          this.chestReadyAt,
+          now,
+        );
+        this.chestReadyAt = next.chestReadyAt;
+        this.writeChestCharges(next.charges);
         saveService.schedulePersist();
       },
       undefined,
       'chest',
+    );
+  }
+
+  confirmDivinationRewardedLook(now: Date = new Date()): void {
+    if (divinationUiStore.phase !== 'threshold') return;
+    if (this.candles !== 0) return;
+    if (
+      !canOfferDivinationRewardedLook(
+        isDivinationUnlocked(this.spiritStatuses),
+        this.candles,
+        this.divinationRewardedDayId,
+        now,
+      )
+    ) {
+      return;
+    }
+    if (adsUiStore.isWaitVisible) return;
+
+    adsService.showRewarded(
+      () => {
+        if (divinationUiStore.phase !== 'threshold' || this.candles !== 0) return;
+        if (
+          !canOfferDivinationRewardedLook(
+            isDivinationUnlocked(this.spiritStatuses),
+            this.candles,
+            this.divinationRewardedDayId,
+            now,
+          )
+        ) {
+          return;
+        }
+        this.divinationRewardedDayId = getCalendarDayId(now);
+        const started = divinationUiStore.beginSessionAfterCandle(
+          this.spiritStatuses,
+          this.language,
+        );
+        if (!started) {
+          this.divinationRewardedDayId = null;
+          this.closeDivination();
+          return;
+        }
+        saveService.schedulePersist();
+      },
+      undefined,
+      'divination',
+    );
+  }
+
+  canResetDailyQuestWithRewarded(now: Date = new Date()): boolean {
+    return canResetDailyQuestWithRewardedDomain(
+      isDailyQuestUnlocked(this.spiritStatuses),
+      this.dailyQuestFragmentGrantedDayId,
+      this.dailyQuestRewardedResetDayId,
+      now,
+    );
+  }
+
+  resetDailyQuestWithRewarded(now: Date = new Date()): void {
+    this.ensureDailyQuestDaySynced(now);
+    if (!this.canResetDailyQuestWithRewarded(now)) return;
+    if (adsUiStore.isWaitVisible) return;
+
+    adsService.showRewarded(
+      () => {
+        const at = new Date();
+        this.ensureDailyQuestDaySynced(at);
+        if (!this.canResetDailyQuestWithRewarded(at)) return;
+        const next = resetDailyQuestAfterRewarded(
+          {
+            dayId: this.dailyQuestDayId ?? getCalendarDayId(at),
+            taleSpiritId: this.dailyQuestTaleSpiritId,
+            clickProgress: this.dailyQuestClickProgress,
+            taleQuizCorrect: this.dailyQuestTaleCorrect,
+            fragmentGrantedDayId: this.dailyQuestFragmentGrantedDayId,
+            rewardClaimedDayId: this.dailyQuestRewardClaimedDayId,
+            rewardedResetDayId: this.dailyQuestRewardedResetDayId,
+          },
+          at,
+        );
+        this.dailyQuestDayId = next.dayId;
+        this.dailyQuestTaleSpiritId = next.taleSpiritId;
+        this.dailyQuestClickProgress = next.clickProgress;
+        this.dailyQuestTaleCorrect = next.taleQuizCorrect;
+        this.dailyQuestFragmentGrantedDayId = next.fragmentGrantedDayId;
+        this.dailyQuestRewardClaimedDayId = next.rewardClaimedDayId;
+        this.dailyQuestRewardedResetDayId = next.rewardedResetDayId;
+        saveService.schedulePersist();
+      },
+      undefined,
+      'dailyQuest',
     );
   }
 

@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 import type { SpiritId } from '../config/assetRegistry';
+import type { LocalizedText } from '../i18n/types';
 import type { ShuffledQuestion } from '../data/quiz';
 
 export type QuizPhase =
@@ -15,7 +16,7 @@ export class QuizUiStore {
   questionIndex = 0;
   phase: QuizPhase = 'question';
   pendingAnswerIndex: number | null = null;
-  loseMessage = '';
+  loseMessage: LocalizedText | null = null;
   oberegShieldFlash = false;
 
   constructor() {
@@ -43,7 +44,7 @@ export class QuizUiStore {
     this.questionIndex = 0;
     this.phase = 'question';
     this.pendingAnswerIndex = null;
-    this.loseMessage = '';
+    this.loseMessage = null;
     this.oberegShieldFlash = false;
   }
 
@@ -70,7 +71,7 @@ export class QuizUiStore {
     this.pendingAnswerIndex = null;
   }
 
-  showDefeat(message: string): void {
+  showDefeat(message: LocalizedText): void {
     this.phase = 'defeat';
     this.loseMessage = message;
     this.pendingAnswerIndex = null;
@@ -82,7 +83,7 @@ export class QuizUiStore {
     this.questionIndex = 0;
     this.phase = 'question';
     this.pendingAnswerIndex = null;
-    this.loseMessage = '';
+    this.loseMessage = null;
     this.oberegShieldFlash = false;
   }
 }

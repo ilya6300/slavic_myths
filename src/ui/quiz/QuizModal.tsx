@@ -144,8 +144,10 @@ export const QuizModal = observer(function QuizModal() {
             alt=""
             draggable={false}
           />
-          <p className="quiz-result__reward">{spirit.bookRewardDescription}</p>
-          <p className="quiz-result__tale">{spirit.miniTale}</p>
+          <p className="quiz-result__reward">
+            {resolveText(spirit.bookRewardDescription, locale)}
+          </p>
+          <p className="quiz-result__tale">{resolveText(spirit.miniTale, locale)}</p>
           <button type="button" className="quiz-result__btn" onClick={handleClaim}>
             {resolveText(settingsUiContent.quizClaimReward, locale)}
           </button>
@@ -154,8 +156,12 @@ export const QuizModal = observer(function QuizModal() {
 
       {phase === 'defeat' && (
         <div className="quiz-result quiz-result--lose">
-          <h2 id="quiz-title">{spirit.name}</h2>
-          <p className="quiz-result__lose">{quizUiStore.loseMessage}</p>
+          <h2 id="quiz-title">{resolveText(spirit.name, locale)}</h2>
+          <p className="quiz-result__lose">
+            {quizUiStore.loseMessage
+              ? resolveText(quizUiStore.loseMessage, locale)
+              : ''}
+          </p>
           <button
             type="button"
             className="quiz-result__btn"
@@ -173,7 +179,7 @@ export const QuizModal = observer(function QuizModal() {
           className={`quiz-panel${phase === 'correct' ? ' quiz-panel--correct' : ''}${phase === 'wrong' ? ' quiz-panel--wrong' : ''}${phase === 'wrong' && quizUiStore.oberegShieldFlash ? ' quiz-panel--shield' : ''}`}
         >
           <header className="quiz-header">
-            <h2 id="quiz-title">{spirit.name}</h2>
+            <h2 id="quiz-title">{resolveText(spirit.name, locale)}</h2>
             <span className="quiz-progress">
               {resolveText(settingsUiContent.quizQuestionOf, locale)}{' '}
               <strong>{questionNum}</strong>{' '}
@@ -192,7 +198,9 @@ export const QuizModal = observer(function QuizModal() {
 
           {question && (
             <>
-              <p className="quiz-question">{question.prompt}</p>
+              <p className="quiz-question">
+                {resolveText(question.prompt, locale)}
+              </p>
               <div className="quiz-answers">
                 {question.options.map((opt, i) => {
                   const isPending = quizUiStore.pendingAnswerIndex === i;
@@ -207,7 +215,7 @@ export const QuizModal = observer(function QuizModal() {
                       disabled={phase !== 'question'}
                       onClick={() => handleAnswer(i)}
                     >
-                      {opt}
+                      {resolveText(opt, locale)}
                     </button>
                   );
                 })}

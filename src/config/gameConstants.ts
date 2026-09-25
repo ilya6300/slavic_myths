@@ -3,7 +3,7 @@
  * Канон: instruction/dev/technical_requirements.md §6
  */
 
-export const SAVE_VERSION = 14;
+export const SAVE_VERSION = 15;
 
 export const STARTER_PACK_PRICE_RUB = 199;
 export const STARTER_PACK_ENERGY_BONUS = 100;
@@ -59,7 +59,8 @@ export const SPARE_CHEST_KEYS_CAP = 3;
 
 /** Сундук */
 export const CHEST_COOLDOWN_HOURS = 3;
-export const CHEST_REWARDED_SKIP_MINUTES = 30;
+export const CHEST_REWARDED_SKIP_MINUTES = 90;
+export const CHEST_REWARDED_CHARGE_LIMIT = 4;
 /** Ночь (локальное время) */
 export const NIGHT_START_HOUR = 20;
 export const NIGHT_END_HOUR = 6;

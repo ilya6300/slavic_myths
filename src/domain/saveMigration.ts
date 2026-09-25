@@ -230,6 +230,14 @@ export function migrateSave(raw: GameSave): GameSave {
     save.version = 14;
   }
 
+  if (save.version < 15) {
+    save.chestRewardedCharges = 4;
+    save.chestRewardedNaturalRefillAt = null;
+    save.divinationRewardedDayId = null;
+    save.dailyQuestRewardedResetDayId = null;
+    save.version = 15;
+  }
+
   if (
     save.starterPackPurchased &&
     !(save.ownedSkinIds ?? []).includes(STARTER_PACK_CAT_SKIN_ID)

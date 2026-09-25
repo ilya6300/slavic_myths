@@ -61,15 +61,24 @@ export const DivinationModal = observer(function DivinationModal() {
           {phase === 'threshold' && (
             <>
               <p className="divination-overlay__line">
-                {divinationUiStore.thresholdLine(locale)}
+                {gameStore.candles > 0
+                  ? divinationUiStore.thresholdLine(locale)
+                  : resolveText(divinationUi.rewardedLookLine, locale)}
               </p>
               <div className="divination-overlay__actions">
                 <button
                   type="button"
                   className="quiz-answer"
-                  onClick={() => gameStore.confirmDivinationAsk()}
+                  onClick={() =>
+                    gameStore.candles > 0
+                      ? gameStore.confirmDivinationAsk()
+                      : gameStore.confirmDivinationRewardedLook()
+                  }
                 >
-                  {resolveText(divinationUi.ask, locale)}
+                  {resolveText(
+                    gameStore.candles > 0 ? divinationUi.ask : divinationUi.hearTheTale,
+                    locale,
+                  )}
                 </button>
                 <button
                   type="button"
@@ -127,7 +136,10 @@ export const DivinationModal = observer(function DivinationModal() {
                     className="quiz-answer"
                     onClick={() => gameStore.submitDivinationGuess(id)}
                   >
-                    {getSpiritById(id)?.name ?? id}
+                    {(() => {
+                      const spirit = getSpiritById(id);
+                      return spirit ? resolveText(spirit.name, locale) : id;
+                    })()}
                   </button>
                 ))}
               </div>
