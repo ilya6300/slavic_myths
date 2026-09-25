@@ -1,0 +1,149 @@
+---
+description: Ревьювер UI — статический аудит CSS, браузер Simple Browser, отчёт layout_verification. Обязательно при visual_check в TASK.
+globs:
+  - src/ui/**
+  - src/ui/index.css
+alwaysApply: false
+---
+
+# Ревьювер: проверка вёрстки и стилей
+
+**Закон:** для TASK с `visual_check` или diff в `src/ui/**` / `index.css` (модалки, HUD, профиль) ревьювер **не выдаёт `approved`**, пока не выполнен **обязательный протокол** ниже и не заполнен блок `layout_verification` в вердикте.
+
+Читать вместе с: `ui-layout-invariants.mdc`, `strict-code-review.mdc`, `css-styling.mdc`.
+
+## Порядок (жёсткий)
+
+| Шаг | Действие | Без этого |
+|-----|----------|-----------|
+| 1 | Прочитать diff + критерии TASK | `rejected` |
+| 2 | **`npm run lint:ui-layout`** — статический аудит mobile CSS | 🔴 если exit ≠ 0 |
+| 3 | **CSS-аудит вручную** (чеклист §2) | 🔴 если нарушен инвариант |
+| 4 | **Runtime в браузере** (§3) — portrait + landscape | 🔴 или `changes_requested` + `blocked_browser` |
+| 5 | YAML `review_verdict` + блок `layout_verification` | TASK не `done` |
+
+**Запрещено:** approve только по «diff выглядит ок» без шагов 2–4 для UI-layout TASK.
+
+## §1. Статический lint (шаг 2)
+
+Из корня репо:
+
+```bash
+npm run lint:ui-layout
+```
+
+Скрипт: `scripts/lint-ui-layout-css.mjs`. Падает на известных антипatterns (scroll оверлея quiz/chest, grid без `align-items: start`, и т.д.).
+
+## §2. CSS-аудит вручную (шаг 3)
+
+По затронутым селекторам в diff — таблица в вердикте:
+
+| Проверка | Где смотреть | Fail |
+|----------|--------------|------|
+| Grid + absolute art | `.profile-grid`, `.profile-grid__cell--*` | нет `align-items: start`; `stretch` + `min-height: 0` без aspect-ratio |
+| Mobile modal scroll | `@media (max-width: 640px)`, landscape ≤520px | `.layer-modal` / `.quiz.layer-modal` с `overflow-y: auto` (кроме `:not(profile|quiz|chest)`) |
+| Inner scroll zones | TASK / спека | scroll не на named-зоне (`.profile-grid`, `.quiz-answers`, `.chest-modal__drops`) |
+| Inset | `.game-modal__panel`, mobile padding | padding без `env(safe-area-inset-*)` на fullscreen panel |
+| Конфликт media | порядок в `index.css` | landscape-блок **перебивает** mobile-fix профиля (позже в файле должны быть overrides) |
+| Nested `@media` | любой блок | вложенный `@media` → fail (`NESTED_MEDIA`) |
+| Chest overlay inset | `.game-modal.chest-modal.layer-modal` | нет `padding: 0` при full-bleed → `left≈16` |
+| CTA stretch | `.chest-modal__take`, `.wood-quest-btn` | `width/max-width: 100%` без TASK «full-bleed CTA» |
+| Owner DOM Path | чат владельца vs computed | несовпадение left/width/display → fail |
+
+## §3. Runtime — браузер Cursor (шаг 4)
+
+Ревьювер **сам** поднимает dev-сервер и открывает игру, если TASK требует `visual_check`.
+
+### 3.1. Dev-сервер
+
+```bash
+npm run dev
+```
+
+Дождаться URL (обычно `http://localhost:5173/`). Если порт занят — использовать фактический из вывода Vite.
+
+### 3.2. Simple Browser в Cursor
+
+1. **Command Palette** → `Simple Browser: Show` (или встроенная вкладка Browser в Cursor, если доступна).
+2. Открыть URL dev-сервера.
+3. **Device Toolbar** / resize:
+   - **Portrait:** ширина ≤640px (например 390×844).
+   - **Landscape:** высота ≤520px (например 844×390).
+4. Пройти **сценарии из TASK** (минимум):
+   - HUD → профиль → вкладка «Кот» (сетка без overlap, scroll только сетка).
+   - Открыть сундук → модалка лута (CTA с inset, без scroll всего окна).
+   - Викторина → вопрос (нет scroll всего экрана; при необходимости scroll только ответы).
+
+### 3.3. Фиксация
+
+В вердикте блок **`layout_verification`** (обязательно):
+
+```yaml
+layout_verification:
+  lint_ui_layout: pass | fail
+  browser:
+    attempted: true | false
+    tool: cursor_simple_browser | owner_screenshot | blocked_no_browser
+    url: "http://localhost:5173/"
+    viewports:
+      - name: portrait_390
+        width: 390
+        height: 844
+        scenarios: [profile_cat_grid, chest_loot, quiz_question]
+        result: pass | fail
+        notes: "…"
+      - name: landscape_844x390
+        width: 844
+        height: 390
+        scenarios: [profile_cat_grid, chest_loot, quiz_question]
+        result: pass | fail
+        notes: "…"
+  css_manual_audit: pass | fail
+```
+
+| `browser.attempted` | `approved` |
+|---------------------|------------|
+| `true` + все `pass` | возможен, если нет 🔴 |
+| `false` + TASK visual_check | **запрещён** → `changes_requested`, эскалация оркестратору |
+| `owner_screenshot` + владелец приложил скрины в чат | возможен при pass по скринам |
+
+### 3.4. Если браузер недоступен агенту
+
+- Не присваивать `approved`.
+- `layout_verification.browser.tool: blocked_no_browser`
+- `review_verdict.status: changes_requested`
+- Оркестратор: A) владелец — скрины; B) повтор ревью с Browser; C) отложить TASK.
+
+**Запрещено** писать «visual_check n/a» для TASK, где в критериях явно `visual_check`.
+
+## §4. Связь с `review_verdict`
+
+Дополнительные поля:
+
+```yaml
+review_verdict:
+  layout_invariants_checked: true | false
+  layout_verification: { ... }  # см. §3.3
+  visual_check_closed_by: browser | owner | not_closed
+```
+
+- `visual_check_closed_by: not_closed` → статус **не** `approved`.
+- `layout_invariants_checked: false` при UI diff → **rejected**.
+- **Записать** вердикт в `instruction/dev/reviews/TASK-XXX.yaml` (шаблон `_TEMPLATE.yaml`). Текст в чате без файла не закрывает gate.
+
+Поля при DOM Path владельца в чате:
+
+```yaml
+owner_dom:
+  attempted: true
+  node: ".chest-modal__panel"
+  reported: { left: 16, width: 884, height: 375 }
+  expected_spec: { left: 0, width: "100%", display: grid }
+  match: false
+```
+
+`match: false` → не `approved`.
+
+## §5. Оркестратор
+
+После `developer_done` по UI TASK оркестратор **обязан** отдельным сообщением назначить **только** `executor: revyuver` с `read_first: reviewer-visual-verification.mdc`. Не объединять с разработчиком в одном ответе.

@@ -1416,3 +1416,98 @@
 - **Следующий:** game-designer-ui-ux
 - **Вне scope:** вторая рекламная ежа в те же сутки; догон пропусков; смена награды ежи; новые духи
 
+### TASK-062 — Mobile layout: профиль, сундук, викторина
+- **Статус:** in_progress
+- **Приоритет:** P0
+- **Зависит от:** —
+- **Канон:** `profile_layout.md` §3.1; `mobile_modals_landscape.md`; `instruction/design/chest_loot_modal_mobile.md`; `.cursor/rules/ui-layout-invariants.mdc`
+- **Цель игрока:** На телефоне (portrait ≤640px и landscape ≤520px) открыть профиль, лут сундука и викторину без наложения UI и без прокрутки всего экрана.
+- **Scope:** CSS `src/ui/index.css` — `.profile-modal`, `.game-modal.chest-modal`, `.quiz.layer-modal`.
+- **Критерии приёмки:**
+  - [ ] Профиль: превью **30%** слева; вкладки компактно в правой колонке; **скролл только** `.profile-grid` / `.profile-grid--text`; нет overlap в сетке котиков
+  - [ ] Сундук (лут + кулдаун): панель `100dvh`, `overflow: hidden`; CTA «Забрать» с inset снизу; scroll только `.chest-modal__drops` при раскрытии
+  - [ ] Викторина: `.quiz.layer-modal` **без** `overflow-y: auto`; панель flex; при нехватке места scroll только `.quiz-answers` (или result-блок)
+  - [ ] Текст и кнопки не касаются края viewport (safe-area + ≥12px)
+  - [ ] `visual_check` portrait + landscape — ревьювер (`lint:ui-layout` + Simple Browser) или скрины владельца
+- **Проверка:** visual_check — протокол `.cursor/rules/reviewer-visual-verification.mdc`
+- **Следующий:** revyuver
+- **Вне scope:** новые ассеты; смена логики лута/викторины
+
+---
+
+## Epic 18 — Регрессии UX: клик кота при нулевой энергии
+
+> **План:** `instruction/plans/итерация_исправлений_e29f4002.plan.md` Epic 6.  
+> **Решение владельца (Илья), 2026-09-25:** при нехватке энергии **первый** клик по коту снова открывает оффер rewarded (как до задержки 1–2 клика из TASK-030 / `TIRED_CLICKS_BEFORE_MODAL=2`). Баланс `REWARDED_ENERGY_BONUS` (50) vs +100 в `scenario.md` §7 — **не менять**; только поток UX и защита от обхода через regen в `clickCat`.
+
+### TASK-063 — Клик по коту при нулевой энергии: модалка рекламы
+- **Статус:** done
+- **Приоритет:** P0
+- **Зависит от:** TASK-031, TASK-032
+- **Канон:** `instruction/scenario.md` §7 (таблица «Нет энергии» — миска/rewarded; число +100 в сценарии vs +50 в коде не трогать); `instruction/plans/итерация_исправлений_e29f4002.plan.md` Epic 6
+- **Цель игрока:** При нулевой (или недостаточной для клика) энергии сразу увидеть предложение посмотреть рекламу и получить бонус энергии, а не «тихий» успешный клик после регенa и не только пузырь tired без модалки.
+- **Суть:** В `GameStore.clickCat` (после онбординга) клик при `energy < ENERGY_PER_CLICK` открывает `energyUiStore` / `EnergyRewardModal` с **первого** клика; не начисляет монету удачи и не увеличивает `catClickCount`. Успешный `restoreEnergyWithRewarded()` → `addRewardEnergy` (+50, `REWARDED_ENERGY_BONUS`), закрытие модалки, снятие tired-сна через `syncTiredSleepFromEnergy`. Regen (`applyEnergyRegen`) в начале того же клика **не** должен превращать отказ в платный клик без показа оффера.
+- **Scope:** `GameStore.clickCat`, `src/domain/tiredCat.ts` (поведение `TIRED_CLICKS_BEFORE_MODAL` / tired-bubble vs модалка), `energyUiStore`, `EnergyRewardModal`, `restoreEnergyWithRewarded`; unit-тесты `GameStore.test.ts`, при необходимости `tiredCat.test.ts`.
+- **Критерии приёмки:**
+  - [x] После завершения онбординга, при `energy < ENERGY_PER_CLICK`: **первый** клик по коту открывает `energyUiStore` / `EnergyRewardModal` (не только tired-bubble без модалки)
+  - [x] Клик при нехватке энергии **не** увеличивает `catClickCount` и **не** спавнит монету удачи
+  - [x] `restoreEnergyWithRewarded()` по успешному rewarded добавляет энергию (`addRewardEnergy`, +50) и закрывает модалку; tired-сон снимается через `syncTiredSleepFromEnergy`
+  - [x] Нет обхода: если игрок кликнул при 0 энергии, regen в том же тике **не** должен превращать клик в платный успешный клик без показа оффера (зафиксировать в тесте)
+  - [x] Обновить/добавить unit-тесты в `GameStore.test.ts` и при необходимости `tiredCat.test.ts`
+  - [x] `npm test` зелёный
+- **Проверка:** test (без visual_check — UI модалки уже есть)
+- **Следующий:** revyuver (approved — `instruction/dev/reviews/TASK-063.yaml`)
+- **Вне scope:** смена `REWARDED_ENERGY_BONUS`; правки CSS модалки; TASK-062
+
+### TASK-064 — UI: модалка rewarded-энергии (кот, 0 энергии)
+- **Статус:** awaiting_revyuver
+- **Приоритет:** P0
+- **Зависит от:** TASK-063
+- **Канон:** `instruction/design/energy_reward_modal_mobile.md`; `mobile_modals_landscape.md`; `ui-layout-invariants.mdc`
+- **Цель игрока:** При оффере рекламы за энергию видеть понятную модалку в стиле сундука (кот спит, +50, деревянная CTA), а не сломанную колонку с гигантской иконкой.
+- **Scope:** `EnergyRewardModal.tsx`, `src/ui/index.css` (блок `.chest-modal--energy` + mobile/landscape).
+- **Критерии приёмки:**
+  - [x] DOM по спеке: сцена с котом `sleep`, чип +50 с ограниченной иконкой энергии, `WoodQuestButton`, отказ как text-link
+  - [x] Mobile portrait: full-bleed панель как сундук, `overflow: hidden`, CTA max-width ~320px, inset текста
+  - [x] Landscape ≤520: grid кот слева / текст справа; CTA span 2; без scroll оверлея
+  - [ ] `visual_check` portrait + landscape — ревьювер или скрин владельца
+  - [x] `npm run lint:ui-layout` зелёный
+- **Проверка:** visual_check
+- **Следующий:** revyuver
+- **Вне scope:** смена `REWARDED_ENERGY_BONUS`, логика `clickCat` / ads
+
+### TASK-065 — Дар путника: +3 свечи в наборе
+- **Статус:** awaiting_revyuver
+- **Приоритет:** P1
+- **Зависит от:** TASK-033
+- **Канон:** `instruction/plans/plan.md` (свечи с ранней игры); TASK-033 (ларец новичка)
+- **Цель игрока:** При покупке «Дара путника» получить 3 свечи для зеркала вместе с энергией, оберегами и скином путника.
+- **Суть:** `STARTER_PACK_CANDLE_BONUS = 3`; `applyStarterPackPurchase` начисляет свечи; модалка показывает строку награды.
+- **Scope:** `gameConstants.ts`, `GameStore.applyStarterPackPurchase`, `StarterPackModal.tsx`, unit-тест.
+- **Критерии приёмки:**
+  - [x] Успешная покупка: `candles += 3` (через `addCandles`)
+  - [x] Повторная покупка не дублирует свечи
+  - [x] В модалке ларца видна награда «+3» с иконкой свечи
+  - [x] `npm test` — тест `applyStarterPackPurchase`
+- **Проверка:** test
+- **Следующий:** revyuver
+- **Вне scope:** бесплатные стартовые свечи без покупки ларца; смена цены IAP
+
+### TASK-066 — Мобильная модалка крафта Кикиморы
+- **Статус:** awaiting_revyuver
+- **Приоритет:** P1
+- **Зависит от:** TASK-035
+- **Канон:** `instruction/design/kikimora_craft_modal_mobile.md`; `mobile_modals_landscape.md`; `ui-layout-invariants.mdc`
+- **Цель игрока:** На телефоне (portrait и landscape) сплести оберег в полноэкранном меню без scroll оверлея, с компактной сценой и деревянной CTA внизу.
+- **Суть:** Full-bleed панель на mobile; flex portrait; landscape grid (сцена слева, слоты+текст справа); исключить `.kikimora-craft-modal` из landscape scroll `.layer-modal`.
+- **Scope:** `KikimoraCraftModal.tsx`, `index.css` (блоки portrait + top-level landscape).
+- **Критерии приёмки:**
+  - [x] Portrait ≤640: `100dvh` панель, сцена ≤20vh, CTA `margin-top: auto`, inset текста
+  - [x] Landscape ≤520: grid по спеке; нет `overflow-y: auto` на `.kikimora-craft-modal.layer-modal`
+  - [x] DOM: `__main`, `__cta` для grid/flex
+  - [ ] `visual_check` portrait + landscape — ревьювер или скрин владельца
+  - [x] `npm run lint:ui-layout` зелёный
+- **Проверка:** visual_check
+- **Следующий:** revyuver
+- **Вне scope:** plan.md п.9 (навигация на улицу) — отдельно при воспроизведении
+

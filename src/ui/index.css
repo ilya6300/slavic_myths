@@ -55,15 +55,15 @@ body {
   will-change: transform;
 }
 
-.izba-scene[data-room='street'] .izba-scene__inner {
+.izba-scene[data-room="street"] .izba-scene__inner {
   transform: translateX(0);
 }
 
-.izba-scene[data-room='1'] .izba-scene__inner {
+.izba-scene[data-room="1"] .izba-scene__inner {
   transform: translateX(-100vw);
 }
 
-.izba-scene[data-room='2'] .izba-scene__inner {
+.izba-scene[data-room="2"] .izba-scene__inner {
   transform: translateX(-200vw);
 }
 
@@ -119,7 +119,8 @@ body {
   display: block;
 }
 
-.window-aperture[data-window-skin='landscape_cyber_city'] .window-aperture__forest {
+.window-aperture[data-window-skin="landscape_cyber_city"]
+  .window-aperture__forest {
   /* Дорога в нижних 40% JPEG; окно смотрит в верх панорамы — поднимаем слой */
   transform: translateY(-72%);
 }
@@ -298,7 +299,7 @@ body {
   font-weight: 700;
   color: #e8e0d0;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-  transform: rotateX(52deg) ;
+  transform: rotateX(52deg);
   transform-origin: top center;
 }
 
@@ -355,7 +356,8 @@ body {
 }
 
 .scene-chest-miracle--glow .scene-sprite__img {
-  filter: hue-rotate(260deg) saturate(1.4) drop-shadow(0 0 12px rgba(180, 100, 255, 0.55));
+  filter: hue-rotate(260deg) saturate(1.4)
+    drop-shadow(0 0 12px rgba(180, 100, 255, 0.55));
 }
 
 .scene-book-stand {
@@ -397,7 +399,6 @@ body {
 }
 
 @keyframes book-hover-glow {
-
   0%,
   100% {
     filter: drop-shadow(0 0 8px rgba(240, 193, 74, 0.45));
@@ -445,7 +446,6 @@ body {
 }
 
 @keyframes book-idle {
-
   0%,
   100% {
     opacity: 1;
@@ -557,7 +557,7 @@ body {
 }
 
 /* polevoy_wreath.png — арт в правом верхнем углу холста; компенсируем поля */
-.room-trophy-slot__img[data-spirit-id='poludnik'] {
+.room-trophy-slot__img[data-spirit-id="poludnik"] {
   height: 11vh;
   object-fit: contain;
   object-position: 82% 18%;
@@ -666,7 +666,6 @@ body {
   margin-top: 0.25rem;
 }
 
-
 /* --- Профиль --- */
 
 .profile-modal__panel {
@@ -683,8 +682,139 @@ body {
 }
 
 @media (max-width: 640px) {
-  .profile-modal__layout {
-    grid-template-columns: 1fr;
+  /* Сундук / кулдаун — панель на высоту экрана, без scroll оверлея */
+  .game-modal.chest-modal.layer-modal {
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .game-modal.chest-modal .game-modal__panel {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100dvh;
+    min-height: 0;
+    margin: 0;
+    border-radius: 0;
+    padding: max(1.65rem, calc(0.35rem + env(safe-area-inset-top, 0px)))
+      max(0.75rem, env(safe-area-inset-right, 0px))
+      max(1rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))
+      max(0.75rem, env(safe-area-inset-left, 0px));
+    overflow: hidden;
+    overflow-y: hidden;
+    overscroll-behavior: contain;
+  }
+
+  .game-modal.chest-modal .game-modal__panel .modal-close {
+    right: max(0.5rem, env(safe-area-inset-right, 0px));
+    top: max(0.5rem, env(safe-area-inset-top, 0px));
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+  }
+
+  .game-modal.chest-modal .game-modal__title {
+    margin-bottom: 0.45rem;
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  .game-modal.chest-modal .game-modal__scene {
+    flex-shrink: 0;
+    aspect-ratio: 2.15 / 1;
+    max-height: min(20vh, 128px);
+    margin-bottom: 0.45rem;
+  }
+
+  .game-modal.chest-modal .chest-modal__scene--cooldown {
+    aspect-ratio: auto;
+    max-height: min(20vh, 128px);
+    margin-bottom: 0.35rem;
+    background: transparent;
+  }
+
+  .game-modal.chest-modal .chest-modal__scene--energy {
+    aspect-ratio: auto;
+    max-height: min(20vh, 128px);
+    margin-bottom: 0.4rem;
+    background: transparent;
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .chest-modal__hurry {
+    margin-top: auto;
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .energy-modal__dismiss {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+
+  .game-modal.chest-modal .chest-modal__cooldown-hero {
+    flex-shrink: 0;
+    margin-bottom: 0.4rem;
+  }
+
+  .game-modal.chest-modal .chest-modal__cooldown-label {
+    font-size: 0.9rem;
+  }
+
+  .game-modal.chest-modal .chest-modal__cooldown-time {
+    font-size: 1.45rem;
+  }
+
+  .chest-modal__frame-wrap {
+    width: min(34vw, 112px);
+  }
+
+  .chest-modal__loot-text {
+    margin: 0 0 0.4rem;
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+
+  .chest-modal__timer {
+    margin: 0 0 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .chest-modal__drops-section {
+    flex: 0 1 auto;
+    min-height: 0;
+    margin: 0.3rem 0 0.35rem;
+    padding: 0.4rem 0.55rem;
+    overflow: hidden;
+  }
+
+  .chest-modal__drops-toggle {
+    margin: 0;
+    min-height: 44px;
+    font-size: 0.8rem;
+  }
+
+  .chest-modal__drops {
+    max-height: min(28vh, 180px);
+  }
+
+  .chest-modal__take,
+  .chest-modal__hurry {
+    flex-shrink: 0;
+    width: min(100%, 320px);
+    max-width: 320px;
+    margin-inline: auto;
+    margin-top: 0.5rem;
+  }
+
+  .chest-modal__take {
+    margin-top: auto;
+    margin-bottom: 0.15rem;
+  }
+
+  .chest-modal__hurry {
+    margin-bottom: 0.35rem;
   }
 }
 
@@ -753,7 +883,7 @@ body {
 }
 
 .profile-modal__preview-stage--night::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: rgba(15, 20, 45, 0.45);
@@ -915,6 +1045,8 @@ body {
 .profile-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  grid-auto-rows: auto;
+  align-items: start;
   gap: 0.5rem;
   flex: 1 1 auto;
   min-height: 200px;
@@ -949,11 +1081,18 @@ body {
 .profile-grid__cell--izba,
 .profile-grid__cell--window,
 .profile-grid__cell--brownie {
-  aspect-ratio: 1;
-  min-height: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 0;
   padding: 0;
+  padding-top: 100%;
+  align-self: start;
+  justify-self: stretch;
+  min-height: 0;
   overflow: hidden;
 }
+
+/* ::before на <button> не даёт in-flow высоту в grid — только padding-top */
 
 /* Арт строго внутри рамки: inset 16% ≈ толщина frame PNG */
 .profile-grid__cell--cat .profile-grid__thumb,
@@ -968,6 +1107,7 @@ body {
   object-fit: cover;
   object-position: center center;
   display: block;
+  z-index: 0;
 }
 
 .profile-grid__cell--cat .profile-grid__thumb {
@@ -998,18 +1138,44 @@ body {
   height: 100%;
   pointer-events: none;
   object-fit: contain;
+  z-index: 1;
 }
 
 .profile-grid__title {
   display: block;
+  max-width: 100%;
   font-size: 0.7rem;
   line-height: 1.2;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-word;
 }
 
 .profile-grid__meta {
   display: block;
+  max-width: 100%;
   font-size: 0.65rem;
   opacity: 0.7;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Титулы, атмосфера (текст), питомцы — in-flow, не padding-top квадрат */
+.profile-grid__cell:not(.profile-grid__cell--cat):not(
+    .profile-grid__cell--izba
+  ):not(.profile-grid__cell--window):not(.profile-grid__cell--brownie) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 3.25rem;
+  padding: 0.3rem 0.2rem;
+  text-align: center;
+  overflow: hidden;
 }
 
 /* --- Суседко-вор --- */
@@ -1109,7 +1275,7 @@ body {
 
 /* --- Ночь --- */
 
-.izba-scene__inner>.layer-night {
+.izba-scene__inner > .layer-night {
   position: absolute;
   inset: 0;
   width: 300vw;
@@ -1138,7 +1304,7 @@ body {
 }
 
 .izba-scene--effect-thunder .layer-izba-fx::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1155,7 +1321,7 @@ body {
 }
 
 .profile-modal__preview-stage--izba-fx.izba-scene--effect-thunder::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1175,7 +1341,7 @@ body {
 }
 
 .profile-modal__preview-stage--izba-fx.izba-scene--effect-fog::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1190,7 +1356,7 @@ body {
 
 .profile-modal__preview-stage--izba-fx.izba-scene--effect-firefly::before,
 .profile-modal__preview-stage--izba-fx.izba-scene--effect-firefly::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0.45rem;
   height: 0.45rem;
@@ -1218,7 +1384,7 @@ body {
 }
 
 .profile-modal__preview-stage--izba-fx.izba-scene--effect-ball-lightning::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 38%;
   bottom: 32%;
@@ -1242,7 +1408,7 @@ body {
 }
 
 .profile-modal__preview-stage--izba-fx.izba-scene--effect-stars::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1255,7 +1421,7 @@ body {
 }
 
 .profile-modal__preview-stage--izba-fx.izba-scene--effect-stars::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 11%;
   top: 9%;
@@ -1322,7 +1488,7 @@ body {
 }
 
 .izba-scene--effect-fog .layer-izba-fx::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -1609,7 +1775,7 @@ body {
 }
 
 .scene-pet--interactive::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -0.75rem;
   z-index: -1;
@@ -1668,7 +1834,12 @@ body {
 }
 
 .scene-pet--firebird {
-  background: radial-gradient(circle at 40% 35%, #ffe566 0%, #ff8c32 45%, #c44b12 100%);
+  background: radial-gradient(
+    circle at 40% 35%,
+    #ffe566 0%,
+    #ff8c32 45%,
+    #c44b12 100%
+  );
   box-shadow: 0 0 12px rgba(255, 160, 60, 0.55);
 }
 
@@ -1759,7 +1930,7 @@ body {
 
 .profile-grid__pet-silhouette--icon.scene-pet--griffin::before,
 .profile-grid__pet-silhouette--icon.scene-pet--griffin::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0.15rem;
   width: 0.85rem;
@@ -1785,7 +1956,7 @@ body {
 }
 
 .profile-grid__pet-silhouette--icon.scene-pet--humpback::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -0.45rem;
   left: 28%;
@@ -1802,7 +1973,7 @@ body {
 }
 
 .profile-grid__pet-silhouette--icon.scene-pet--firebird::after {
-  content: '';
+  content: "";
   position: absolute;
   right: -0.25rem;
   bottom: 0.35rem;
@@ -1815,7 +1986,7 @@ body {
 
 .profile-modal__preview-pet--icon.scene-pet--griffin::before,
 .profile-modal__preview-pet--icon.scene-pet--griffin::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 8%;
   width: 38%;
@@ -1835,7 +2006,7 @@ body {
 }
 
 .profile-modal__preview-pet--icon.scene-pet--humpback::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -22%;
   left: 22%;
@@ -1846,7 +2017,7 @@ body {
 }
 
 .profile-modal__preview-pet--icon.scene-pet--firebird::after {
-  content: '';
+  content: "";
   position: absolute;
   right: -12%;
   bottom: 18%;
@@ -2178,7 +2349,6 @@ button.hud-stat:hover {
 }
 
 @keyframes hud-coins-steal-pulse {
-
   0%,
   100% {
     box-shadow: 0 0 0 2px rgba(200, 48, 48, 0.55);
@@ -2568,7 +2738,6 @@ button.hud-stat:hover {
 }
 
 @keyframes tutorial-pulse {
-
   0%,
   100% {
     transform: translateX(-50%) scale(1);
@@ -2632,7 +2801,10 @@ button.hud-stat:hover {
   padding: 0;
   --book-open-aspect: 1.248;
   --book-stage-max-w: min(94vw, 920px);
-  --book-stage-h: min(82vh, calc(var(--book-stage-max-w) / var(--book-open-aspect)));
+  --book-stage-h: min(
+    82vh,
+    calc(var(--book-stage-max-w) / var(--book-open-aspect))
+  );
 }
 
 .book-flight {
@@ -2661,8 +2833,8 @@ button.hud-stat:hover {
   width: var(--book-stage-max-w);
   height: var(--book-stage-h);
   flex-shrink: 0;
-  filter:
-    drop-shadow(0 22px 34px rgba(32, 18, 10, 0.34)) drop-shadow(0 8px 14px rgba(32, 18, 10, 0.2));
+  filter: drop-shadow(0 22px 34px rgba(32, 18, 10, 0.34))
+    drop-shadow(0 8px 14px rgba(32, 18, 10, 0.2));
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
@@ -2739,8 +2911,8 @@ button.hud-stat:hover {
 }
 
 .book-modal__progress-bead--active {
-  filter:
-    drop-shadow(0 0 3px rgba(201, 160, 32, 0.95)) drop-shadow(0 0 8px rgba(255, 210, 80, 0.65));
+  filter: drop-shadow(0 0 3px rgba(201, 160, 32, 0.95))
+    drop-shadow(0 0 8px rgba(255, 210, 80, 0.65));
   animation: book-idle 2s ease-in-out infinite;
 }
 
@@ -2751,7 +2923,7 @@ button.hud-stat:hover {
   transform: translateY(-50%);
   font-size: 0.85rem;
   color: #c9a020;
-  font-family: Georgia, 'Palatino Linotype', 'Times New Roman', serif;
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -2970,7 +3142,7 @@ button.hud-stat:hover {
 
 .book-page__name {
   margin: 0 0 0.65rem;
-  font-family: Georgia, 'Palatino Linotype', 'Times New Roman', serif;
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
   font-size: clamp(1.45rem, 2.2vw, 1.8rem);
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -2982,13 +3154,19 @@ button.hud-stat:hover {
 }
 
 .book-page__name::after {
-  content: '';
+  content: "";
   display: block;
   width: 55%;
   height: 2px;
   margin-top: 0.35rem;
   margin-inline: auto;
-  background: linear-gradient(90deg, transparent, #c9a020 20%, #c9a020 80%, transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #c9a020 20%,
+    #c9a020 80%,
+    transparent
+  );
   opacity: 0.75;
 }
 
@@ -3029,7 +3207,7 @@ button.hud-stat:hover {
 .book-page__study-hint {
   margin: 0 0 0.5rem;
   max-width: 90%;
-  font-family: Georgia, 'Palatino Linotype', 'Times New Roman', serif;
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
   font-size: 0.95rem;
   line-height: 1.52;
   text-wrap: balance;
@@ -3079,8 +3257,8 @@ button.hud-stat:hover {
   min-width: 0;
 }
 
-.book-page__quest-btn-label  {
-  font-family: Georgia, 'Palatino Linotype', 'Times New Roman', serif;
+.book-page__quest-btn-label {
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
   font-size: clamp(1rem, 1.35vw, 2rem);
   font-weight: 700;
   padding-left: 5%;
@@ -3089,7 +3267,9 @@ button.hud-stat:hover {
   line-height: 1;
   white-space: nowrap;
   text-align: center;
-  text-shadow: 0 1px 0 rgba(84, 44, 16, 0.95), 0 2px 4px rgba(0, 0, 0, 0.42);
+  text-shadow:
+    0 1px 0 rgba(84, 44, 16, 0.95),
+    0 2px 4px rgba(0, 0, 0, 0.42);
 }
 
 .book-page__quest-btn:disabled {
@@ -3301,7 +3481,6 @@ button.hud-stat:hover {
 }
 
 @media (max-height: 500px) and (orientation: landscape) {
-
   .book-page__description,
   .book-page__reward {
     font-size: 0.82rem;
@@ -3418,29 +3597,39 @@ button.hud-stat:hover {
 @media (max-width: 700px) {
   .quiz.layer-modal {
     align-items: stretch;
-    justify-content: flex-start;
-    padding:
-      max(0.4rem, env(safe-area-inset-top))
+    justify-content: stretch;
+    padding: max(0.4rem, env(safe-area-inset-top))
       max(0.4rem, env(safe-area-inset-right))
       max(0.4rem, env(safe-area-inset-bottom))
       max(0.4rem, env(safe-area-inset-left));
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
+    height: 100dvh;
+    max-height: 100dvh;
   }
 
   .quiz-panel {
-    width: 100%;
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 520px);
     max-height: none;
-    margin: 0;
-    padding: 0.75rem 0.85rem;
+    flex: 1 1 auto;
+    min-height: 0;
+    margin: auto;
+    padding: 0.65rem 0.75rem;
+    overflow: hidden;
   }
 
   .quiz-question {
     margin: 0.55rem 0;
     font-size: 0.88rem;
+    flex-shrink: 0;
   }
 
   .quiz-answers {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     gap: 8px;
   }
 
@@ -3592,7 +3781,6 @@ button.hud-stat:hover {
 }
 
 @keyframes quiz-shake {
-
   0%,
   100% {
     transform: translateX(0);
@@ -3866,7 +4054,11 @@ button.hud-stat:hover {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--chest-fx-color, #ffd56a) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    var(--chest-fx-color, #ffd56a) 0%,
+    transparent 70%
+  );
   animation: chest-loot-burst 1.1s ease-out forwards;
 }
 
@@ -3894,20 +4086,77 @@ button.hud-stat:hover {
   opacity: 0.5;
 }
 
-.chest-loot-fx__particle:nth-child(1) { animation-delay: 0s; transform: translate(-50%, -50%); --chest-burst-x: -42px; --chest-burst-y: -38px; }
-.chest-loot-fx__particle:nth-child(2) { animation-delay: 0.04s; --chest-burst-x: 38px; --chest-burst-y: -44px; }
-.chest-loot-fx__particle:nth-child(3) { animation-delay: 0.08s; --chest-burst-x: -28px; --chest-burst-y: 42px; }
-.chest-loot-fx__particle:nth-child(4) { animation-delay: 0.02s; --chest-burst-x: 46px; --chest-burst-y: 28px; }
-.chest-loot-fx__particle:nth-child(5) { animation-delay: 0.06s; --chest-burst-x: -52px; --chest-burst-y: 8px; }
-.chest-loot-fx__particle:nth-child(6) { animation-delay: 0.1s; --chest-burst-x: 12px; --chest-burst-y: -52px; }
-.chest-loot-fx__particle:nth-child(7) { animation-delay: 0.12s; --chest-burst-x: -8px; --chest-burst-y: 48px; }
-.chest-loot-fx__particle:nth-child(8) { animation-delay: 0.05s; --chest-burst-x: 52px; --chest-burst-y: -8px; }
-.chest-loot-fx__particle:nth-child(9) { animation-delay: 0.14s; --chest-burst-x: -36px; --chest-burst-y: -18px; }
-.chest-loot-fx__particle:nth-child(10) { animation-delay: 0.07s; --chest-burst-x: 28px; --chest-burst-y: 46px; }
-.chest-loot-fx__particle:nth-child(11) { animation-delay: 0.09s; --chest-burst-x: -18px; --chest-burst-y: -48px; }
-.chest-loot-fx__particle:nth-child(12) { animation-delay: 0.11s; --chest-burst-x: 44px; --chest-burst-y: 14px; }
-.chest-loot-fx__particle:nth-child(13) { animation-delay: 0.03s; --chest-burst-x: -46px; --chest-burst-y: 32px; }
-.chest-loot-fx__particle:nth-child(14) { animation-delay: 0.13s; --chest-burst-x: 6px; --chest-burst-y: 52px; }
+.chest-loot-fx__particle:nth-child(1) {
+  animation-delay: 0s;
+  transform: translate(-50%, -50%);
+  --chest-burst-x: -42px;
+  --chest-burst-y: -38px;
+}
+.chest-loot-fx__particle:nth-child(2) {
+  animation-delay: 0.04s;
+  --chest-burst-x: 38px;
+  --chest-burst-y: -44px;
+}
+.chest-loot-fx__particle:nth-child(3) {
+  animation-delay: 0.08s;
+  --chest-burst-x: -28px;
+  --chest-burst-y: 42px;
+}
+.chest-loot-fx__particle:nth-child(4) {
+  animation-delay: 0.02s;
+  --chest-burst-x: 46px;
+  --chest-burst-y: 28px;
+}
+.chest-loot-fx__particle:nth-child(5) {
+  animation-delay: 0.06s;
+  --chest-burst-x: -52px;
+  --chest-burst-y: 8px;
+}
+.chest-loot-fx__particle:nth-child(6) {
+  animation-delay: 0.1s;
+  --chest-burst-x: 12px;
+  --chest-burst-y: -52px;
+}
+.chest-loot-fx__particle:nth-child(7) {
+  animation-delay: 0.12s;
+  --chest-burst-x: -8px;
+  --chest-burst-y: 48px;
+}
+.chest-loot-fx__particle:nth-child(8) {
+  animation-delay: 0.05s;
+  --chest-burst-x: 52px;
+  --chest-burst-y: -8px;
+}
+.chest-loot-fx__particle:nth-child(9) {
+  animation-delay: 0.14s;
+  --chest-burst-x: -36px;
+  --chest-burst-y: -18px;
+}
+.chest-loot-fx__particle:nth-child(10) {
+  animation-delay: 0.07s;
+  --chest-burst-x: 28px;
+  --chest-burst-y: 46px;
+}
+.chest-loot-fx__particle:nth-child(11) {
+  animation-delay: 0.09s;
+  --chest-burst-x: -18px;
+  --chest-burst-y: -48px;
+}
+.chest-loot-fx__particle:nth-child(12) {
+  animation-delay: 0.11s;
+  --chest-burst-x: 44px;
+  --chest-burst-y: 14px;
+}
+.chest-loot-fx__particle:nth-child(13) {
+  animation-delay: 0.03s;
+  --chest-burst-x: -46px;
+  --chest-burst-y: 32px;
+}
+.chest-loot-fx__particle:nth-child(14) {
+  animation-delay: 0.13s;
+  --chest-burst-x: 6px;
+  --chest-burst-y: 52px;
+}
 
 @keyframes chest-loot-burst {
   0% {
@@ -3920,7 +4169,11 @@ button.hud-stat:hover {
   }
 
   100% {
-    transform: translate(calc(-50% + var(--chest-burst-x, 0px)), calc(-50% + var(--chest-burst-y, -40px))) scale(1.6);
+    transform: translate(
+        calc(-50% + var(--chest-burst-x, 0px)),
+        calc(-50% + var(--chest-burst-y, -40px))
+      )
+      scale(1.6);
     opacity: 0;
   }
 }
@@ -3945,6 +4198,95 @@ button.hud-stat:hover {
 
 .chest-modal--cooldown .chest-modal__scene {
   opacity: 0.85;
+}
+
+.chest-modal__scene--cooldown {
+  aspect-ratio: auto;
+  max-height: min(20vh, 128px);
+  min-height: 0;
+  margin-bottom: 0.35rem;
+  background: transparent;
+}
+
+.chest-modal__scene--cooldown .chest-modal__chest-closed {
+  width: min(36vw, 120px);
+}
+
+/* --- Energy rewarded modal (cat tired) --- */
+
+.chest-modal__scene--energy {
+  aspect-ratio: auto;
+  max-height: min(22vh, 140px);
+  min-height: 0;
+  margin-bottom: 0.5rem;
+  background: transparent;
+  position: relative;
+}
+
+.energy-modal__cat {
+  display: block;
+  width: min(42vw, 132px);
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.energy-modal__bonus {
+  position: absolute;
+  right: max(8%, 0.5rem);
+  bottom: 0.15rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.45rem 0.2rem 0.35rem;
+  border-radius: 999px;
+  background: rgba(28, 20, 14, 0.78);
+  border: 1px solid rgba(240, 193, 74, 0.45);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.energy-modal__bonus-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.energy-modal__bonus-amount {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f0c14a;
+  line-height: 1;
+}
+
+.energy-modal__pitch {
+  /* max-width: 22rem; */
+  margin-inline: auto;
+}
+
+.energy-modal__dismiss {
+  margin-top: 0.15rem;
+  margin-bottom: 0;
+}
+
+.chest-modal__cooldown-hero {
+  margin: 0 0 0.5rem;
+  text-align: center;
+}
+
+.chest-modal__cooldown-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.9rem;
+  line-height: 1.3;
+  opacity: 0.92;
+  color: #f5f0e8;
+}
+
+.chest-modal__cooldown-time {
+  margin: 0;
+  font-size: 1.45rem;
+  line-height: 1.2;
 }
 
 .chest-modal__title {
@@ -4103,7 +4445,7 @@ button.hud-stat:hover {
 }
 
 .scene-brownie--interactive::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -1.25rem;
   min-width: 3.5rem;
@@ -4123,7 +4465,6 @@ button.hud-stat:hover {
 }
 
 @keyframes brownie-bob {
-
   0%,
   100% {
     transform: translateY(0);
@@ -4145,8 +4486,14 @@ button.hud-stat:hover {
   transform-origin: bottom center;
 }
 
-@keyframes cat-breath {
+.scene-cat--tired.scene-sprite--interactive::before {
+  content: "";
+  position: absolute;
+  inset: -1.25rem;
+  z-index: -1;
+}
 
+@keyframes cat-breath {
   0%,
   100% {
     transform: translateY(0);
@@ -4158,7 +4505,6 @@ button.hud-stat:hover {
 }
 
 @keyframes cat-sleep-bob {
-
   0%,
   100% {
     transform: translateY(0);
@@ -4197,7 +4543,6 @@ button.hud-stat:hover {
 }
 
 @keyframes cat-zzz-float {
-
   0%,
   100% {
     transform: translateY(0);
@@ -4232,7 +4577,6 @@ button.hud-stat:hover {
 }
 
 @keyframes daily-find-pulse {
-
   0%,
   100% {
     transform: translateX(-50%) scale(1);
@@ -4445,13 +4789,17 @@ button.hud-stat:hover {
   padding: 0 0.15em;
   transform: translate(-50%, -50%);
   text-align: center;
-  font-family: Georgia, 'Palatino Linotype', 'Times New Roman', serif;
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
   font-size: clamp(0.82rem, 2.1vw, 1.2rem);
   font-weight: 600;
   line-height: 1.3;
   letter-spacing: 0.02em;
   color: rgb(214 209 205 / 94%);
-  text-shadow: 0 0 10px rgba(255, 250, 240, 0.95), 0 0 20px rgba(235, 220, 200, 0.85), 0 0 34px rgba(200, 185, 165, 0.55), 0 1px 0 rgba(255, 255, 255, 0.35);
+  text-shadow:
+    0 0 10px rgba(255, 250, 240, 0.95),
+    0 0 20px rgba(235, 220, 200, 0.85),
+    0 0 34px rgba(200, 185, 165, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.35);
   pointer-events: none;
   z-index: 3;
   animation: scene-mirror-hint-smoke 5s ease-in-out infinite;
@@ -4497,7 +4845,7 @@ button.hud-stat:hover {
 .scene-mirror--locked::after,
 .scene-mirror--fx-tune::before,
 .scene-mirror--fx-tune::after {
-  content: '';
+  content: "";
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
@@ -4902,7 +5250,7 @@ button.hud-stat:hover {
 }
 
 /* Окно ниже на отдельных скинах избы (PNG с другим кадрированием) */
-.izba-room[data-izba-skin='hut_harmony'] .window-aperture__ambient-hit {
+.izba-room[data-izba-skin="hut_harmony"] .window-aperture__ambient-hit {
   left: 40%;
   top: 38%;
   width: 20%;
@@ -4915,13 +5263,14 @@ button.hud-stat:hover {
   filter: drop-shadow(0 0 10px rgba(240, 193, 74, 0.65));
 }
 
-.scene-chest-wrap__sprite.scene-chest--ready.scene-chest-miracle--glow .scene-sprite__img {
+.scene-chest-wrap__sprite.scene-chest--ready.scene-chest-miracle--glow
+  .scene-sprite__img {
   animation: chest-miracle-ready-glow 1.8s ease-in-out infinite;
-  filter: hue-rotate(260deg) saturate(1.4) drop-shadow(0 0 10px rgba(180, 100, 255, 0.65));
+  filter: hue-rotate(260deg) saturate(1.4)
+    drop-shadow(0 0 10px rgba(180, 100, 255, 0.65));
 }
 
 @keyframes chest-ready-glow {
-
   0%,
   100% {
     filter: drop-shadow(0 0 6px rgba(240, 193, 74, 0.45));
@@ -4933,14 +5282,15 @@ button.hud-stat:hover {
 }
 
 @keyframes chest-miracle-ready-glow {
-
   0%,
   100% {
-    filter: hue-rotate(260deg) saturate(1.4) drop-shadow(0 0 6px rgba(180, 100, 255, 0.45));
+    filter: hue-rotate(260deg) saturate(1.4)
+      drop-shadow(0 0 6px rgba(180, 100, 255, 0.45));
   }
 
   50% {
-    filter: hue-rotate(260deg) saturate(1.4) drop-shadow(0 0 14px rgba(180, 100, 255, 0.85));
+    filter: hue-rotate(260deg) saturate(1.4)
+      drop-shadow(0 0 14px rgba(180, 100, 255, 0.85));
   }
 }
 
@@ -4949,23 +5299,29 @@ button.hud-stat:hover {
 }
 
 .izba-scene--night .scene-stove::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 30%;
   bottom: 35%;
   width: 40%;
   height: 35%;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 120, 40, 0.35) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 120, 40, 0.35) 0%,
+    transparent 70%
+  );
   pointer-events: none;
 }
 
-.izba-scene[data-room='2'] .window-aperture__forest {
+.izba-scene[data-room="2"] .window-aperture__forest {
   transform: translateY(-50%) translateX(-3vw);
   transition: transform 0.45s ease-out;
 }
 
-.izba-scene[data-room='2'] .window-aperture[data-window-skin='landscape_cyber_city'] .window-aperture__forest {
+.izba-scene[data-room="2"]
+  .window-aperture[data-window-skin="landscape_cyber_city"]
+  .window-aperture__forest {
   transform: translateY(-72%) translateX(-3vw);
 }
 
@@ -4997,7 +5353,6 @@ button.hud-stat:hover {
 }
 
 @keyframes quiz-correct-flash {
-
   0%,
   100% {
     box-shadow: 0 0 0 2px #4a7c59;
@@ -5013,7 +5368,6 @@ button.hud-stat:hover {
 }
 
 @keyframes quiz-shield-flash {
-
   0%,
   100% {
     box-shadow: 0 0 0 0 rgba(240, 193, 74, 0);
@@ -5109,7 +5463,6 @@ button.hud-stat:hover {
 }
 
 @keyframes book-folktale-shimmer {
-
   0%,
   100% {
     filter: brightness(1);
@@ -5159,7 +5512,6 @@ button.hud-stat:hover {
 }
 
 @keyframes book-cta-pulse {
-
   0%,
   100% {
     filter: brightness(1);
@@ -5189,7 +5541,6 @@ button.hud-stat:hover {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   .scene-cat--sit .scene-sprite__img,
   .scene-cat--sleep .scene-sprite__img,
   .scene-brownie__img,
@@ -5213,12 +5564,14 @@ button.hud-stat:hover {
     transform: none !important;
   }
 
-  .izba-scene[data-room='2'] .window-aperture__forest {
+  .izba-scene[data-room="2"] .window-aperture__forest {
     transition: none;
     transform: translateY(-50%);
   }
 
-  .izba-scene[data-room='2'] .window-aperture[data-window-skin='landscape_cyber_city'] .window-aperture__forest {
+  .izba-scene[data-room="2"]
+    .window-aperture[data-window-skin="landscape_cyber_city"]
+    .window-aperture__forest {
     transform: translateY(-72%);
   }
 }
@@ -5317,7 +5670,7 @@ button.hud-stat:hover {
 .hud-rail__offer::before,
 .hud-rail__kikimora::before,
 .hud-rail__yaga-shop::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -8px;
   min-width: 56px;
@@ -5397,11 +5750,20 @@ button.hud-stat:hover {
   white-space: nowrap;
   pointer-events: none;
 }
-
+@media (max-width: 1000px) {
+  .hud-rail {
+    left: 21vw;
+    top: 2vh;
+    max-width: 22vw;
+    gap: 8px;
+    flex-direction: row;
+  }
+}
 @media (max-width: 767px) {
   /* Панель ежедневки занимает левый верх. Рельс ниже неё, иначе «Дар путника» накрывает её и лавку. */
   .hud-rail {
-    top: calc(max(8px, env(safe-area-inset-top)) + 292px);
+    left: 21vw;
+    top: 2vh;
     max-width: 22vw;
     gap: 8px;
   }
@@ -5476,14 +5838,16 @@ button.hud-stat:hover {
   justify-content: center;
   padding-left: 25%;
   padding-right: 8%;
-  font-family: Georgia, 'Palatino Linotype', 'Times New Roman', serif;
+  font-family: Georgia, "Palatino Linotype", "Times New Roman", serif;
   font-size: clamp(0.78rem, 2.4vw, 0.95rem);
   font-weight: 700;
   letter-spacing: 0.02em;
   color: #c9a020;
   line-height: 1;
   white-space: nowrap;
-  text-shadow: 0 1px 0 rgba(84, 44, 16, 0.95), 0 2px 4px rgba(0, 0, 0, 0.42);
+  text-shadow:
+    0 1px 0 rgba(84, 44, 16, 0.95),
+    0 2px 4px rgba(0, 0, 0, 0.42);
 }
 
 .chest-modal__hurry .wood-quest-btn__label {
@@ -5600,11 +5964,12 @@ button.hud-stat:hover {
   list-style: none;
   padding: 0;
   margin: 0.65rem auto;
-  display: grid;
+  display: flex;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.5rem;
   max-width: 300px;
   width: 100%;
+  justify-content: center;
 }
 
 .starter-pack-modal__rewards li {
@@ -5679,13 +6044,51 @@ button.hud-stat:hover {
   position: relative;
   z-index: 1;
   pointer-events: auto;
+  display: flex;
+  flex-direction: column;
   max-width: 480px;
   width: 94vw;
+  min-height: 0;
   padding: 1rem 1.25rem 1.25rem;
   border-radius: 16px;
   background: rgba(28, 20, 14, 0.82);
   backdrop-filter: blur(8px);
   color: #f5f0e8;
+}
+
+.kikimora-craft-modal__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.kikimora-craft-modal__main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  width: 100%;
+}
+
+.kikimora-craft-modal__hint {
+  margin: 0 0 0.5rem;
+  font-size: 0.88rem;
+  line-height: 1.38;
+  text-align: center;
+  opacity: 0.92;
+}
+
+.kikimora-craft-modal__count {
+  margin-left: 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.kikimora-craft-modal__cta {
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .kikimora-craft-modal__scene {
@@ -5779,26 +6182,44 @@ button.hud-stat:hover {
 }
 
 .kikimora-craft-modal__craft {
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 /* --- Мобильный landscape — модалки (см. instruction/design/mobile_modals_landscape.md) --- */
 
 @media (orientation: landscape) and (max-height: 520px) {
-  .layer-modal {
+  .layer-modal:not(.profile-modal):not(.quiz):not(.game-modal.chest-modal):not(
+      .kikimora-craft-modal
+    ) {
     align-items: flex-start;
     justify-content: center;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding:
-      max(0.35rem, env(safe-area-inset-top))
+    padding: max(0.35rem, env(safe-area-inset-top))
       max(0.5rem, env(safe-area-inset-right))
       max(0.35rem, env(safe-area-inset-bottom))
       max(0.5rem, env(safe-area-inset-left));
   }
 
-  .game-modal__panel,
+  .profile-modal.layer-modal,
+  .game-modal.chest-modal.layer-modal,
+  .kikimora-craft-modal.layer-modal,
+  .quiz.layer-modal {
+    overflow: hidden;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+
+  .kikimora-craft-modal.layer-modal {
+    padding: 0;
+  }
+
+  .game-modal.chest-modal.layer-modal {
+    padding: 0;
+  }
+
+  .game-modal__panel:not(.chest-modal__panel),
   .game-modal__panel--wide {
     max-height: none;
     min-height: 0;
@@ -5815,7 +6236,7 @@ button.hud-stat:hover {
     line-height: 1.25;
   }
 
-  .game-modal__scene {
+  .game-modal__scene:not(.chest-modal__scene) {
     aspect-ratio: 2.1 / 1;
     max-height: 26vh;
     margin-bottom: 0.5rem;
@@ -5827,51 +6248,6 @@ button.hud-stat:hover {
 
   .chest-modal__chest-closed {
     width: min(28vw, 100px);
-  }
-
-  /* Профиль: одна колонка, без вложенного скролла сетки */
-  .profile-modal__layout {
-    grid-template-columns: 1fr;
-    gap: 0.65rem;
-  }
-
-  .profile-modal__preview {
-    min-height: 0;
-    padding: 0.5rem;
-  }
-
-  .profile-modal__preview-stage {
-    height: 108px;
-    min-height: 88px;
-  }
-
-  .profile-modal__preview-name,
-  .profile-modal__bonus-line {
-    font-size: 0.76rem;
-  }
-
-  .profile-modal__main {
-    min-height: 0;
-    overflow: visible;
-  }
-
-  .profile-tabs__btn {
-    font-size: 0.66rem;
-    min-height: 40px;
-    padding: 0.25rem 0.3rem;
-  }
-
-  .profile-grid {
-    min-height: 0;
-    max-height: none;
-    overflow-y: visible;
-    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
-    gap: 0.4rem;
-  }
-
-  .profile-stats__label,
-  .profile-stats__value {
-    font-size: 0.76rem;
   }
 
   /* Викторина */
@@ -5898,7 +6274,7 @@ button.hud-stat:hover {
 
   .quiz.layer-modal .quiz-panel {
     padding: 0.65rem 0.85rem;
-    max-height: min(70vh, 100%);
+    max-height: 85vh;
   }
 
   .quiz.layer-modal .quiz-header h2 {
@@ -6072,5 +6448,607 @@ button.hud-stat:hover {
     max-height: none;
     padding: 0.85rem;
     font-size: 0.88rem;
+  }
+}
+
+/* Профиль на телефоне: 30% превью слева, вкладки компактно справа, скролл только сетки */
+
+@media (max-width: 640px), (orientation: landscape) and (max-height: 520px) {
+  .profile-modal.layer-modal {
+    align-items: stretch;
+    justify-content: center;
+    overflow: hidden;
+    padding: max(0.25rem, env(safe-area-inset-top, 0px))
+      max(0.25rem, env(safe-area-inset-right, 0px))
+      max(0.25rem, env(safe-area-inset-bottom, 0px))
+      max(0.25rem, env(safe-area-inset-left, 0px));
+  }
+
+  .profile-modal.layer-modal .game-modal__panel--wide {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    min-height: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: max(1.85rem, calc(0.35rem + env(safe-area-inset-top, 0px))) 0.45rem
+      max(0.45rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .profile-modal__heading {
+    flex: 0 0 auto;
+    margin: 0 0 0.35rem;
+    font-size: 0.92rem;
+    line-height: 1.2;
+  }
+
+  .profile-modal__layout {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: 30% minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 0.35rem;
+    align-items: stretch;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .profile-modal__preview {
+    min-height: 0;
+    max-height: none;
+    height: 100%;
+    padding: 0.3rem;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    text-align: center;
+  }
+
+  .profile-modal__preview-stage {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 3.5rem;
+    max-height: min(42vh, 220px);
+  }
+
+  .profile-modal__preview-name {
+    margin: 0.25rem 0 0;
+    font-size: 0.68rem;
+    line-height: 1.25;
+  }
+
+  .profile-modal__bonus-desc {
+    margin: 0 0 0.25rem;
+  }
+
+  .profile-modal__bonus-line {
+    font-size: 0.62rem;
+    line-height: 1.25;
+  }
+
+  .profile-modal__equipped,
+  .profile-modal__locked {
+    font-size: 0.72rem;
+    min-height: 0;
+    margin: 0.25rem 0 0;
+  }
+
+  .profile-modal__acquire-hint {
+    max-width: none;
+    font-size: 0.62rem;
+    line-height: 1.3;
+  }
+
+  .profile-modal__equip .wood-quest-btn,
+  .profile-modal__equip {
+    width: 100%;
+    max-width: none;
+    margin: 0.25rem 0 0;
+  }
+
+  .profile-modal__main {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .profile-tabs {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.15rem;
+    margin: 0 0 0.25rem;
+    width: 100%;
+    max-width: 100%;
+    justify-items: stretch;
+  }
+
+  .profile-tabs__btn {
+    min-height: 30px;
+    min-width: 0;
+    padding: 0.08rem 0.06rem;
+    font-size: 0.58rem;
+    line-height: 1.05;
+    border-radius: 5px;
+  }
+
+  .profile-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: auto;
+    align-items: start;
+    align-content: start;
+    gap: 0.35rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .profile-grid--text {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .profile-grid__cell--cat,
+  .profile-grid__cell--izba,
+  .profile-grid__cell--window,
+  .profile-grid__cell--brownie {
+    width: 100%;
+    align-self: start;
+    min-height: 0;
+  }
+
+  .profile-grid__cell:not(.profile-grid__cell--cat):not(
+      .profile-grid__cell--izba
+    ):not(.profile-grid__cell--window):not(.profile-grid__cell--brownie) {
+    min-height: 2.75rem;
+    padding: 0.22rem 0.15rem;
+  }
+
+  .profile-grid__title {
+    font-size: 0.58rem;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .profile-grid__meta {
+    font-size: 0.52rem;
+  }
+
+  .profile-grid__cell--pet,
+  .profile-grid__cell--atmosphere {
+    min-height: 56px;
+  }
+
+  .profile-stats__label,
+  .profile-stats__value {
+    font-size: 0.72rem;
+  }
+
+  /* Сундук mobile — full-bleed; landscape grid — отдельный @media в конце index.css */
+  .game-modal.chest-modal.layer-modal {
+    padding: 0;
+  }
+
+  .game-modal.chest-modal .game-modal__panel {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: minmax(6.5rem, 34vw) minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    gap: 5%;
+    align-content: center;
+    width: 90%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    overflow-y: hidden;
+    text-align: left;
+    padding: max(1.35rem, calc(0.35rem + env(safe-area-inset-top, 0px)))
+      max(0.65rem, env(safe-area-inset-right, 0px))
+      max(0.65rem, calc(0.35rem + env(safe-area-inset-bottom, 0px)))
+      max(0.65rem, env(safe-area-inset-left, 0px));
+    align-items: center;
+    justify-content: center;
+  }
+
+  .game-modal.chest-modal .game-modal__scene {
+    max-height: min(20vh, 128px);
+  }
+
+  .chest-modal__take {
+    margin-top: auto;
+  }
+
+  .game-modal.chest-modal.chest-modal--cooldown .chest-modal__hurry {
+    margin-top: auto;
+  }
+
+  .game-modal.chest-modal.chest-modal--cooldown .chest-modal__scene--cooldown {
+    aspect-ratio: auto;
+    background: transparent;
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .chest-modal__hurry {
+    margin-top: auto;
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .chest-modal__scene--energy {
+    aspect-ratio: auto;
+    background: transparent;
+  }
+
+  .kikimora-craft-modal.layer-modal {
+    padding: 0;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+  }
+
+  .kikimora-craft-modal__panel {
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    padding: max(1.35rem, calc(0.35rem + env(safe-area-inset-top, 0px)))
+      max(0.75rem, env(safe-area-inset-right, 0px))
+      max(0.85rem, calc(0.35rem + env(safe-area-inset-bottom, 0px)))
+      max(0.75rem, env(safe-area-inset-left, 0px));
+  }
+
+  .kikimora-craft-modal__panel .modal-close {
+    right: max(0.5rem, env(safe-area-inset-right, 0px));
+    top: max(0.5rem, env(safe-area-inset-top, 0px));
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+  }
+
+  .kikimora-craft-modal__title {
+    font-size: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .kikimora-craft-modal__scene {
+    flex-shrink: 0;
+    aspect-ratio: 2.15 / 1;
+    max-height: min(20vh, 128px);
+    margin-bottom: 0.45rem;
+  }
+
+  .kikimora-craft-modal__hint {
+    font-size: 0.85rem;
+    padding-inline: 0.15rem;
+  }
+
+  .kikimora-craft-modal__cta {
+    margin-top: auto;
+  }
+
+  /* Викторина landscape — flex, scroll только ответы */
+  .quiz.layer-modal {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .quiz .quiz-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow: hidden;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .quiz .quiz-question {
+    margin: 0.35rem 0;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .quiz .quiz-answers {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .quiz .quiz-answer {
+    min-height: 36px;
+    padding: 0.3rem 0.55rem;
+    font-size: 0.76rem;
+  }
+
+  .quiz .quiz-result {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    max-height: calc(100dvh - 3rem);
+  }
+
+  .profile-modal__preview {
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+}
+
+/* Сундук landscape (top-level @media — chest_loot_modal_mobile.md) */
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .game-modal.chest-modal.layer-modal {
+    padding: 0;
+    align-items: stretch;
+    justify-content: center;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .game-modal.chest-modal .game-modal__panel .modal-close {
+    right: max(0.5rem, env(safe-area-inset-right, 0px));
+    top: max(0.5rem, env(safe-area-inset-top, 0px));
+    width: 44px;
+    min-width: 44px;
+    max-width: 44px;
+  }
+
+  .game-modal.chest-modal .game-modal__title {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-bottom: 0.25rem;
+    font-size: 0.92rem;
+    text-align: center;
+  }
+
+  .game-modal.chest-modal .game-modal__scene {
+    grid-column: 1;
+    grid-row: 2 / 5;
+    aspect-ratio: auto;
+    max-height: min(38vh, 168px);
+    height: auto;
+    min-height: 0;
+    margin-bottom: 0;
+    align-self: center;
+  }
+
+  .chest-modal__chest-closed {
+    width: min(24vw, 96px);
+  }
+
+  .chest-modal__frame-wrap {
+    width: min(26vw, 104px);
+  }
+
+  .chest-modal__loot-text {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    text-align: left;
+    font-size: 0.86rem;
+    line-height: 1.35;
+    align-self: end;
+  }
+
+  .chest-modal__timer {
+    grid-column: 2;
+    grid-row: 3;
+    margin: 0;
+    text-align: left;
+    font-size: 0.82rem;
+  }
+
+  .chest-modal__timer--large {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    text-align: left;
+    font-size: 1.05rem;
+    line-height: 1.25;
+    align-self: center;
+  }
+
+  .chest-modal__drops-section {
+    grid-column: 2;
+    grid-row: 4;
+    margin: 0.25rem 0 0;
+    padding: 0.35rem 0.5rem;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .chest-modal__drops {
+    max-height: min(28vh, 120px);
+  }
+
+  .chest-modal__take,
+  .chest-modal__hurry {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    justify-self: center;
+    width: min(100%, 320px);
+    max-width: 320px;
+    margin-top: 0.35rem;
+    margin-bottom: 0;
+  }
+
+  /* Кулдаун v3: сундук слева; справа hero + шансы */
+  .game-modal.chest-modal.chest-modal--cooldown .game-modal__panel {
+    grid-template-columns: minmax(6.5rem, 30vw) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) auto;
+  }
+
+  .game-modal.chest-modal.chest-modal--cooldown .chest-modal__scene--cooldown {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    max-height: min(32vh, 140px);
+    align-self: center;
+    background: transparent;
+  }
+
+  .game-modal.chest-modal.chest-modal--cooldown .chest-modal__cooldown-hero {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    /* text-align: left; */
+    /* align-self: end; */
+  }
+
+  .game-modal.chest-modal.chest-modal--cooldown .chest-modal__cooldown-label {
+    font-size: 0.82rem;
+    margin-bottom: 0.15rem;
+  }
+
+  .game-modal.chest-modal.chest-modal--cooldown .chest-modal__cooldown-time {
+    font-size: 1.25rem;
+  }
+
+  .game-modal.chest-modal.chest-modal--cooldown .chest-modal__drops-section {
+    grid-column: 2;
+    grid-row: 2;
+    /* align-self: start; */
+    min-height: 0;
+  }
+
+  .game-modal.chest-modal.chest-modal--cooldown .chest-modal__hurry {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  /* Energy rewarded — кот слева, текст справа, CTA снизу */
+  .game-modal.chest-modal.chest-modal--energy .game-modal__panel {
+    grid-template-columns: minmax(6.5rem, 30vw) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .chest-modal__scene--energy {
+    grid-column: 1;
+    grid-row: 2 / 4;
+    max-height: min(32vh, 140px);
+    align-self: center;
+    margin-bottom: 0;
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .energy-modal__cat {
+    width: min(28vw, 112px);
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .energy-modal__pitch {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    max-width: none;
+    text-align: center;
+    /* align-self: end; */
+    width: 100%;
+    font-size: 0.86rem;
+    line-height: 1.35;
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .chest-modal__hurry {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    margin-top: 0.35rem;
+  }
+
+  .game-modal.chest-modal.chest-modal--energy .energy-modal__dismiss {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    margin-top: 0.15rem;
+    text-align: center;
+  }
+}
+
+/* Кикимора — landscape (kikimora_craft_modal_mobile.md) */
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .kikimora-craft-modal.layer-modal {
+    padding: 0;
+    align-items: stretch;
+    justify-content: stretch;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .kikimora-craft-modal__panel {
+    display: flex;
+    grid-template-columns: minmax(6.5rem, 34vw) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    /* gap: 0 0.65rem; */
+    align-content: center;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    padding: max(1rem, calc(0.35rem + env(safe-area-inset-top, 0px)))
+      max(0.75rem, env(safe-area-inset-right, 0px))
+      max(0.65rem, calc(0.35rem + env(safe-area-inset-bottom, 0px)))
+      max(0.75rem, env(safe-area-inset-left, 0px));
+    justify-content: center;
+    align-items: center;
+  }
+
+  .kikimora-craft-modal__title {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    margin-bottom: 0.25rem;
+    font-size: 0.98rem;
+  }
+
+  .kikimora-craft-modal__scene {
+    grid-column: 1;
+    grid-row: 2 / 4;
+    align-self: center;
+    max-height: min(32vh, 140px);
+    aspect-ratio: 2.1 / 1;
+    margin-bottom: 0;
+    width: 420px;
+  }
+
+  .kikimora-craft-modal__main {
+    justify-content: end;
+  }
+
+  .kikimora-craft-modal__slots {
+    margin-bottom: 0.35rem;
+  }
+
+  .kikimora-craft-modal__hint {
+    margin: 0;
+    text-align: left;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+
+  .kikimora-craft-modal__cta {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    margin-top: 0.35rem;
   }
 }

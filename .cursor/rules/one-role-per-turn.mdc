@@ -1,0 +1,111 @@
+---
+description: Одна роль за ход; оркестратор не кодит; ревью без браузера/скрина не ревью; DOM владельца важнее lint.
+alwaysApply: true
+---
+
+# Одна роль за ход (механический gate)
+
+**Закон:** скрин / DOM Path владельца > lint > unit-тесты. Оркестратор не пишет CSS/TSX. Ревью без браузера или скрина владельца — не ревью. После `rejected` / `changes_requested` в этом ходе кода нет.
+
+Канон ролей: `.cursor/roles/*.md`. Этот файл **перебивает** желание «починить сразу» в том же ответе.
+
+## Почему ломалось
+
+Один Composer играл оркестратора, дизайнера, разработчика и ревьювера подряд: после 🔴 сразу патч; `lint:ui-layout: OK` и 399 тестов считались сдачей; `visual_check` не открывался в браузере. Правила ниже — **стоп-ворота**, не тон.
+
+## 1. Контракт хода (первый блок ответа)
+
+Если текущая роль — **оркестратор** (пользователь сказал «оркестратор», «запусти пайплайн», «назначь агента»):
+
+```yaml
+orchestrator_turn:
+  role_this_turn: orkestrator
+  may_edit_code: false
+  next_executor: game-designer-ui-ux | razrabotchik | revyuver | proektirovshchik | none
+  task: TASK-### | none
+  pipeline_autorun: true   # см. .cursor/roles/orkestrator.md § Автопайплайн
+  stop_after_this_message: false   # true только при awaiting_user / human-gate стоп
+```
+
+**`may_edit_code: true` у оркестратора запрещён.** Нет `index.css` / `src/**` в блоке, где оркестратор сам правит код.
+
+**Автопайплайн:** оркестратор после `task_assignment` **обязан** запустить `next_executor` в том же пользовательском запросе (инструмент **Task** или следующий блок `agent_turn` исполнителя). Не требовать от владельца отдельное сообщение «разработчик» / «продолжай». Оркестратор и исполнитель в одном запросе — **разные** блоки ролей, не один diff от оркестратора.
+
+Если текущая роль — исполнитель, первый блок:
+
+```yaml
+agent_turn:
+  role_this_turn: razrabotchik | game-designer-ui-ux | revyuver | …
+  may_edit_code: true | false
+  task: TASK-###
+```
+
+| Роль | `may_edit_code` |
+|------|-----------------|
+| orkestrator | **false** |
+| revyuver | **false** |
+| kritik-redaktor | **false** |
+| proektirovshchik | только `instruction/dev/tasks.md` |
+| game-designer-ui-ux | спека/промпты/mockup; **не** `src/ui/index.css` |
+| razrabotchik | true (код) |
+| testirovshchik | только тесты |
+
+**Запрещено** в одном ответе: `review_verdict` **и** diff в `src/` / `index.css`.
+
+## 2. Ревью — файл на диске
+
+Для TASK с `visual_check` или diff UI ревьювер **обязан** записать:
+
+`instruction/dev/reviews/TASK-XXX.yaml`
+
+(шаблон — `.cursor/rules/reviewer-visual-verification.mdc`).
+
+Оркестратор **не** ставит TASK `done` и **не** зовёт следующего исполнителя «допилить в том же ходе», если:
+
+- файла нет;
+- `visual_check_closed_by: not_closed`;
+- `browser.attempted: false` при критерии `visual_check` и нет скринов владельца в чате.
+
+Текст в чате «вердикт 🔴» **без файла** не закрывает gate.
+
+## 3. Эталон приёмки UI
+
+Приоритет (сверху вниз):
+
+1. DOM Path / computed (left, width, height, `display`) из чата владельца.
+2. Скрин владельца.
+3. Mockup PNG.
+4. UX-спека (`*_layout.md`, `instruction/design/*.md`).
+5. `lint:ui-layout` / vitest.
+
+`lint: OK` + зелёные тесты **не** опровергают DOM владельца (`left=16`, `width=400` при спеке full-bleed).
+
+Разработчик до `developer_done` по mobile-модалке заполняет:
+
+```text
+viewport: Ш×В
+node: .chest-modal__panel (или зона из TASK)
+computed: left / width / display
+expected (spec): …
+match: yes | no
+```
+
+`match: no` → не сдавать; не писать «готово».
+
+## 4. После reject / скрина бага
+
+Следующий ход **только** `task_assignment` (оркестратор) **или** один исполнитель по назначению. Патч «заодно» в сообщении с разбором — **нарушение**. Макс. 2 итерации на исполнителя, затем A/B/C владельцу.
+
+## 5. Давление владельца не отменяет gate
+
+«Оркестратор, блять», «почини сразу», «агенты проебываются», повторный DOM Path — **не** разрешение совмещать роли и писать CSS в ходе оркестратора/ревьювера.
+
+| Запрещённый ход | Почему |
+|-----------------|--------|
+| `orchestrator_turn` + diff `index.css` | оркестратор не кодит |
+| Спека дизайнера + правка CSS в одном ответе | две роли |
+| Текст «вердикт 🔴» + патч | после reject кода нет |
+| `lint: OK` / 399 тестов = сдача UI | visual_check не закрыт |
+| Вложенный `@media` «чтобы быстрее» | landscape-правила могут не примениться |
+
+**Антипример (TASK-062):** один Composer назначил дизайнера, написал спеку, вшил grid во внутренний `@media`, сдал по lint — владелец видел `left=258, width=400`, затем `left=16` от `.layer-modal { padding: 1rem }`.

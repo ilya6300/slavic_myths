@@ -5,8 +5,19 @@ alwaysApply: true
 
 # Поток работы агентов
 
+**Закон:** скрин / DOM Path владельца > lint > unit-тесты. Оркестратор не пишет CSS/TSX. Ревью без браузера или скрина владельца — не ревью. После `rejected` / `changes_requested` в этом ходе кода нет (`.cursor/rules/one-role-per-turn.mdc`).
+
+**Заморозка UI:** `.cursor/rules/owner-ui-design-freeze.mdc` — агентам **запрещены** diff в UI/CSS/ассетах/design-спеках, пока владелец не снял заморозку в **текущем** сообщении. UI-TASK и pipeline **не** отменяют freeze.
+
+Гнев или срочность владельца **не** отменяют gate и **не** разрешают совмещать роли.
+
+## Оркестратор: автопайплайн
+
+По умолчанию оркестратор **сам** переводит работу между агентами в **одном** пользовательском запросе (`pipeline_autorun: true` в `.cursor/roles/orkestrator.md`). Назначение без запуска исполнителя (Task / `agent_turn`) — нарушение. Исключения: `awaiting_user`, mockup gate A/B/C, `human-gate` после reject, конфликт открытых TASK без ответа владельца.
+
 ## Приоритет источников
 
+0. `owner-ui-design-freeze.mdc` — блокирует UI/CSS/ассеты/design у агентов, кроме явного снятия заморозки в текущем сообщении.
 1. Явное решение владельца в текущей сессии.
 2. Активный план эпика, на который ссылается TASK.
 3. `instruction/scenario.md`, `instruction/scenario_draft.md`, `instruction/dev/technical_requirements.md`.
@@ -49,6 +60,20 @@ alwaysApply: true
 
 Малый фикс не меняет state, save, SDK, условия доступа, DOM-слои и пользовательское поведение. Если есть сомнение, использовать полный маршрут.
 
+**Исключение — layout UI:** правки модалок, HUD, профиля, викторины, книги (`src/ui/**`, `index.css` §modal/HUD) **не** считаются «малым CSS», если меняют раскладку, scroll или размеры зон. Маршрут: **дизайнер (или спека) → разработчик → ревьювер**; в TASK обязательны критерии из `ui-layout-invariants.mdc` (`visual_check` portrait + landscape).
+
+## Gate: один агент — одна роль за ход
+
+Канон: `.cursor/rules/one-role-per-turn.mdc` (**alwaysApply**).
+
+- Оркестратор **не** совмещает в одном ответе: ревьювер (`rejected` / `changes_requested`) **и** правку кода «за разработчика».
+- Оркестратор и ревьювер: **`may_edit_code: false`**. Нет diff в `src/` / `index.css` в том же сообщении, что `orchestrator_turn` или `review_verdict`.
+- После `review_verdict.status: rejected | changes_requested` — **СТОП**; следующий ход только `task_assignment` на исполнителя (или A/B/C владельцу при `human-gate`).
+- Закрытие TASK без YAML `review_verdict.status: approved` **в файле** `instruction/dev/reviews/TASK-XXX.yaml` — **запрещено**. Текст в чате без файла не считается.
+- `visual_check`: `approved` только если `visual_check_closed_by: browser | owner`. Lint + vitest **не** закрывают visual_check.
+- DOM Path / скрин владельца **важнее** lint. Несовпадение computed (left/width/display) со спекой = задача не сдана.
+- Один ответ = одна роль. `orchestrator_turn` / `review_verdict` / `critic_verdict` **запрещено** совмещать с diff в `src/` или `index.css`.
+
 ## Параллелизм
 
 После готового TASK архитектор и дизайнер могут работать параллельно, если проектировщик зафиксировал предметную модель, состояния и границы scope. Перед тестировщиком оркестратор сверяет оба deliverable: UX не должен противоречить интерфейсам, состояниям и инвариантам из `tech.md`.
@@ -60,9 +85,9 @@ alwaysApply: true
 TASK получает `done` только если:
 
 - все критерии отмечены выполненными;
-- каждый `visual_check` подтверждён ревьювером или владельцем;
+- каждый `visual_check` подтверждён ревьювером или владельцем (`visual_check_closed_by` ≠ `not_closed`);
 - каждый `owner_decision` имеет записанное решение;
-- тесты, требуемые TASK, зелёные;
-- есть `review_verdict.status: approved`.
+- тесты, требуемые TASK, зелёные — **и** не подменяют visual_check;
+- есть `review_verdict.status: approved` в `instruction/dev/reviews/TASK-XXX.yaml`.
 
 Незакрытый пункт допускается только с `skipped_item` по шаблону из `assignment-completeness.mdc`; тогда TASK остаётся `blocked` или `awaiting_user`, но не `done`.

@@ -1,0 +1,32 @@
+# Скопировать в TASK-XXX.yaml. Ревьювер пишет; оркестратор не подменяет approved.
+# Канон: .cursor/rules/reviewer-visual-verification.mdc
+
+review_verdict:
+  status: changes_requested # approved | changes_requested | rejected
+  tasks: [TASK-XXX]
+  blockers_count: 0
+  must_fix_count: 0
+  assignment_complete: false
+  mockup_checked: n/a
+  layout_invariants_checked: true
+  visual_check_closed_by: not_closed # browser | owner | not_closed
+  reviewer: revyuver
+  return_to: razrabotchik # | game-designer-ui-ux | proektirovshchik | none
+
+layout_verification:
+  lint_ui_layout: pass # fail
+  css_manual_audit: pass # fail
+  browser:
+    attempted: false
+    tool: blocked_no_browser # cursor_simple_browser | owner_screenshot | blocked_no_browser
+    url: ""
+    viewports: []
+  owner_dom:
+    attempted: false
+    node: ""
+    reported: {}
+    expected_spec: {}
+    match: n/a # yes | no | n/a
+
+notes: |
+  …

@@ -23,6 +23,12 @@ alwaysApply: false
 - Мёртвый код, закомментированные блоки, `any` без нужды, игнор ошибок пустым `catch`.
 - Inline `style={{ }}` для статики; pan через `width: 200%` из JS — см. `css-styling.mdc`.
 - Профиль: композитное превью, `skin.id` в UI, титулы как HUD-рамка — см. `profile-ui.mdc`.
+- Нарушение `.cursor/rules/ui-layout-invariants.mdc`: пересечение UI, текст у края viewport, на mobile прокрутка всей модалки вместо layout/inner-scroll по TASK.
+- UI TASK с `visual_check`: нет файла `instruction/dev/reviews/TASK-XXX.yaml` или `visual_check_closed_by: not_closed`.
+- Сдача UI при несовпадении DOM Path владельца со спекой (left/width/display).
+- Растягивание деревянной CTA на 100% ширины без TASK «full-bleed CTA».
+- Вложенный `@media` в `index.css` (landscape-правила могут не примениться).
+- Вердикт ревьювера в том же ответе, что diff кода (`one-role-per-turn.mdc`).
 
 ## Обязательный чеклист
 
@@ -34,6 +40,12 @@ alwaysApply: false
 - [ ] CSS/DOM: слои избы и hit-area не сломаны; нет лишних inline-стилей (`css-styling.mdc`)
 - [ ] `isTestMode` не сломан
 - [ ] Профиль (`profile-ui.mdc`): изолированное превью, локализованные имена, кроп морды в сетке кота
+- [ ] Layout (`ui-layout-invariants.mdc`): нет overlap; текст с inset; mobile scroll только в зонах из TASK/visual_check
+- [ ] UI/CSS в diff: есть `visual_check` в TASK или явное owner OK; иначе **не** `approved`
+- [ ] UI TASK: ревьювер выполнил `npm run lint:ui-layout` и заполнил `layout_verification` (`reviewer-visual-verification.mdc`)
+- [ ] Вердикт записан в `instruction/dev/reviews/TASK-XXX.yaml`
+- [ ] `visual_check_closed_by` не `not_closed` при критерии visual_check
+- [ ] DOM владельца (если есть) сверен; CTA не stretch 100% без TASK
 
 ## Вердикт
 

@@ -1,0 +1,49 @@
+---
+description: Запрет агентам менять UI, CSS, визуальные ассеты и design-спеки. Только владелец.
+alwaysApply: true
+---
+
+# Заморозка UI, стилей и дизайна (решение владельца)
+
+## Закон
+
+**Агентам запрещено** создавать, изменять или удалять anything в зонах ниже — в том числе «малый CSS», bugfix, TASK из `tasks.md`, mockup gate и pipeline.
+
+**Исключение (единственное):** в **текущем сообщении** владелец явно снял заморозку (`разрешаю правку UI` / `можно менять CSS`) **или** назвал конкретный файл/зону для правки.
+
+TASK, `visual_check`, срочность и «оркестратор, почини» **не** снимают заморозку.
+
+## Запрещённые пути (diff = нарушение)
+
+| Зона | Примеры |
+|------|---------|
+| React UI | `src/ui/**` (`.tsx`, colocated `.css`) |
+| Глобальные стили | `src/ui/index.css` |
+| Визуальные ассеты | `assets/**` (PNG, спрайты, HUD, дом, UI) |
+| Design / mockup | `instruction/design/**` |
+| Layout-спеки UI | `instruction/*_layout.md`, `instruction/profile_layout.md`, правки в `instruction/design_assets_prompts.md` под вёрстку |
+
+**Разрешено агентам без снятия заморозки:** `src/domain/**`, `src/store/**`, `src/services/**`, `src/data/**`, конфиги без DOM/CSS — если задача **не требует** touch запретных путей.
+
+## Поведение по ролям
+
+| Роль | Действие |
+|------|----------|
+| **orkestrator** | Не назначать реализацию UI/CSS/ассетов/design. TASK с UI scope → `blocked`, `awaiting_user`: заморозка активна |
+| **game-designer-ui-ux** | Не писать mockup и layout-спеки на диск; только текст в чате по запросу владельца |
+| **razrabotchik** | `may_edit_code: false` для UI-задач; root-cause по `bugfix-protocol.mdc` — **без патча**, план для владельца |
+| **revyuver** | Любой diff в запретных путях → `rejected`, даже при зелёных тестах |
+
+## Конфликт с другими rules
+
+При противоречии с `agent-workflow.mdc` (маршрут UI), `css-styling.mdc`, `ui-layout-invariants.mdc`, `scene-visual-etalon.mdc`, ролями разработчика/дизайнера — **побеждает этот файл**, пока владелец не снял заморозку в текущем сообщении.
+
+## Шаблон отказа (исполнитель)
+
+```text
+ui_freeze:
+  status: blocked
+  reason: owner-ui-design-freeze.mdc
+  owner_action: правка вручную ИЛИ явное снятие заморозки в сообщении
+  analysis: … (если был bugfix — root cause без diff)
+```

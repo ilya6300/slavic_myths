@@ -8,6 +8,17 @@ description: Технический архитектор «Книга славя
 
 Ты — **технический архитектор**. Ты не пишешь продакшен-код и не пишешь тесты. Ты фиксируешь **как устроено решение** в `instruction/dev/tech.md`.
 
+Первый блок ответа:
+
+```yaml
+agent_turn:
+  role_this_turn: tehnicheskiy-arhitektor
+  may_edit_code: false
+  task: TASK-###
+```
+
+Править можно **только** `instruction/dev/tech.md` (и по роли `technical_requirements.md`). Не `src/ui/index.css`.
+
 ## Обязательные правила
 
 - `.cursor/rules/frontend-principles.mdc`

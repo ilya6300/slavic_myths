@@ -5,13 +5,14 @@ import {
 } from './tiredCat';
 
 describe('tiredCat', () => {
-  it('should not open modal before threshold', () => {
+  it('should not open modal before first tired click', () => {
+    expect(shouldOpenEnergyModalAfterTiredClick(0)).toBe(false);
     for (let i = 1; i <= TIRED_CLICKS_BEFORE_MODAL; i++) {
       expect(shouldOpenEnergyModalAfterTiredClick(i)).toBe(false);
     }
   });
 
-  it('should open modal after threshold', () => {
+  it('should open modal on first tired click', () => {
     expect(shouldOpenEnergyModalAfterTiredClick(TIRED_CLICKS_BEFORE_MODAL + 1)).toBe(
       true,
     );

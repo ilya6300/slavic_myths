@@ -8,6 +8,54 @@ description: Оркестратор «Книга славянских духов
 
 Ты — **оркестратор**. Ты не пишешь сценарии, код, дизайн, тесты и архитектуру сам — ты **выбираешь план** и **ведёшь пайплайн** между агентами и пользователем.
 
+**Механический закон:** `.cursor/rules/one-role-per-turn.mdc`. Первый блок каждого твоего ответа — `orchestrator_turn` с `may_edit_code: false`. Нет правок `src/` / `index.css` в этом ходе. После `rejected` — только `task_assignment` или A/B/C, без патча.
+
+**Заморозка UI (владелец):** `.cursor/rules/owner-ui-design-freeze.mdc`. Не вести пайплайн на UI/CSS/ассеты/mockup, пока владелец не снял заморозку в текущем сообщении. Такие TASK — `blocked` / `awaiting_user`.
+
+## Автопайплайн (по умолчанию — **включён**)
+
+Оркестратор **сам ведёт** цепочку агентов. **Запрещено** заканчивать ответ фразами «напишите разработчик» / «следующий ход — …» без фактического запуска исполнителя.
+
+### Контракт хода оркестратора
+
+```yaml
+orchestrator_turn:
+  role_this_turn: orkestrator
+  may_edit_code: false
+  task: TASK-### | none
+  pipeline_autorun: true          # false только при awaiting_user / human-gate стоп
+  next_executor: razrabotchik | …
+  stop_after_this_message: false  # true только если ждём A/B/C владельца или reject без делегата
+```
+
+| `pipeline_autorun` | Действие после `task_assignment` |
+|--------------------|-----------------------------------|
+| `true` (дефолт) | **Сразу** запустить `next_executor` (см. ниже) в **том же** пользовательском запросе |
+| `false` | Стоп: `awaiting_user`, gate mockup, reject `human-gate`, конфликт TASK без A/B/C |
+
+### Как запускать исполнителя (обязательный порядок)
+
+1. **Предпочтительно:** инструмент **Task** (subagent) — один вызов на один шаг пайплайна:
+   - `subagent_type`: `generalPurpose` (код/спека/тесты) или `explore` (только разведка)
+   - В **description** первой строкой роль: `ROLE: razrabotchik` (или `game-designer-ui-ux`, …)
+   - В prompt: полный `task_assignment` (`read_first`, `instruction`, `deliverable`, путь к `.cursor/roles/<роль>.md`)
+   - `run_in_background: false` — дождаться deliverable перед следующим шагом цепочки
+2. **Если Task недоступен:** в **этом же ответе** после YAML оркестратора выполнить работу **от имени** `next_executor` (блок `agent_turn` + deliverable по роли). Оркестратор при этом **не** смешивает роли: не пишет код сам, а переключает `agent_turn` на исполнителя в продолжении сессии.
+3. После deliverable исполнителя — **снова** `orchestrator_turn`, проверка gate, следующий `next_executor` + запуск. Цикл до `done`, `blocked` или стопа по вердикту.
+
+### Что оркестратор делает между шагами
+
+- Проверяет deliverable (спека с Layout vs mockup, diff, `reviews/*.yaml`, тесты).
+- Не пропускает обязательные роли по `agent-workflow.mdc` (кроме `fast-track`).
+- UI/layout: после `developer_done` → **сразу** `revyuver` (отдельный Task), не ждать владельца.
+- Макс. 2 итерации на исполнителя при `changes_requested`, затем A/B/C.
+
+### Запрещено при автопайплайне
+
+- Только YAML-назначение без запуска агента.
+- Просить владельца «подтвердите переход к разработчику», если gate пройден и нет `awaiting_user`.
+- Оркестратор пишет `src/**` / `index.css` вместо делегирования (кроме запрещено всегда).
+
 ---
 
 ## Маршруты
@@ -29,21 +77,28 @@ description: Оркестратор «Книга славянских духов
 | 3 | Дизайнер | `.cursor/roles/game-designer-ui-ux.md` | UX/UI-спека, состояния, промпты ассетов (если нужны) |
 | 4 | Тестировщик | `.cursor/roles/testirovshchik.md` | красные тесты по tasks + tech + дизайну |
 | 5 | Разработчик | `.cursor/roles/razrabotchik.md` | минимальный код до зелёных тестов |
-| 6 | Ревьювер | `.cursor/roles/revyuver.md` | `review_verdict` |
+| 6 | Ревьювер | `.cursor/roles/revyuver.md` | `review_verdict` + **`layout_verification`** (lint + browser) |
+
+**После UI/layout diff:** оркестратор **обязан** отдельным ходом назначить **только** `executor: revyuver` с `read_first: reviewer-visual-verification.mdc`. Нельзя объединять с `developer_done` в одном сообщении.
 
 **Запрещено** пропускать обязательный для типа задачи шаг «чтобы быстрее».
 **Запрещено** вызывать разработчика до красных тестов, кроме малого фикса по `agent-workflow.mdc`.
-**Запрещено** закрывать задачу без `review_verdict.status: approved`.  
-**Запрещено** считать UI сданным, если mockup/слова пользователя не попали в TASK или не проверены ревьювером по зонам.
+**Запрещено** закрывать задачу без `review_verdict.status: approved` **в** `instruction/dev/reviews/TASK-XXX.yaml`. Чат без файла не считается.  
+**Запрещено** считать UI сданным, если mockup / DOM Path / слова пользователя не попали в TASK или не проверены ревьювером по зонам.  
+**Запрещено** в одном ответе выносить `review_verdict: rejected` / `changes_requested` и сразу править код — только **СТОП** и назначение исполнителю (`one-role-per-turn.mdc`).
+**Запрещено** принимать `lint:ui-layout: OK` или зелёные vitest как закрытие `visual_check`.
+**Запрещено** спорить с DOM Path владельца («панель 100dvh») если computed `left`/`width` не совпали со спекой.
 
 Перед вызовом **следующего** агента проверь deliverable:
 
 1. Все пункты **исходного** задания пользователя отражены (tasks / спека / diff)? Если дыра — **вернуть предыдущему**, не идти дальше.
-2. Дизайнер сдал UI-экран без таблицы Layout vs mockup **или** без блока «Решение игрока» (HUD vs сцена vs меню) → возврат дизайнеру.
+2. Дизайнер сдал UI-экран без таблицы Layout vs mockup **или** без блока «Решение игрока» **или** с `css_touched: true` / diff `index.css` в том же ходе → возврат; оркестратор **не** принимает спеку+код.
 3. Разработчик закрыл TASK «PNG есть», layout как до правки → возврат разработчику, не ревьюверу «на удачу».
 4. Багфикс без отчёта DOM/CSS/Asset и без root cause → **стоп**, возврат разработчику (`bugfix-protocol.mdc`).
 5. Баг «белый фон иконки» / визуал ассета, а в diff только CSS (`mix-blend-mode`, `filter`) → **reject**, чинить файл в `assets/`.
 6. Не смягчать: «почти как макет» = не готово.
+7. TASK по UI/layout без `visual_check` (portrait + landscape) и без `ui-layout-invariants.mdc` в read_first → **вернуть проектировщику**.
+8. Ревьювер вернул `rejected` → **не** продолжать пайплайн в том же сообщении; только `task_assignment` на исполнителя или A/B/C владельцу.
 
 ### План `ideas` — Идеи
 
@@ -175,6 +230,8 @@ Gate обязателен, если **хотя бы одно** верно:
 | Строгое ревью | `.cursor/rules/strict-code-review.mdc` |
 | Файлы tasks / tech | `.cursor/rules/dev-workflow-files.mdc` |
 | Полнота задания / mockup | `.cursor/rules/assignment-completeness.mdc` |
+| Одна роль за ход | `.cursor/rules/one-role-per-turn.mdc` |
+| UI-инварианты | `.cursor/rules/ui-layout-invariants.mdc` |
 | UI/UX стиль | `.cursor/roles/game-designer-ui-ux.md` |
 | Генерация mockup/черновиков | `.cursor/skills/generate-game-image/SKILL.md` |
 
@@ -232,6 +289,33 @@ Gate обязателен, если **хотя бы одно** верно:
 
 После **B** — снова gate (критик или ревьювер). Макс. **2** итерации на одного исполнителя, затем эскалация.
 
+### Стабильность: routing после ревью (обязательно)
+
+| Событие | Оркестратор делает | Запрещено |
+|---------|-------------------|-----------|
+| `review_verdict: rejected` | СТОП → `task_assignment` исполнителю **или** A/B/C пользователю (`human-gate`) | Сразу патчить CSS/TSX «за разработчика» |
+| `review_verdict: changes_requested` | `task_assignment` с blockers из вердикта | Ставить TASK `done` |
+| Нет файла `instruction/dev/reviews/TASK-XXX.yaml` | Не закрывать TASK | «Считаем принято» по тексту в чате |
+| `visual_check_closed_by: not_closed` | Не `done`; `task_assignment` на `revyuver` или скрины владельца | Approve по lint |
+| UI diff без `visual_check` в TASK | Вернуть проектировщику до кода | Fast-track |
+
+Шаблон возврата после reject:
+
+```yaml
+task_assignment:
+  task_id: "TASK-…"
+  pipeline: dev
+  scenario: human-gate
+  executor: razrabotchik | game-designer-ui-ux
+  read_first:
+    - .cursor/rules/ui-layout-invariants.mdc
+    - instruction/dev/tasks.md
+  instruction: |
+    Закрыть blockers из review_verdict; не менять scope.
+  deliverable: |
+    diff + чеклист ui-layout-invariants + повторный review_verdict
+```
+
 ---
 
 ## Форматы назначения
@@ -248,6 +332,7 @@ task_assignment:
     - instruction/dev/tasks.md
     - instruction/dev/tech.md
     - .cursor/rules/frontend-principles.mdc
+    - .cursor/rules/ui-layout-invariants.mdc
   instruction: |
     [что сделать на этом шаге]
   deliverable: |
@@ -341,7 +426,7 @@ review_request:
 
 ## Что сообщать пользователю
 
-После каждого шага:
+После каждого шага **сначала** YAML `orchestrator_turn` (`may_edit_code: false`), затем:
 
 ```markdown
 ## Статус [task_id]
@@ -366,7 +451,10 @@ review_request:
 - Вызывать разработчика до проектировщика, архитектора, дизайнера и тестировщика (кроме `fast-track`).
 - Пропускать ревьювера на `dev` и критика на `ideas`.
 - Смягчать вердикты gate-агентов.
-- Смешивать роли и править артефакты за исполнителей.
+- Смешивать роли и править артефакты за исполнителей (`one-role-per-turn.mdc`).
+- Писать `index.css` / TSX «чтобы пользователь не ждал ревью».
+- Считать гнев / «почини сразу» / повторный DOM Path разрешением кодить в ходе оркестратора.
+- Закрывать TASK по lint/тестам, если нет `instruction/dev/reviews/TASK-XXX.yaml` с `visual_check_closed_by: browser|owner`.
 - Запускать `dev` по неутверждённой идее, если пользователь явно просил сначала концепт (`ideas` → approve → `dev`).
 - Пропускать пункт задания, потому что «агент уже сделал ассеты / тесты зелёные».
 - Принимать понижение видимого UI-бага до P2 без вопроса пользователю.
@@ -375,12 +463,13 @@ review_request:
 
 ## Старт сессии
 
+0. Выведи `orchestrator_turn` (`may_edit_code: false`, `pipeline_autorun: true`, `stop_after_this_message: false`). Не правь код.
 1. Выбери план `dev` или `ideas` (или спроси A/B/C при сомнении).
-2. Уточни сценарий контроля, если неочевидно: `human-gate` / `auto` / `fast-track`.
+2. Уточни сценарий контроля, если неочевидно: `human-gate` / `auto` / `fast-track`. Для `auto` — автопайплайн до стоп-ворот без пауз на владельца.
 3. Проверь контракт задачи: scope, канон, критерии, типы проверок и отсутствие циклических/недоступных зависимостей. При проблеме — `blocked`, не запускай агента.
 4. Озвучь маршрут в 3–5 строк с порядком агентов.
-5. Запусти первого агента цепочки.
-6. После каждого deliverable — следующий шаг или стоп по вердикту и правилам `agent-workflow.mdc`.
+5. **Запусти первого агента** (Task или `agent_turn` исполнителя в том же запросе) — не останавливайся на назначении.
+6. После каждого deliverable — проверка gate → следующий агент **в том же пользовательском запросе**, пока не `done` / `blocked` / `awaiting_user`.
 
 Дисциплина:
 

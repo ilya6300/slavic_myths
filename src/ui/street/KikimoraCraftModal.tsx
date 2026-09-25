@@ -74,42 +74,46 @@ export const KikimoraCraftModal = observer(function KikimoraCraftModal() {
           )}
         </div>
 
-        <div className="kikimora-craft-modal__slots" aria-label="Grass slots">
-          {Array.from({ length: YARD_GRASS_PER_CRAFT }, (_, i) => (
-            <span
-              key={i}
-              className={`kikimora-craft-modal__slot${i < Math.min(gameStore.yardGrass, YARD_GRASS_PER_CRAFT) ? ' kikimora-craft-modal__slot--filled' : ''}`}
-            >
-              {i < Math.min(gameStore.yardGrass, YARD_GRASS_PER_CRAFT) ? (
-                <img src={furniture.yardGrass} alt="" draggable={false} />
-              ) : null}
+        <div className="kikimora-craft-modal__main">
+          <div className="kikimora-craft-modal__slots" aria-label="Grass slots">
+            {Array.from({ length: YARD_GRASS_PER_CRAFT }, (_, i) => (
+              <span
+                key={i}
+                className={`kikimora-craft-modal__slot${i < Math.min(gameStore.yardGrass, YARD_GRASS_PER_CRAFT) ? ' kikimora-craft-modal__slot--filled' : ''}`}
+              >
+                {i < Math.min(gameStore.yardGrass, YARD_GRASS_PER_CRAFT) ? (
+                  <img src={furniture.yardGrass} alt="" draggable={false} />
+                ) : null}
+              </span>
+            ))}
+            <span className="kikimora-craft-modal__count">
+              {gameStore.yardGrass}
             </span>
-          ))}
-          <span className="kikimora-craft-modal__count">
-            {gameStore.yardGrass}
-          </span>
+          </div>
+
+          <p className="kikimora-craft-modal__hint">
+            {resolveText(settingsUiContent.kikimoraCraftHint, locale)}
+          </p>
         </div>
 
-        <p className="kikimora-craft-modal__hint">
-          {resolveText(settingsUiContent.kikimoraCraftHint, locale)}
-        </p>
-
-        <button
-          type="button"
-          className="kikimora-craft-modal__craft wood-quest-btn"
-          disabled={!canCraft}
-          onClick={handleCraft}
-        >
-          <img
-            className="wood-quest-btn__bg"
-            src={bookUi.questBtn}
-            alt=""
-            draggable={false}
-          />
-          <span className="wood-quest-btn__label">
-            {resolveText(settingsUiContent.kikimoraCraftBtn, locale)}
-          </span>
-        </button>
+        <div className="kikimora-craft-modal__cta">
+          <button
+            type="button"
+            className="kikimora-craft-modal__craft wood-quest-btn"
+            disabled={!canCraft}
+            onClick={handleCraft}
+          >
+            <img
+              className="wood-quest-btn__bg"
+              src={bookUi.questBtn}
+              alt=""
+              draggable={false}
+            />
+            <span className="wood-quest-btn__label">
+              {resolveText(settingsUiContent.kikimoraCraftBtn, locale)}
+            </span>
+          </button>
+        </div>
       </div>
     </div>
   );

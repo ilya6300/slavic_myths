@@ -4,6 +4,10 @@ import {
   ENERGY_PER_QUEST,
   LUCK_COINS_PER_CLICK,
   ONBOARDING_ENERGY_FLOOR,
+  STARTER_PACK_CANDLE_BONUS,
+  STARTER_PACK_CAT_SKIN_ID,
+  STARTER_PACK_ENERGY_BONUS,
+  STARTER_PACK_OBEREG_BONUS,
 } from '../config/gameConstants';
 import { createDefaultSave } from '../domain/GameSave';
 import { findNextAvailableSpirit } from '../domain/spiritQueue';
@@ -49,7 +53,7 @@ describe('GameStore', () => {
     expect(store.energy).toBe(50 - ENERGY_PER_CLICK);
   });
 
-  it('clickCat shows tired bubble when out of energy without opening modal on first click', () => {
+  it('clickCat shows tired bubble and opens energy modal on first click when out of energy', () => {
     const store = makeStore({
       onboardingCompleted: true,
       energy: 0,
@@ -58,24 +62,47 @@ describe('GameStore', () => {
     const first = store.clickCat(() => 0.99);
     expect(first.kind).toBe('footnote');
     expect(store.catClickCount).toBe(0);
-    expect(energyUiStore.isOpen).toBe(false);
+    expect(store.luckCoins).toBe(0);
+    expect(energyUiStore.isOpen).toBe(true);
+    energyUiStore.close();
     sceneUiStore.catSleepReason = null;
     sceneUiStore.tiredClickCount = 0;
   });
 
-  it('clickCat opens energy modal after tired clicks', () => {
+  it('clickCat does not count as paid click when regen in same tick would allow ENERGY_PER_CLICK', () => {
+    vi.useFakeTimers();
+    const now = 1_000_000;
+    vi.setSystemTime(now);
+    const store = makeStore({
+      onboardingCompleted: true,
+      energy: 0,
+      lastEnergyAt: now - 60_000,
+    });
+    // hydrate() already applied regen; simulate 0 energy with pending regen on click only
+    store.energy = 0;
+    store.clickCat(() => 0.99);
+    expect(store.catClickCount).toBe(0);
+    expect(store.luckCoins).toBe(0);
+    expect(store.energy).toBe(0);
+    expect(energyUiStore.isOpen).toBe(true);
+    energyUiStore.close();
+    sceneUiStore.catSleepReason = null;
+    sceneUiStore.tiredClickCount = 0;
+  });
+
+  it('clickCat opens energy modal when cat is already in tired sleep', () => {
     const store = makeStore({
       onboardingCompleted: true,
       energy: 0,
       lastEnergyAt: Date.now(),
     });
-    store.clickCat(() => 0.99);
-    store.clickCat(() => 0.99);
+    sceneUiStore.enterTiredSleep();
     store.clickCat(() => 0.99);
     expect(energyUiStore.isOpen).toBe(true);
+    expect(store.catClickCount).toBe(0);
     energyUiStore.close();
-    sceneUiStore.tiredClickCount = 0;
     sceneUiStore.catSleepReason = null;
+    sceneUiStore.tiredClickCount = 0;
     sceneUiStore.catSleeping = false;
   });
 
@@ -590,5 +617,16 @@ describe('GameStore', () => {
     expect(store.fragmentCounts.baba_yaga).toBe(1);
     expect(store.claimDailyQuestFragment(now)).toBe(false);
     expect(store.fragmentCounts.baba_yaga).toBe(1);
+  });
+
+  it('applyStarterPackPurchase grants energy, talismans, candles, and pilgrim skin', () => {
+    const store = makeStore({ candles: 0, talismans: 0, energy: 50 });
+    expect(store.applyStarterPackPurchase()).toBe('success');
+    expect(store.energy).toBe(50 + STARTER_PACK_ENERGY_BONUS);
+    expect(store.talismans).toBe(STARTER_PACK_OBEREG_BONUS);
+    expect(store.candles).toBe(STARTER_PACK_CANDLE_BONUS);
+    expect(store.ownedSkinIds).toContain(STARTER_PACK_CAT_SKIN_ID);
+    expect(store.applyStarterPackPurchase()).toBe('already_owned');
+    expect(store.candles).toBe(STARTER_PACK_CANDLE_BONUS);
   });
 });

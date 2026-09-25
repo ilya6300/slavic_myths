@@ -1,16 +1,21 @@
 import { observer } from 'mobx-react-lite';
-import { hudIcons } from '../../config/assetRegistry';
+import { getCatPoseUrl, hudIcons } from '../../config/assetRegistry';
+import { REWARDED_ENERGY_BONUS } from '../../config/gameConstants';
 import { settingsUiContent } from '../../data/dialogContent';
-import { resolveText } from '../../i18n/resolve';
+import { formatLocalizedTemplate, resolveText } from '../../i18n/resolve';
 import { useLocale } from '../../i18n/LocaleContext';
 import { gameStore } from '../../store/GameStore';
 import { energyUiStore } from '../../store/energyUiStore';
 import { ModalCloseButton } from '../common/ModalCloseButton';
+import { WoodQuestButton } from '../common/WoodQuestButton';
 
 export const EnergyRewardModal = observer(function EnergyRewardModal() {
   const { locale } = useLocale();
 
   if (!energyUiStore.isOpen) return null;
+
+  const catSleepSrc = getCatPoseUrl(gameStore.skins.cat, 'sleep');
+  const bonusLabel = `+${REWARDED_ENERGY_BONUS}`;
 
   const handleWatch = () => {
     gameStore.restoreEnergyWithRewarded();
@@ -21,41 +26,63 @@ export const EnergyRewardModal = observer(function EnergyRewardModal() {
   };
 
   return (
-    <div className="chest-modal chest-modal--energy" role="dialog" aria-modal="true">
+    <div
+      className="game-modal chest-modal chest-modal--energy layer-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="energy-reward-title"
+    >
       <div
-        className="chest-modal__backdrop"
+        className="game-modal__backdrop"
         aria-hidden
         onClick={handleClose}
       />
-      <div className="chest-modal__panel">
+      <div className="game-modal__panel chest-modal__panel">
         <ModalCloseButton onClick={handleClose} />
-        <h2 className="chest-modal__title">
+        <h2
+          id="energy-reward-title"
+          className="game-modal__title chest-modal__title"
+        >
           {resolveText(settingsUiContent.energyRewardTitle, locale)}
         </h2>
 
-        <div className="chest-modal__reward">
+        <div
+          className="game-modal__scene game-modal__scene--plain chest-modal__scene chest-modal__scene--energy"
+        >
           <img
-            className="chest-modal__energy-icon"
-            src={hudIcons.energy}
+            className="energy-modal__cat"
+            src={catSleepSrc}
             alt=""
             draggable={false}
           />
-          <p className="chest-modal__loot-text">
-            {resolveText(settingsUiContent.energyRewardText, locale)}
-          </p>
+          <div className="energy-modal__bonus" aria-hidden>
+            <img
+              className="energy-modal__bonus-icon"
+              src={hudIcons.energy}
+              alt=""
+              draggable={false}
+            />
+            <span className="energy-modal__bonus-amount">{bonusLabel}</span>
+          </div>
         </div>
 
-        <button
-          type="button"
-          className="chest-modal__hurry"
+        <p className="chest-modal__loot-text energy-modal__pitch">
+          {resolveText(settingsUiContent.energyRewardText, locale)}
+        </p>
+
+        <WoodQuestButton
+          className="chest-modal__hurry energy-modal__watch"
+          label={formatLocalizedTemplate(
+            settingsUiContent.energyRewardWatch,
+            locale,
+            { amount: REWARDED_ENERGY_BONUS },
+          )}
           onClick={handleWatch}
-        >
-          {resolveText(settingsUiContent.energyRewardWatch, locale)}
-        </button>
+        />
 
         <button
           type="button"
-          className="chest-modal__take"
+          className="chest-modal__drops-toggle energy-modal__dismiss"
           onClick={handleClose}
         >
           {resolveText(settingsUiContent.energyRewardClose, locale)}

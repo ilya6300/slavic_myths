@@ -20,12 +20,27 @@
 | Книга на весь экран | Стадия ≤ ~68vh, мельче шрифты на пергаменте, левая страница scroll |
 | Мелкий текст | 0.78–0.88rem body, заголовки 0.95–1rem, line-height ≥ 1.35 |
 
+## Portrait (ширина ≤640px)
+
+| Проблема | Решение |
+|----------|---------|
+| Сцена сундука 16:9 на узком экране | `aspect-ratio: 2.15/1`, `max-height: ~22vh` |
+| Кнопка «Забрать» вплотную к низу | `padding-bottom` + safe-area; панель `max-height: 100dvh` с одним scroll |
+| Оверлей обрезает низ | `.layer-modal` — `align-items: flex-start`, прокрутка оверлея |
+
+**Канон инвариантов:** `.cursor/rules/ui-layout-invariants.mdc` (overlap, inset, когда inner scroll допустим).
+
+CSS: `src/ui/index.css` — `@media (max-width: 640px)` блок «Сундук / кулдаун»; профиль — блок в конце файла.
+
 ## Layout vs реализация
 
 | Зона | Landscape | CSS |
 |------|-----------|-----|
-| Оверлей | Прокрутка всего окна, `align-items: flex-start` | `.layer-modal` |
-| Панель сундука / крафт / дар | Одна колонка, padding ↓ | `.game-modal__panel` |
+| Оверлей | Прокрутка всего окна, `align-items: flex-start` | `.layer-modal` **кроме** profile / chest / quiz |
+| Профиль / сундук / викторина | `overflow: hidden` на оверлее; панель `100dvh` | см. конец `index.css` `@media (max-width: 640px), (orientation: landscape)…` |
+| Викторина | Scroll **только** `.quiz-answers` (и result при победе/поражении) | не scroll `.quiz.layer-modal` |
+| Панель сундука | Portrait: колонка full-bleed; **landscape: grid** сцена слева / текст+шансы справа, CTA span 2 | `.game-modal.chest-modal .game-modal__panel` — см. `chest_loot_modal_mobile.md` |
+| Панель крафт / дар | Одна колонка, padding ↓ | `.game-modal__panel` |
 | Профиль | Превью сверху, сетка без `max-height` | `.profile-modal__*` |
 | Викторина | Узкая сцена + вопросы ниже | `.quiz-modal__*` |
 | Книга | Меньше stage, текст на странице | `.book-modal`, `.book-page--left` |

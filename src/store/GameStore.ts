@@ -10,6 +10,7 @@ import {
   REWARDED_ENERGY_BONUS,
   CLOUD_SAVE_KEY,
   STARTER_PACK_CAT_SKIN_ID,
+  STARTER_PACK_CANDLE_BONUS,
   STARTER_PACK_ENERGY_BONUS,
   STARTER_PACK_OBEREG_BONUS,
 } from '../config/gameConstants';
@@ -605,11 +606,15 @@ export class GameStore {
   }
 
   clickCat(rng: () => number = Math.random): CatClickDialogResult {
-    this.applyEnergyRegen();
-
     const freeClick = this.isOnboarding;
+    const energyBeforeRegen = this.energy;
+    const tiredSleepActive =
+      sceneUiStore.catSleepReason === 'tired' && sceneUiStore.catSleeping;
+    const isTiredClickAttempt =
+      !freeClick &&
+      (energyBeforeRegen < ENERGY_PER_CLICK || tiredSleepActive);
 
-    if (!freeClick && this.energy < ENERGY_PER_CLICK) {
+    if (isTiredClickAttempt) {
       sceneUiStore.enterTiredSleep();
       sceneUiStore.tiredClickCount += 1;
       const line = pickCatLine('tired', this.language, rng);
@@ -624,6 +629,8 @@ export class GameStore {
       }
       return line ? { kind: 'footnote', text: line } : { kind: 'none' };
     }
+
+    this.applyEnergyRegen();
 
     sceneUiStore.tiredClickCount = 0;
 
@@ -1636,6 +1643,7 @@ export class GameStore {
     this.applyEnergyRegen();
     this.energy = addRewardEnergy(this.energy, STARTER_PACK_ENERGY_BONUS);
     this.talismans += STARTER_PACK_OBEREG_BONUS;
+    this.candles = addCandles(this.candles, STARTER_PACK_CANDLE_BONUS);
     const owned = [...this.ownedSkinIds];
     if (!owned.includes(STARTER_PACK_CAT_SKIN_ID)) {
       owned.push(STARTER_PACK_CAT_SKIN_ID);

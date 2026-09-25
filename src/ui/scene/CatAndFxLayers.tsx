@@ -24,6 +24,7 @@ export const CatLayer = observer(function CatLayer() {
   const pose = sceneUiStore.catSleeping ? 'sleep' : 'sid';
   const src = getCatPoseUrl(gameStore.skins.cat, pose);
   const bubble = gameStore.lastCatBubble;
+  const catTired = sceneUiStore.catSleepReason === 'tired';
   const catAllowed = canInteract(
     gameStore.onboardingStep,
     gameStore.onboardingCompleted,
@@ -76,7 +77,7 @@ export const CatLayer = observer(function CatLayer() {
         alt={resolveText(settingsUiContent.catName, locale)}
         interactive={catInteractive}
         onSpriteClick={handleClick}
-        className={pose === 'sleep' ? 'scene-cat--sleep' : 'scene-cat--sit'}
+        className={`${pose === 'sleep' ? 'scene-cat--sleep' : 'scene-cat--sit'}${catTired ? ' scene-cat--tired' : ''}`}
       />
       {pose === 'sleep' && (
         <div className="cat-zzz" aria-hidden>

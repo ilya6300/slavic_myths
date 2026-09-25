@@ -8,6 +8,7 @@ export const SAVE_VERSION = 15;
 export const STARTER_PACK_PRICE_RUB = 199;
 export const STARTER_PACK_ENERGY_BONUS = 100;
 export const STARTER_PACK_OBEREG_BONUS = 5;
+export const STARTER_PACK_CANDLE_BONUS = 3;
 export const STARTER_PACK_CAT_SKIN_ID = 'cat_pilgrim';
 export const LOCAL_SAVE_KEY = 'slavic_myths_save_v1';
 export const CLOUD_SAVE_KEY = 'gameSave';

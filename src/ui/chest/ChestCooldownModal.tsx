@@ -42,11 +42,14 @@ export const ChestCooldownModal = observer(function ChestCooldownModal() {
     chestUiStore.closeCooldown();
   };
 
+  const cooldownLabel = resolveText(settingsUiContent.chestCooldown, locale);
+
   return (
     <div
       className="game-modal chest-modal chest-modal--cooldown layer-modal"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="chest-cooldown-time"
     >
       <div
         className="game-modal__backdrop"
@@ -55,11 +58,9 @@ export const ChestCooldownModal = observer(function ChestCooldownModal() {
       />
       <div className="game-modal__panel chest-modal__panel">
         <ModalCloseButton onClick={handleClose} />
-        <h2 className="game-modal__title chest-modal__title">
-          {resolveText(settingsUiContent.chestCooldown, locale)}
-        </h2>
-
-        <div className="game-modal__scene game-modal__scene--plain chest-modal__scene">
+        <div
+          className="game-modal__scene game-modal__scene--plain chest-modal__scene chest-modal__scene--cooldown"
+        >
           <img
             className="chest-modal__chest-closed"
             src={furniture.boxClosed}
@@ -68,9 +69,15 @@ export const ChestCooldownModal = observer(function ChestCooldownModal() {
           />
         </div>
 
-        <p className="chest-modal__timer chest-modal__timer--large">
-          {formatCooldownMs(remainingMs)}
-        </p>
+        <div className="chest-modal__cooldown-hero">
+          <p className="chest-modal__cooldown-label">{cooldownLabel}</p>
+          <p
+            id="chest-cooldown-time"
+            className="chest-modal__cooldown-time chest-modal__timer--large"
+          >
+            {formatCooldownMs(remainingMs)}
+          </p>
+        </div>
 
         <div className="chest-modal__drops-section">
           <ChestDropChancesToggle

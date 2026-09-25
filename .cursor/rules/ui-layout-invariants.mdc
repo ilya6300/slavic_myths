@@ -1,0 +1,93 @@
+---
+description: Инварианты вёрстки UI — без пересечений, отступы от краёв, мобильный scroll. Читать дизайнеру, разработчику, ревьюверу, критику, оркестратору.
+alwaysApply: true
+---
+
+# Инварианты layout UI (модалки, HUD, меню)
+
+**Закон:** игрок видит **непересекающиеся** блоки; текст **не упирается** в край экрана; на мобилке **не прокручиваем всю модалку**, если можно уместить layout (высота блоков, колонки, меньше сцена).
+
+Канон мобильных модалок: `instruction/design/mobile_modals_landscape.md` + этот файл. **Викторина** с прокруткой всего `.layer-modal` / панели — **антипattern** для новых экранов, не эталон.
+
+## 1. Пересечение элементов — запрещено
+
+| Запрещено | Пример |
+|-----------|--------|
+| Два интерактивных или читаемых слоя в одной точке viewport | CTA под текстом без z-index/flow; «ghosting» в grid (строки высоты 0 + absolute art) |
+| Контент одной ячейки grid/list рисуется поверх соседней | Схлопнутые `grid-auto-rows` + `align-items: stretch` + только `position: absolute` внутри ячейки |
+| Декор перекрывает hit-area без `pointer-events: none` | Рамка/frame закрывает кнопку |
+| Превью/FX выходят из контейнера и накрывают вкладки | `overflow: visible` на родителе без intent в спеке |
+
+**Обязательно в CSS для grid ячеек с absolute art:** `align-items: start` на grid; у ячейки `width: 100%` + `aspect-ratio` или явная высота; in-flow минимум (padding/spacer), если браузер не даёт высоту только из aspect-ratio.
+
+## 2. Текст и края экрана — запрещено
+
+| Правило | Минимум |
+|---------|---------|
+| Отступ текста/кнопки от **края viewport** | `max(12px, env(safe-area-inset-*))` с каждой стороны модалки |
+| Текст не обрезается «в никуда» | `overflow-wrap`, `text-overflow: ellipsis` + `max-width`, или перенос; для HUD — `max ch` как в `profile_layout.md` |
+| Подпись не прилипает к внутреннему краю панели без padding | padding-inline ≥ `0.65rem` на `.game-modal__panel` (mobile можно плотнее, но не 0) |
+| Длинный ru/en/tr | закладывать +30% длины; проверять худший locale |
+
+**🔴 приёмка:** текст или интерактив **касается** физического края экрана (без safe-area) → блокер.
+
+## 3. Мобильный scroll — приоритет layout, не прокрутка
+
+### По умолчанию (portrait и landscape)
+
+1. **Не** включать `overflow-y: auto` на `.layer-modal` для модалки, если задача не разрешила «scroll whole modal» в TASK.
+2. **Не** делать единственным решением «панель на весь экран + scroll всего контента» (как типичная викторина на низком landscape) — сначала:
+   - уменьшить сцену (`max-height` + широкий aspect-ratio);
+   - split-колонки (превью 30% / контент 70%);
+   - компактные вкладки;
+   - увеличить **высоту панели до `100dvh`** с `overflow: hidden`, а не удлинять scrollable stack.
+3. **Внутренний scroll** — только для **явно длинных** зон, названных в TASK/спеке:
+   - `.profile-grid` (коллекции);
+   - `.chest-modal__drops` (таблица шансов);
+   - длинный список настроек.
+4. Одновременно **два** вертикальных scroll (оверлей + сетка) — **запрещено**, кроме записи в TASK «исключение».
+
+### Эталон «плохо» (не копировать)
+
+- `.layer-modal { overflow-y: auto }` + высокая сцена 16:9 + весь контент в одной колонке без `min-height: 0` flex-островка → игрок крутит **всё окно**, CTA уезжает.
+
+### Эталон «хорошо»
+
+- Панель `height: 100dvh; overflow: hidden`; main column `flex: 1; min-height: 0`; scroll только `.profile-grid`.
+
+## 4. Критерии приёмки в TASK (оркестратор / проектировщик)
+
+Любая правка `src/ui/**`, `index.css` §модалки/HUD/профиль:
+
+```markdown
+- [ ] visual_check: portrait ≤640px — нет overlap; текст с inset; CTA не у края
+- [ ] visual_check: landscape max-height 520px — то же; scroll только в зонах из спеки
+- [ ] если владелец дал DOM Path — computed left/width/display совпадают со спекой (не «примерно 100dvh»)
+```
+
+Без этих строк TASK **не передаётся** разработчику (оркестратор возвращает проектировщику).
+
+CTA модалки (сундук, книга): **не** `width: 100%` на деревянной кнопке без явной строки в TASK «full-bleed CTA». По умолчанию `max-width` натурального PNG (~280px), `margin-inline: auto`.
+
+**CSS (mobile full-bleed):** вложенный `@media` в `index.css` **запрещён** (`lint:ui-layout` `NESTED_MEDIA`). Landscape-grid сундука — **top-level** `@media`. Full-bleed панель: `.game-modal.chest-modal.layer-modal { padding: 0 }` — иначе базовый `.layer-modal { padding: 1rem }` даёт `left≈16px`.
+
+## 5. Роли — кратко
+
+| Роль | Обязанность |
+|------|-------------|
+| Дизайнер | Таблица Layout: колонки %, scroll-зоны, «без overlap», inset текста, **числа computed** |
+| Разработчик | Самопроверка + блок viewport/computed/match; grid/flex + absolute — чек §1 |
+| Ревьювер | Overlap / edge text / лишний modal scroll → 🔴; файл `reviews/TASK-XXX.yaml`; без браузера — не approve |
+| Критик | Спека без scroll-зон и inset → 🔴 к дизайнеру |
+| Оркестратор | Нет visual_check в TASK → стоп; `rejected` → не чинить в том же ходе (`one-role-per-turn.mdc`) |
+
+## 6. Чеклист перед сдачей (разработчик / ревьювер)
+
+- [ ] Нет наложения арта/кнопок в сетке профиля и модалках сундука/книги
+- [ ] `env(safe-area-inset-*)` учтён на fullscreen mobile panel
+- [ ] На mobile нет прокрутки `.layer-modal`, если TASK не разрешил
+- [ ] Длинный контент: scroll только в named-зоне из спеки
+- [ ] ru-титул/описание не упираются в край панели
+- [ ] CTA модалки не растянута на 100% ширины без TASK
+- [ ] DOM владельца (если есть) совпал: left / width / display
+- [ ] Нет вложенного `@media`; chest overlay `padding: 0` на mobile/landscape

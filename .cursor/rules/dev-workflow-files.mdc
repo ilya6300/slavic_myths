@@ -12,6 +12,7 @@ alwaysApply: true
 | `instruction/dev/technical_requirements.md` | **Архитектор / ведущий** | техтребования, слои, конфиги, константы |
 | `instruction/dev/loot_tables.md` | **Геймдизайн / ведущий** | шансы дропа (редактируемый баланс) |
 | `instruction/assets_catalog.md` | **Дизайнер / ведущий** | реестр путей ассетов |
+| `instruction/dev/reviews/TASK-XXX.yaml` | **Ревьювер** | `review_verdict` + `layout_verification`; без файла TASK с `visual_check` не `done` |
 
 ## Правила
 
@@ -20,5 +21,6 @@ alwaysApply: true
 - Статусы задач обновляет исполнитель этапа (или оркестратор по факту сдачи): `todo` → `in_progress` → `done` / `blocked`.
 - Формат TASK, маршрутизация ролей и критерии перехода между этапами — `.cursor/rules/agent-workflow.mdc`. Задача с циклическими зависимостями или недоступным prerequisite не передаётся в работу.
 - `done` ставится только после полного gate из `agent-workflow.mdc`; незакрытый visual-check или решение владельца — это `blocked` / `awaiting_user`, не готовая задача.
+- Оркестратор **не** пишет `reviews/*.yaml` «за ревьювера» и **не** ставит `approved` в чате без файла.
 - Канон игры не дублировать: ссылаться на `scenario.md`, `scenario_draft.md`, `dev/technical_requirements.md`, `quests.md`, `list_of_spirits.md`, `assets_catalog.md`.
 - Полнота задания и mockup: `.cursor/rules/assignment-completeness.mdc` — **не** закрывать TASK, пока пункты пользователя / зоны mockup не в критериях приёмки и не выполнены.

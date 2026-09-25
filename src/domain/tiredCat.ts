@@ -1,5 +1,5 @@
-/** Кликов с tired-bubble до открытия EnergyRewardModal (не с первого). */
-export const TIRED_CLICKS_BEFORE_MODAL = 2;
+/** Устаревший порог; модалка с первого tired-клика (`count > 0`). */
+export const TIRED_CLICKS_BEFORE_MODAL = 0;
 
 export function shouldOpenEnergyModalAfterTiredClick(
   tiredClickCount: number,

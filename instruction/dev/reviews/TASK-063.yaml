@@ -1,0 +1,62 @@
+# TASK-063 — клик по коту при 0 энергии → EnergyRewardModal; без обхода regen
+# Канон: instruction/dev/tasks.md §TASK-063
+
+review_verdict:
+  status: approved
+  tasks: [TASK-063]
+  blockers_count: 0
+  must_fix_count: 0
+  assignment_complete: true
+  mockup_checked: n/a
+  layout_invariants_checked: n/a
+  visual_check_closed_by: n/a
+  reviewer: revyuver
+  return_to: none
+
+layout_verification:
+  lint_ui_layout: n/a
+  css_manual_audit: n/a
+  browser:
+    attempted: false
+    tool: blocked_no_browser
+    url: ""
+    viewports: []
+  owner_dom:
+    attempted: false
+    node: ""
+    reported: {}
+    expected_spec: {}
+    match: n/a
+
+notes: |
+  ## Вердикт ревьювера
+
+  **Статус:** APPROVED
+
+  ### Критерии TASK-063
+  - Первый tired-клик после онбординга: `TIRED_CLICKS_BEFORE_MODAL = 0` + `shouldOpenEnergyModalAfterTiredClick(count)` после инкремента → модалка с count=1; тест `clickCat shows tired bubble and opens energy modal on first click when out of energy`.
+  - Нет платного клика: `catClickCount` 0, `luckCoins` 0 на tired-пути; ранний return до инкремента кликов/монет.
+  - Обход regen: `energyBeforeRegen` до `applyEnergyRegen()`, условие tired по snapshot; тест с fake timers и `store.energy = 0` при `lastEnergyAt` −60s.
+  - `restoreEnergyWithRewarded` в diff не менялся; +50 через `addRewardEnergy` / `REWARDED_ENERGY_BONUS`, `energyUiStore.close()`, `syncTiredSleepFromEnergy` — как в каноне; регрессия энергии в `GameStore.epic17.test.ts`.
+
+  ### Прогон
+  - `npm test`: 69 files, 399 passed (vitest run).
+
+  ### 🔴 Blockers
+  —
+
+  ### 🟠 Must-fix
+  —
+
+  ### 🟡 Should-fix
+  —
+
+  ### 🟢 Notes
+  - Diff минимален: одна строка логики в `clickCat`, порог в `tiredCat.ts`, тесты без шума.
+  - Критерий «закрытие модалки / снятие tired после rewarded» не добавлен в `GameStore.test.ts` в этом TASK; поведение не менялось — при желании усилить покрытие отдельным тестом (не блокер).
+
+  ### Вердикт по принципам
+  - KISS/DRY/YAGNI: порог в domain, snapshot энергии — явный фикс regen, без лишних слоёв.
+  - Архитектура слоёв: `energyUiStore` из store action, ads в `restoreEnergyWithRewarded` — ок.
+  - TDD: новое поведение и regen-bypass покрыты осмысленными тестами.
+  - Багфикс-протокол: n/a (фича/UX-поток по TASK, root cause = сравнение post-regen vs pre-regen задокументировано в тесте).

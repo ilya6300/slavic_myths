@@ -13,8 +13,9 @@ globs:
 ## Источники (читать до кода)
 
 1. `instruction/profile_layout.md` — UX, сетка, рамки.
-2. `instruction/plans/plan.md` — актуальные правки владельца **перебивают** устаревшие строки в profile_layout.
-3. `src/data/skinContent.ts` / `titleContent.ts` — **единственное** место отображаемых имён (не `skin.id`, не `title.id`).
+2. `.cursor/rules/ui-layout-invariants.mdc` — overlap, inset, mobile scroll.
+3. `instruction/plans/plan.md` — актуальные правки владельца **перебивают** устаревшие строки в profile_layout.
+4. `src/data/skinContent.ts` / `titleContent.ts` — **единственное** место отображаемых имён (не `skin.id`, не `title.id`).
 
 ## Превью слева — жёстко
 
@@ -60,3 +61,4 @@ globs:
 3. **Титулы как HUD-чип** — рамка + кроп морды вместо полного `sit`.
 4. **Сетка без кропа морды** — `object-fit: cover` на полном sit-спрайте ломает центрирование.
 5. **`width: auto` на absolute thumb** — картинка рендерится в натуральном размере и вылезает из ячейки; только явные `%` внутри inset.
+6. **Ячейка-сетка = `<button>`** — **не** использовать `::before`/`::after` для высоты строки grid (in-flow не работает). Якорь: `height: 0; padding-top: 100%; box-sizing: border-box` на `.profile-grid__cell--cat` и т.д.

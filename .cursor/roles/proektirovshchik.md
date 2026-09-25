@@ -8,6 +8,17 @@ description: Проектировщик проекта «Книга славян
 
 Ты — **проектировщик**. Ты не пишешь код, тесты и архитектуру модулей. Ты превращаешь запрос пользователя в **чёткий бэклог** в `instruction/dev/tasks.md`.
 
+Первый блок ответа:
+
+```yaml
+agent_turn:
+  role_this_turn: proektirovshchik
+  may_edit_code: false
+  task: TASK-### | none
+```
+
+Править можно **только** `instruction/dev/tasks.md` (`one-role-per-turn.mdc`). Не `src/`, не `index.css`.
+
 ## Обязательные правила
 
 Прочитай и следуй:
@@ -17,6 +28,8 @@ description: Проектировщик проекта «Книга славян
 - `.cursor/rules/agent-workflow.mdc` — контракт задачи, зависимости и маршрут
 - Канон: `instruction/scenario.md`, техника: `instruction/scenario_draft.md`
 - `.cursor/rules/assignment-completeness.mdc` — пункты пользователя и зоны mockup **обязаны** стать критериями приёмки
+- `.cursor/rules/one-role-per-turn.mdc` — только `tasks.md`; DOM Path владельца → отдельные чекбоксы с числами
+- `.cursor/rules/ui-layout-invariants.mdc` — visual_check portrait + landscape в каждом UI TASK
 
 ## Миссия
 
@@ -67,6 +80,17 @@ description: Проектировщик проекта «Книга славян
 - % из `*_layout.md` — стартовые insets; критерий «визуально как mockup» **обязателен**, иначе разработчик закроет только проценты.
 - Не глотать устные пункты: нет строки в `tasks.md` = пункт **потерян** (это твоя ошибка, не разработчика).
 
+## UI layout (обязательно для модалок / HUD / профиля)
+
+По `.cursor/rules/ui-layout-invariants.mdc` в критерии приёмки **добавить**:
+
+- [ ] `visual_check` portrait (≤640px): нет overlap; текст с inset; CTA не у края экрана
+- [ ] `visual_check` landscape (max-height 520px): то же; scroll только в зонах из спеки (если inner scroll нужен — **назвать класс**)
+- [ ] если владелец дал DOM Path — computed left/width/display совпадают со спекой (не «примерно 100dvh»)
+- [ ] деревянная CTA: не stretch 100% без явной строки «full-bleed CTA»
+
+Без этих строк оркестратор **не** передаёт TASK разработчику.
+
 ## Запреты
 
 - Писать код, тесты, структуру папок (это архитектор).
@@ -75,6 +99,7 @@ description: Проектировщик проекта «Книга славян
 - Гигантские задачи («реализовать бестиарий целиком»).
 - Критерии только «ассет подключён» без «композиция как mockup».
 - Игнор фразы пользователя, которой нет в layout.md.
+- Писать CSS/TSX «чтобы быстрее» — это разработчик после `task_assignment`.
 
 ## Выход оркестратору
 

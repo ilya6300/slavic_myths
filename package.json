@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "lint:ui-layout": "node scripts/lint-ui-layout-css.mjs",
     "generate:quiz": "node scripts/generate-quiz.mjs",
     "process:illustrations": "node scripts/process-illustration-drafts.mjs",
     "copy:illustrations": "node scripts/copy-illustration-drafts.mjs"

@@ -3,6 +3,9 @@ import { observer } from 'mobx-react-lite';
 import { bookUi, furniture, getCatSkinById, hudIcons } from '../../config/assetRegistry';
 import {
   STARTER_PACK_CAT_SKIN_ID,
+  STARTER_PACK_CANDLE_BONUS,
+  STARTER_PACK_ENERGY_BONUS,
+  STARTER_PACK_OBEREG_BONUS,
   STARTER_PACK_PRICE_RUB,
 } from '../../config/gameConstants';
 import { settingsUiContent } from '../../data/dialogContent';
@@ -63,13 +66,25 @@ export const StarterPackModal = observer(function StarterPackModal() {
             <span className="starter-pack-modal__reward-icon">
               <img src={hudIcons.energy} alt="" draggable={false} />
             </span>
-            <span className="starter-pack-modal__reward-label">+100</span>
+            <span className="starter-pack-modal__reward-label">
+              +{STARTER_PACK_ENERGY_BONUS}
+            </span>
           </li>
           <li>
             <span className="starter-pack-modal__reward-icon">
               <img src={hudIcons.obereg} alt="" draggable={false} />
             </span>
-            <span className="starter-pack-modal__reward-label">×5</span>
+            <span className="starter-pack-modal__reward-label">
+              ×{STARTER_PACK_OBEREG_BONUS}
+            </span>
+          </li>
+          <li>
+            <span className="starter-pack-modal__reward-icon">
+              <img src={hudIcons.candle} alt="" draggable={false} />
+            </span>
+            <span className="starter-pack-modal__reward-label">
+              +{STARTER_PACK_CANDLE_BONUS}
+            </span>
           </li>
           <li>
             <span className="starter-pack-modal__reward-icon">
